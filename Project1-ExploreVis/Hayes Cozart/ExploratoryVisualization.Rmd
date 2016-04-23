@@ -1,0 +1,181 @@
+---
+title: "Leading Causes of Death in NYC"
+author: "Hayes Cozart"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Introduction
+
+- What is the data?
+
+- What are the leading causes of death?
+
+- Why is this important?
+
+```{r, include=FALSE}
+#loading data
+
+setwd("C:/Users/Hayes/Desktop/BDS 005/Projects/Project 1")
+library(ggplot2)
+library(dplyr)
+NYC_Death = read.csv('New_York_City_Leading_Causes_of_Death.csv')
+
+NYC_Death2 = distinct(NYC_Death) # remove duplicate values
+
+#Make categories more legiable
+
+levels(NYC_Death2$Sex)= c("Female", "Male")
+
+levels(NYC_Death2$Ethnicity) = c("Asian & Pacific Islander","Hispanic",
+                                 "Black Non-Hispanic","White Non-Hispanic")
+
+levels(NYC_Death2$Cause.of.Death) = c("Accidents","Alzheimers","Anemias",
+                                      "Aortic Aneurysm & Dissection",
+                                      "Homicide", "Atheroscerosis",
+                                      "Benign & Uncertain Neoplasms",
+                                      "Cardiovascular Disorder in Perinatal period",
+                                      "Stroke",
+                                      "Disorders of the Gallbladder",
+                                      "Chronic Liver Disease",
+                                      "Chronic Lower Respiratory Disease",
+                                      "Congenital Malformations",
+                                      "Diabetes","Heart Diseases",
+                                      "Hypertension and Kidney Diseases",
+                                      "Immunodeficiency Virus",
+                                      "Influenza & Pneumonia",
+                                      "Suicide","Cancer",
+                                      "Mental Disorder due to Alcohol",
+                                      "Kidney Disease","Parkinsons",
+                                      "Peptic Ulcer","Pneumonitis",
+                                      "Pregnancy & Childbirth",
+                                      "Accidental Drug Poisoning",
+                                      "Respiratory Distress of Newborn",
+                                      "Blood Poisoning","Short Gestation/LBW",
+                                      "Tuberculosis","Hepatitis")
+
+#top ten causes of Death
+TOP = c("Heart Diseases","Cancer",
+  "Influenza & Pneumonia","Diabetes",
+  "Chronic Lower Respiratory Disease","Stroke",
+  "Immunodeficiency Virus","Accidents",
+  "Hypertension and Kidney Diseases",
+  "Accidental Drug Poisoning")
+
+```
+
+## Number of Deaths by Year
+```{r, echo = FALSE}
+ggplot(data = NYC_Death2, aes(x= Year,y=Count)) + 
+  geom_bar(stat = "identity")+
+  ggtitle("Number of Deaths by Year") +
+  ylab(label = "Deaths" )
+```
+
+```{r, echo = FALSE}
+#The main take aways for this graph is that data is going down. Let us look deeper in the data to see if we can understand what is happening.
+```
+
+## Number of Deaths by Sex and Year
+```{r, echo = FALSE}
+ggplot(data = NYC_Death2, aes(x= Year,y=Count)) + 
+  geom_bar(aes(fill = Sex), position ="dodge",stat = "identity")+
+  ggtitle("Number of Deaths by Sex and Year") +
+  ylab(label = "Deaths" )+ scale_fill_brewer(palette = "Set1")
+```
+
+```{r, echo = FALSE}
+#When we look at the data and break it up by sex, we can see that both male and female deaths are decreasing. However we can see that female deaths are decreasing at a higher rate. Also we see that more females are dying than males overall.
+```
+
+##Number of Deaths by Ethnicity and Year
+```{r, echo = FALSE}
+ggplot(data = NYC_Death2, aes(x= Year,y=Count)) + 
+  geom_bar(aes(fill = Ethnicity), position ="dodge",stat = "identity")+
+  ggtitle("Number of Deaths by Ethnicity and Year") +
+  ylab(label = "Deaths" )+ scale_fill_brewer(palette = "Set1")
+```
+
+```{r, echo = FALSE}
+#In this graph we have now broken up the data by ethnicity. Here we can see that over time the number of Asian and Hispanic deaths are staying pretty constant. While most of the decrease in number of deaths is occuring in the white ethnicity. Lets look at cause of death and see how it is associated with what we are seeing.
+```
+
+##Percent of Deaths by Cause and Year
+```{r, echo = FALSE}
+group_by(NYC_Death2 ,Year,Cause.of.Death)%>%
+  summarise(., Deaths = sum(Count))%>%
+  arrange(., Deaths)%>%
+  ggplot(data = ., aes(x= Year,y= Deaths)) + 
+  geom_bar(aes(fill = reorder(Cause.of.Death, Deaths)), 
+           position ="fill",stat = "identity") +
+  ylab(label = "Deaths" )+ scale_fill_discrete(name = "Cause of Death")
+```
+
+```{r, echo = FALSE}
+#There is a lot of information in this graph, but the main take away I wanted to show you is that the top two causes of death, heart disease and cancer, are 70% of the causes of death in NYC by year. We can also see that the percent of deaths that are heart disease are going down. Lets look at this information by only looking at the top ten causes of death. Aside: Why you see the color fluctuations in the years is that the colors are ordered by the total deaths for all five years. During some years though the number of deaths for each cause changes the order for that year.
+```
+
+##Top Ten Causes of Death by Year
+```{r, echo = FALSE}
+filter(NYC_Death2, Cause.of.Death %in% TOP)%>%
+  ggplot(data = ., aes(x= Year,y=Count)) + 
+  geom_bar(aes(fill = reorder(Cause.of.Death,Count)), position ="dodge",
+  stat = "identity") +
+  ggtitle("Top Ten Causes of Death by Year") +
+  ylab(label = "Deaths" )+
+  scale_fill_discrete(name = "Cause of Death")
+```
+
+```{r, echo = FALSE}
+#This slide shows what we saw earlier in a much simpler to understand way. We see that the top two causes of death are heart disease and cancer also we see that heart disease is steadily decreasing each year. Now let us see how this could be associated to what we saw earlier about the sex and ethnicity differences.
+```
+
+##Heart Disease by Ethnicity and Sex
+```{r, echo = FALSE}
+filter(NYC_Death2, Cause.of.Death == "Heart Diseases")%>%
+  ggplot(data = ., aes(x= Year,y=Count)) + 
+  geom_bar(aes(fill = Ethnicity), position ="dodge",stat = "identity")+ 
+  facet_wrap( ~ Sex)+
+  ggtitle("Heart Disease by Ethnicity and Sex") +
+  ylab(label = "Deaths" )+ scale_fill_brewer(palette = "Set1")
+```
+
+```{r, echo = FALSE}
+#This slide shows that deaths caused by heart disease are going down year by year. We also see that for females it is decreasing at a greater rate than for males. Which is obviously associated with what we saw earlier when looking at the overal decrease in death. What we also see is even though we are seeing large decreases for white ethnicity and a slight decrease for black. Hispanic and Asian deaths due to heart disease are staying mostly constant.
+```
+
+##Heart Disease by Ethnicity and Sex
+```{r, echo = FALSE}
+filter(NYC_Death2, Cause.of.Death == "Heart Diseases")%>%
+  ggplot(data = ., aes(x= Year,y=Count)) + 
+  geom_bar(aes(fill = Sex), position ="dodge",stat = "identity")+ 
+  facet_wrap( ~ Ethnicity)+
+  ggtitle("Heart Disease by Ethnicity and Sex") +
+  ylab(label = "Deaths" ) + scale_fill_brewer(palette = "Set1")
+```
+
+```{r, echo = FALSE}
+#This slide is showing the same information as before. It just helps us to see the differences by year for heart disease deaths by ethnicity.
+```
+
+## Conclusions
+
+- Overall number of deaths is going down in NYC.
+
+- This seems to be mainly associated with the decrease in heart disease.
+
+- This decrease seems to be mostly occuring in white females.
+
+- Non-White number of deaths are staying mostly constant.
+
+## Future Analysis
+
+- Analyze the population breakdown of NYC to understand these trends.
+
+- Compare what was presented to other major cities. 
+
+- Consider data around health care access, quality, and recent discoveries.

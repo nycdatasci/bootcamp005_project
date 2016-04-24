@@ -1,0 +1,348 @@
+---
+title: "Exploratory Visualization Project"
+author: "Arda Berkay Kosar"
+output: 
+    ioslides_presentation
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::read_chunk('Project1_Codes.R')
+```
+
+```{r import,echo = F,cache=T} 
+
+setwd("~/Google Drive/002--NYC Data Science/002--Bootcamp/002--Projects/001--Project 1 - Exploratory Visualization/")
+library (dplyr)
+library (ggplot2)
+library (ggthemes)
+library (knitr)
+
+NYPD_Data = read.csv("~/Google Drive/002--NYC Data Science/002--Bootcamp/002--Projects/001--Project 1 - Exploratory Visualization/NYPD_Motor_Vehicle_Collisions.csv")
+
+by_borough = group_by(NYPD_Data, BOROUGH) 
+by_borough_2 = filter(by_borough, BOROUGH != '')
+#by_borough_2 = group_by(by_borough_2, BOROUGH) 
+by_borough_2$DATE = as.Date(by_borough_2$DATE, "%m/%d/%Y") 
+by_year = group_by(by_borough_2, DATE) 
+by_year = mutate(by_year, Year = year(DATE))
+by_year = group_by(by_year, Year)
+Borough_Summary_Year = group_by(by_year, BOROUGH, Year)
+
+
+
+```
+
+# NYPD Motor Vehicle Collisions 
+
+## Outline
+
+1. Part 1 - Exploratory Questions
+2. Part 2 - Borough Analysis
+3. Part 3 - Time of Day Analysis
+4. Part 4 - Seasonal (Monthly) Analysis
+5. Part 5 - Location (Zipcode) Analysis
+6. Part 6 - Conclusions and Furter Analysis
+
+# __Part 1__|Exploratory Questions
+## Exploratory Questions
+
+1. How does Borough effects number of deaths?
+
+
+2. How does driving time in the day effects number of deaths?
+
+
+3. How does driving location (according to Zipcodes) effects number of deaths?
+
+## Dataset
+
+1. 769054 Observations
+2. 29 variables
+3. Packages Used
+    a. dplyr
+    b. ggplot2
+    c. ggthemes
+    d. chron
+    e. choroplethr, choroplethrZip, devtools
+    f. zipcode
+
+# __Part 2__| Borough Analysis 
+
+## Borough Analysis 
+
+1. Total People Deaths by Borough
+2. Total Cyclist Deaths by Borough
+3. Total Pedestrian Deaths by Borough
+4. Total Motorist Deaths by Borough
+ 
+## Total People Deaths by Borough
+
+```{r plot1, echo = F, warning=FALSE}
+library(ggthemes)
+library(ggplot2)
+suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
+
+Borough_Deaths_Years = summarise(Borough_Summary_Year,
+                                 total_people_killed = sum(NUMBER.OF.PERSONS.KILLED))
+
+Total_Deaths_by_Years = 
+ggplot(data = Borough_Deaths_Years, aes(x = Year, y = total_people_killed)) + 
+geom_bar(aes(fill = BOROUGH), stat = 'identity') + 
+theme_bw() + 
+theme(legend.position = "right") +
+theme(legend.text=element_text(size=5)) +
+ggtitle('Total People Killed in Collisions by Year') + 
+ylab("Number of Total Deaths") +
+xlab("New York City Boroughs") +
+theme(axis.text.x = element_text(angle = 0, hjust = 0)) +
+theme(legend.position = "right") +
+theme(legend.text=element_text(size=10)) 
+Total_Deaths_by_Years
+
+```
+
+
+## Total Cyclist Deaths by Borough
+
+```{r plot2, echo = F, warning=FALSE}
+library(ggthemes)
+library(ggplot2)
+suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
+Cyclist_Deaths_Years = summarise(Borough_Summary_Year, Total_Cyclist_Killed = sum(NUMBER.OF.CYCLIST.KILLED))
+
+
+Total_Cyclists_Killed_by_Years = 
+  
+ggplot(data = Cyclist_Deaths_Years, aes(x = Year, y = Total_Cyclist_Killed)) + 
+geom_bar(aes(fill = BOROUGH), position = "dodge", stat = 'identity') + 
+theme_bw() +
+theme(legend.position = "right") +
+theme(legend.text=element_text(size=10)) +
+ggtitle('Total Cyclists Killed in Collisions by Year') + 
+ylab("Number of Cyclist Deaths") +
+xlab("New York City Boroughs") +
+theme(axis.text.x = element_text(angle = 0, hjust = 0))  
+
+Total_Cyclists_Killed_by_Years
+
+
+```
+
+## Total Pedestrian Deaths by Borough
+
+```{r plot3, echo = F, warning=FALSE}
+library(ggthemes)
+library(ggplot2)
+suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
+
+Pedesterian_Deaths_by_Years = summarise(Borough_Summary_Year, total_pedestrians_killed = sum(NUMBER.OF.PEDESTRIANS.KILLED))
+
+Total_Pedestrians_Killed_by_Years = 
+  
+ggplot(data = Pedesterian_Deaths_by_Years, aes(x = Year, y = total_pedestrians_killed)) + 
+geom_bar(aes(fill = BOROUGH), position = "dodge", stat = 'identity') + 
+theme_bw() +
+theme(legend.position = "right") +
+theme(legend.text=element_text(size=10)) +
+ggtitle('Total Pedestrians Killed in Collisions by Year') + 
+ylab("Number of Pedestrian Deaths") +
+xlab("New York City Boroughs") +
+theme(axis.text.x = element_text(angle = 0, hjust = 0))
+
+Total_Pedestrians_Killed_by_Years
+```
+
+## Total Motorist Deaths by Borough
+
+```{r plot4, echo = F, warning=FALSE}
+library(ggthemes)
+library(ggplot2)
+suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
+
+Motorist_Deaths_Years = summarise(Borough_Summary_Year, Total_Motorist_Killed = sum(NUMBER.OF.MOTORIST.KILLED))
+
+
+Total_Motorists_Killed_by_Years = 
+  
+ggplot(data = Motorist_Deaths_Years, aes(x = Year, y = Total_Motorist_Killed)) + 
+geom_bar(aes(fill = BOROUGH), position = "dodge", stat = 'identity') + 
+theme_bw() +
+theme(legend.position = "right") +
+theme(legend.text=element_text(size=10)) +
+ggtitle('Total Motorists Killed in Collisions by Year') + 
+ylab("Number of Motorist Deaths") +
+xlab("New York City Boroughs") +
+theme(axis.text.x = element_text(angle = 0, hjust = 0))
+
+Total_Motorists_Killed_by_Years
+
+
+```
+
+# __Part 3__| Time of Day Analysis
+
+## Total Deaths by Time of Day
+
+```{r plot5, echo = F, warning=FALSE}
+library(ggthemes)
+library(ggplot2)
+suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
+library (chron)
+
+Borough_Summary_Year$TIME = sapply(Borough_Summary_Year$TIME, function(x) paste0(x, ":00"))
+Borough_Summary_Year$TIME = times(Borough_Summary_Year$TIME)
+
+Morning_Accidents = filter(Borough_Summary_Year, TIME < as.numeric(times('12:00:00')) & TIME >= as.numeric(times('05:00:00')))
+Morning_Time_People_Deaths = summarise(Morning_Accidents, Total_People_Killed_Morning = sum(NUMBER.OF.PEDESTRIANS.KILLED, NUMBER.OF.CYCLIST.KILLED, NUMBER.OF.MOTORIST.KILLED))
+Midday_Accidents = filter(Borough_Summary_Year, TIME >= as.numeric(times('12:00:00'))  & TIME < as.numeric(times('17:00:00')))
+Midday_People_Deaths = summarise(Midday_Accidents, Total_People_Killed_Midday = sum(NUMBER.OF.PEDESTRIANS.KILLED, NUMBER.OF.CYCLIST.KILLED, NUMBER.OF.MOTORIST.KILLED))
+Evening_Accidents = filter(Borough_Summary_Year, TIME >= as.numeric(times('17:00:00')))
+Evening_People_Deaths = summarise(Evening_Accidents, Total_People_Killed_Evening = sum(NUMBER.OF.PERSONS.KILLED))
+Night_Time_Accidents = filter(Borough_Summary_Year, TIME > as.numeric(times('00:00:00')) & TIME < as.numeric(times('05:00:00')))
+Night_Time_People_Deaths = summarise(Night_Time_Accidents, Total_People_Killed_Night = sum(NUMBER.OF.PEDESTRIANS.KILLED, NUMBER.OF.CYCLIST.KILLED, NUMBER.OF.MOTORIST.KILLED))
+
+Time_List = list(Morning_Time_People_Deaths, Midday_People_Deaths, Evening_People_Deaths, Night_Time_People_Deaths)
+Total_Death_Compared_by_Time = Reduce(function(x,y) merge(x,y, all = TRUE), Time_List)
+Total_Death_Compared_by_Time = mutate(Total_Death_Compared_by_Time, Total_Persons_Killed = apply(Total_Death_Compared_by_Time[,3:6], 1, sum))
+
+Total_Death_by_TimeofDay =  
+ggplot(Total_Death_Compared_by_Time, aes(Year, colour = Time_of_Day)) + 
+ylab("Number of Deaths") +
+xlab("Year") +
+geom_line(aes(y = Total_People_Killed_Morning, colour = "Morning- (05:00 - 11:59)")) +
+geom_line(aes(y = Total_People_Killed_Midday, colour = "Midday- (12:00 - 16:59)")) +
+geom_line(aes(y = Total_People_Killed_Evening, colour = "Evening- (17:00 - 23:59)")) +
+geom_line(aes(y = Total_People_Killed_Night, colour = "Night - (00:00 - 04:59)")) +
+facet_grid(.~BOROUGH) +
+theme_bw() +
+theme(axis.text.x = element_text(size = 7 , angle = 90, hjust = 0)) +
+theme(axis.text.y = element_text(size = 7 , angle = 0, hjust = 0)) +
+ggtitle('Total People Killed in Collisions - Time of Day')
+                            
+                            
+Total_Death_by_TimeofDay    
+
+```
+
+
+# __Part 4__| Monthly Analysis
+
+## Total Deaths 
+
+![Total Deaths by Months](TotalDeaths_Seasonal.png)
+
+
+# __Part 5__| Zip Code Analysis
+
+## Total Deaths by Zip Codes
+
+
+![Total Deaths by Zip Codes](TotalDeaths_ZipCodes.png)
+
+
+## Total Cyclist Deaths by Zip Codes
+
+
+![Total Cyclist Deaths by Zip Codes](Total_Death_Cyclist_ZipCodes.png)
+
+
+## Total Motorist Deaths by Zip Codes
+
+![Total Cyclist Deaths by Zip Codes](Total_Death_Motorist_ZipCodes.png)
+
+
+## Total Pedestrian Deaths by Zip Codes
+
+![Total Pedestrian Deaths by Zip Codes](Total_Death_Pedestrian_ZipCodes.png)
+
+
+# __Part 6__|Conclusions and Further Analysis
+
+## Conclusions
+
+1. Brooklyn and Queens seem to have the highest Total Number of Deaths among the New York City (NYC) Boroughs.
+
+2. Collisions in Brooklyn seem to include more Car - Pedestrian type of collisions. 
+
+3. Evening and Morning accident numbers seem to be higher than the other times of the day.
+
+4. There is an increasing trend in the number of total deaths, to the end of the year and the maximum death number is reached at the end of the Fall and at the beginning of Winter.
+
+## Further Analysis
+
+1. The effecting factors to collisions
+
+2. Vehicle Types
+
+3. Streetwise Analysis
+
+
+
+---
+
+
+![Thank You!](Thank_You.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,160 @@
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("reshape")
+install.packages("gtable")
+library(dplyr)
+library(ggplot2)
+library(reshape)
+library(gtable)
+
+getwd()
+setwd("/Users/zacharyescalante/R_Projects/Project_1")
+ImpVol <- read.csv("IV.csv") 
+HistVol <- read.csv("realVol.csv")
+Rates <- read.csv("1yr_swaps.csv") 
+FX <- read.csv("brlFx.csv") 
+
+
+#Remove the first 6 rows of FX data frame
+FX <- FX[-c(1:6),]
+colnames(FX) <- c("Date", "BRL") #Change the column names
+
+#Remove the first 5 rows of Rates data frame
+Rates <- Rates[-c(1:6),-c(3:4)] #Delete rows 1-6 and columns 3-4
+colnames(Rates) <- c("Date", "iRate")
+
+#Remove first columns 1, 5, 8 of ImpVol
+iVol <- ImpVol[,-c(1, 5, 8)]
+
+#Remove x bland of HistVol
+hVol <- HistVol[, -c(1, 5, 8)]
+
+vol <- merge(iVol, hVol)
+vol <- vol[-1,]
+
+#At this point each of the csv files has been loaded as a dataframe 
+#and we now have to combine the data. We have already combined the 
+#implied volatility data since those two data frames were identical
+#and this will cut down on data manipulation. Next we need to cut the 
+#Date columns so that they match and we can use join/merge functions   
+#in order to create one large data frame with all of our data
+
+#Delete the leading zero for dates in the 'Date' column of 'vol' dataframe
+
+#Convert the 'Date' column from factor -> character
+vol[,1] <- as.character(vol$Date)
+head(vol)
+class(vol$Date)
+
+#Convert the 'Date' column for Rates from factor -> character
+Rates[,1] <- as.character(Rates$Date)
+Rates[,2] <- as.numeric(as.character(Rates$iRate))
+head(Rates)
+class(Rates$Date)
+class(Rates$iRate)
+
+##Convert the 'Date' column for FX from factor -> character
+FX[,1] <- as.character(FX$Date)
+FX[,2] <- as.numeric(as.character(FX$BRL))
+head(FX)
+class(FX$Date)
+class(FX$BRL)
+
+#Run a for loop to concatenate the strings with leading zeros
+#and remove leading zeros for the day value
+nrow(vol)
+
+for(i in 1:nrow(vol))
+{
+  if(substring(vol$Date[i], 1,1) == '0')
+  {
+    vol$Date[i] = substr(vol$Date[i], 2, nchar(vol$Date[i]))
+  } else{vol$Date[i] = vol$Date[i]}
+  vol$Date[i] = sub("/0", "/", vol$Date[i])
+}
+
+brl_data <- merge(vol, Rates) #Finish mergin the data
+brl_data <- merge(brl_data, FX)
+brl_data$Date <- as.Date(brl_data$Date, "%m/%d/%Y") #conver the 'Date' column to 'date' format
+class(brl_data$Date) #show that the new class is 'date'
+
+clean<-arrange(brl_data, desc(Date))
+head(clean)
+class(clean$BRL)
+class(clean$iRate)
+
+last_year <- clean[1:252,]
+last_year2 <- clean[253:500,]
+head(last_year)
+class(last_year$BRL)
+class(last_year$iRate)
+
+#Create graphs
+
+#2014/2015 Implied Vol vs Hist Vol. 
+sub <- last_year2[, c(1, 4, 8)]
+subin <- melt(sub, id = "Date")
+Vol1415 <- ggplot(subin) + geom_line(aes(x=Date, y=value, colour=variable)) +
+  scale_colour_manual(values=c("blue","green")) +
+  ggtitle("BRL Imp Vol vs Hist Vol 2014-2015") +
+  ylab(" ")
+Vol1415
+
+#FX Graph for 2014/2015
+FX1415 <- ggplot(last_year2, aes(x=Date, y=BRL)) + 
+  geom_line(color = "dark green") +
+  ggtitle("BRLUSD 2014-2015")
+FX1415
+
+#2015/2016 Implied Vol vs Hist Vol. 
+sub <- last_year[, c(1, 4, 8)]
+subin <- melt(sub, id = "Date")
+Vol1516 <- ggplot(subin, aes(x=Date, y=value, colour=variable)) + geom_line() +
+  scale_colour_manual(values=c("blue","green")) +
+  ggtitle("BRL Imp Vol vs Hist Vol 2015-2016") +
+  ylab(" ")
+Vol1516
+
+#FX Graph for 2015/2016
+FX1516 <- ggplot(last_year, aes(x=Date, y=BRL)) + 
+  geom_line(color = "dark green") +
+  ggtitle("BRLUSD 2015-2016")
+FX1516
+
+#2015/2016 Volatitily Bar Chart
+sub <- last_year[, c(1, 4, 8)]
+subin <- melt(sub, id = "Date")
+ggplot(subin, aes(x=Date, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_discrete(name = "Volatility") +
+  ggtitle("Hist vs Implied Volatility") +
+  scale_fill_manual(values = c("blue", "green"))
+
+#Historic Volatitily Bar Chart
+sub <- clean[, c(1, 4, 8)]
+subin <- melt(sub, id = "Date")
+HistVol <- ggplot(subin, aes(x=Date, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_discrete(name = "Volatility") +
+  ggtitle("Hist vs Implied Volatility") +
+  scale_fill_manual(values = c("blue", "green"))
+HistVol
+
+#Historic Vol comparison - Line Chart
+tmp <- clean[,c(1, 4, 8)]
+tmp2 <-melt(tmp, id = "Date") 
+volHist <- ggplot(tmp2) + geom_line(aes(x=Date, y=value, colour=variable)) +
+  scale_colour_manual(values=c("blue","green")) +
+  scale_fill_discrete(name = "Volatility") +
+  ggtitle("Hist Volatility Comparison") +
+  ylab(" ")
+volHist
+
+#Historic FX Chart
+FXHist <- ggplot(clean, aes(x=Date, y=BRL)) + 
+  geom_line(color = "dark green") +
+  ggtitle("Historic FX Chart")
+FXHist
+  
+  
+

@@ -1,0 +1,98 @@
+---
+title: |
+  | Project 1: Data visualization
+  | What makes a good review?
+author: "Robert Castellano"
+output: 
+  beamer_presentation:
+    theme: "Berkeley"
+---
+
+#I. Overview of the Data
+
+## Data
+- Over 500,000 Amazon "fine food" reviews.\newline
+\pause
+![Caption](AmazonReview.png)
+
+## Initial questions
+
+> - Amazon reviews are often the most publicly visible reviews of consumer products.
+
+> - How helpful are reviews?
+
+> - What factors affect a review's helpfulness?
+
+## Ratings
+
+![Caption](GreatGraphs/RatingDist.png)
+
+## Commonly used words in reviews
+
+
+\includegraphics[width = 150pt]{PositiveSampleText.png}
+\includegraphics[width = 150pt]{NegativeSampleText.png}
+\newline
+
+\qquad\qquad Positive reviews\qquad\qquad\qquad\qquad Negative reviews
+
+#II. Helpfulness of Reviews
+
+## How many reviews are helpful?
+\pause
+![Caption](GreatGraphs/HelpfulnessDist.png)
+
+## How do ratings affect helpfulness?
+\pause
+![Caption](GreatGraphs/PercentHelpfulByRating.png)
+
+#III. Word count
+
+## How do word counts vary by rating?
+\pause
+![Caption](GreatGraphs/WordCountRating.png)
+
+## How do word counts affect helpfulness?
+\pause
+![Caption](GreatGraphs/WordCountHelpfulness.png)
+
+# IV. Frequency
+
+## Reviewer frequency
+
+> - Defining a frequent reviewer as one who has made over 50 reviews, frequent reviewers account for almost 10% of all reviews.
+
+> - Does the behavior of frequent reviews differ from that of infrequent reviews?
+
+
+## Are frequent reviewers more discerning?
+
+\pause
+![Caption](GreatGraphs/FreqScoreDist.png)
+
+## Are frequent reviewers more helpful?
+\pause
+![Caption](GreatGraphs/FreqHelpful.png)
+
+## Are frequent reviews more verbose?
+\pause
+![Caption](GreatGraphs/FreqWord.png)
+
+
+# V. Conclusions
+
+## Conclusions
+
+> - Positive reviews are very common.
+> - Positive reviews are shorter.
+> - Longer reviews are more helpful.
+> - Despite being more common and shorter, positive reviews are found more helpful.
+> - Frequent reviews are more discerning, write longer reviews, and are more helpful.
+
+## Further directions
+
+> - Analayze categories of products.
+> - Prediction model for the helpfulness of a review.
+> - Relationship between products and reviewers.
+
+

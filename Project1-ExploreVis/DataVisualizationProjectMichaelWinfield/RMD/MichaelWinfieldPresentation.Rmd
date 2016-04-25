@@ -86,7 +86,7 @@ blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'
 x <- group_by(blizzard, FL_DATE, ORIGIN_STATE_ABR) %>% summarise(., cancel = sum(CANCELLED))
 ggplot(x,aes(x=ORIGIN_STATE_ABR, y=cancel)) + geom_point() + coord_polar()
 ```
-Florida, North Carolina, Maryland, Florida, and Virginia. 
+Florida, North Carolina, Maryland, New York, and Virginia. 
 
 ## Departure delays and geography.1
 Do departure delays have the same pattern as cancelled flights?

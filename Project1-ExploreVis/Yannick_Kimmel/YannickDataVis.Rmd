@@ -145,7 +145,7 @@ manufact + theme_bw() + ggtitle("Manufacturing, value added (% of GDP)") +
 
 
 * China’s R&D expenditure and output rapidly increasing. 
-* USA and EU research are increasing while manufacturing continues to drop. This could explain why there are a lack of research jobs in the USA.
+* There is a discrepency between research and manufacturing output in USA and EU. This could explain why there are a lack of research jobs in the USA.
 
 * Future work:
      - Correlate economic performance with R&D. 

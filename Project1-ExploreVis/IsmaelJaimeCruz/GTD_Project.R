@@ -38,7 +38,7 @@ attacks_per_year = gtd %>% group_by(iyear) %>% summarise(Attacks = n())
 ggplot(data = attacks_per_year, aes(x = iyear, y = Attacks, fill = iyear)) +
   geom_bar(stat = 'identity') + ggtitle('Terrorist Attacks from 1970 to 2014') +
   xlab('Year') + scale_fill_gradient(low = 'red', high = 'red4') + guides(fill = F)
-ggsave('attacks_by_year.pdf')
+ggsave('attacks_by_year.png')
 # What happened in the early 90s? Why did the trend of attacks go down?
 # Why did attacks shoot up after 2011?
 

@@ -1,0 +1,125 @@
+---
+title: "Airline Cancellations, Delays, and Geography"
+author: "Michael Winfield"
+date: "April 24, 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## DATASET
+
+The dataset consists of on-time performance statistics from the Bureau of Transportation Statistics ranging across the month of January in 2016.
+(http://1.usa.gov/1YP4p5m)
+
+```{r environment, echo = F, message=FALSE, warning=F}
+library(ggplot2)
+library(dplyr)
+library(googleVis)
+suppressPackageStartupMessages(library(googleVis))
+```
+Once I uploaded the dataset, I converted the airline i.d.s to factors, to make using ggplot easier.
+```{r code, echo = TRUE, message=FALSE, warning=F }
+airdata2 <- read.csv("~/RClass1/airdata2.csv")
+airdata2$AIRLINE_ID <- as.factor(airdata2$AIRLINE_ID)
+flightdate <- airdata2
+```
+
+
+## Are departure delays related to arrival delays?
+```{r delays, echo = F, message=FALSE, warning=F}
+flightdate2 <- select(flightdate, FL_DATE, totaldepd = sum(DEP_DELAY_NEW, na.rm=T), totalarrd = sum(ARR_DELAY_NEW, na.rm=T))
+ggplot(flightdate2,aes(x=totaldepd, y=totalarrd)) + geom_point()
+```
+
+## Cancellations and Flight Date
+Did any particular days experience a higher ratio of cancellations per number of flights than others?
+```{r plot2, echo = F, message=FALSE, warning=F}
+flightdate2 <- group_by(flightdate, FL_DATE)
+flight1 <- summarise(flightdate2, totalcancel = sum(CANCELLED), totalflights = sum(FLIGHTS), ratio = totalcancel/totalflights) %>% arrange(., desc(ratio))
+ggplot(flight1, aes(x=ratio, y=FL_DATE)) + geom_point()
+```
+
+## Blizzard pattern for large airlines
+I looked at Southwest Airlines (19393), American Airlines (19805), and Delta Airlines (19790).
+```{r plot3, echo = F, message=FALSE, warning=F}
+flightdate2 <- group_by(flightdate, FL_DATE, AIRLINE_ID) %>% mutate(., cancel = sum(CANCELLED)) %>% select(., FL_DATE, AIRLINE_ID, cancel)
+g <- filter(flightdate2, AIRLINE_ID == '19393' | AIRLINE_ID == '19805' | AIRLINE_ID == '19790') %>% select(., AIRLINE_ID, cancel) %>% group_by(., AIRLINE_ID)
+ggplot(g,aes(x=cancel, y=FL_DATE)) + geom_point() + facet_wrap( ~ AIRLINE_ID)
+```
+
+## Ratio of cancelled to total flights
+
+The pattern is more severe for the larger airlines than the smaller ones, Alaska Airlines (19930) and Hawaiian Airlines (19690), with Alaska Airlines having a relative spike on the blizzard days.
+
+## Ratio of cancelled to total flights
+```{r plot4, echo = F, message=FALSE, warning=F}
+flightdate2 <- group_by(flightdate, FL_DATE, AIRLINE_ID) %>% mutate(., cancel = sum(CANCELLED)/sum(FLIGHTS)) %>% select(., FL_DATE, AIRLINE_ID, cancel)
+g <- filter(flightdate2, AIRLINE_ID == '19393' | AIRLINE_ID == '19805' | AIRLINE_ID == '19790' | AIRLINE_ID == '19690' | AIRLINE_ID == '19930') %>% select(., AIRLINE_ID, cancel) %>% group_by(., AIRLINE_ID)
+ggplot(g,aes(x=cancel, y=FL_DATE)) + geom_point() + facet_wrap( ~ AIRLINE_ID)
+```
+
+## Geography and flight patterns
+During the blizzard, many larger airline flights originated from blizzard states (Georgia, Florida, North Carolina, Texas).
+
+```{r plot5, echo = F, message=FALSE, warning=F}
+blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
+g <- filter(blizzard, AIRLINE_ID == '19393' | AIRLINE_ID == '19805' | AIRLINE_ID == '19790') %>% select(., ORIGIN_STATE_ABR, AIRLINE_ID)
+ggplot(data = g, aes(x = ORIGIN_STATE_ABR)) + geom_bar(aes(fill= AIRLINE_ID), position = "stack") 
+```
+
+## Smaller airlines
+Hawaiian Airlines' and Alaska Airlines' flights fit a different pattern.
+
+```{r plot6, echo = F, message=FALSE, warning=F}
+blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
+g <- filter(blizzard, AIRLINE_ID == '19690' | AIRLINE_ID == '19930') %>% select(., ORIGIN_STATE_ABR, AIRLINE_ID)
+ggplot(data = g, aes(x = ORIGIN_STATE_ABR)) + geom_bar(aes(fill= AIRLINE_ID), position = "stack")
+```
+
+## For all airlines
+Where did most of the blizzard cancellations occur?
+```{r plot7, echo = F, message=FALSE, warning=F}
+blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
+x <- group_by(blizzard, FL_DATE, ORIGIN_STATE_ABR) %>% summarise(., cancel = sum(CANCELLED))
+ggplot(x,aes(x=ORIGIN_STATE_ABR, y=cancel)) + geom_point() + coord_polar()
+```
+Florida, North Carolina, Maryland, Florida, and New York. 
+
+## Departure delays and geography.1
+Do departure delays have the same pattern as cancelled flights?
+```{r plot8, echo = F, message=FALSE, warning=F}
+blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
+flightdate2 <- group_by(blizzard, ORIGIN_STATE_ABR)
+flight1 <- mutate(flightdate2, totaldelay = sum(DEP_DELAY_NEW, na.rm=T) * sum(FLIGHTS)) %>% select(.,ORIGIN_STATE_ABR, totaldelay) %>% summarise(., ddelay = max(totaldelay)) %>% arrange(., desc(ddelay)) 
+ggplot(flight1,aes(x=ORIGIN_STATE_ABR, y=ddelay)) + geom_point() + coord_polar()
+```
+
+## Departure delays and geography.2
+Why does California, a state unaffected by the blizzard, have worse departure delay times than Georgia, Florida, and Texas?
+
+
+[California1](http://127.0.0.1:10217/custom/googleVis/GeoChartID17c430a64009.html)
+```{r plot9, echo = F, message=FALSE, warning=F}
+blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
+flightdate2 <- group_by(blizzard, ORIGIN_STATE_ABR)
+flight1 <- mutate(flightdate2, totaldelay = sum(DEP_DELAY_NEW, na.rm=T) * sum(FLIGHTS)) %>% select(.,ORIGIN_STATE_ABR, totaldelay) %>% summarise(., ddelay = max(totaldelay)) %>% arrange(., desc(ddelay))
+G3 <- gvisGeoChart(flight1, "ORIGIN_STATE_ABR", "ddelay", options=list(region="US", displayMode="regions", resolution="provinces", width=600, height=400))
+plot(G3)
+```
+
+## A California-local phenomenon?
+
+I suspect that it is because of where the California flights are headed, so I looked to the arrival delays for flights headed from California during the blizzard.
+
+
+[California2](http://127.0.0.1:10217/custom/googleVis/GeoChartID17c415ec4c24.html)
+```{r plot10, echo = F, message=FALSE, warning=F}
+blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
+CAdep <- filter(blizzard, ORIGIN_STATE_ABR == 'CA') %>% group_by(., DEST_STATE_ABR) %>% mutate(., totalarrd = sum(ARR_DELAY_NEW, na.rm=T)) %>% select(., DEST_STATE_ABR, totalarrd) %>% summarise(., arrdelay = max(totalarrd))
+G3 <- gvisGeoChart(CAdep, "DEST_STATE_ABR", "arrdelay", options=list(region="US", displayMode="regions", resolution="provinces", width=600, height=400))
+plot(G3)
+```
+The highest proportion of flights leaving California during the blizzard that landed late did so in California.

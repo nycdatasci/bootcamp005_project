@@ -70,7 +70,7 @@ ggplot(data = attack_type, aes(x = 'Attack Types', y = Percent, fill = attacktyp
   geom_bar(stat = 'identity', width = 1) +
   ggtitle('Different Types of Terrorist Attacks') + xlab('') +
   scale_fill_brewer(palette = 'RdBu', name = '')
-ggsave('attacks_by_type.pdf')
+ggsave('attacks_by_type.png')
 
 # Attacks by type per year
 attack_type_year = gtd %>% group_by(iyear,attacktype1_txt) %>% summarise(Attacks = n())
@@ -78,7 +78,7 @@ ggplot(data = attack_type_year, aes(x = iyear, y = Attacks,
   fill = attacktype1_txt)) + geom_bar(stat = 'identity') +
   ggtitle('Attack Type by Year') + xlab('Year') +
   scale_fill_brewer(palette = 'RdBu', name = '')
-ggsave('attacktype_by_year.pdf')
+ggsave('attacktype_by_year.png')
 
 # Weapon type used
 weapon_type = gtd %>% group_by(weaptype1_txt) %>% summarise(Count = n())
@@ -89,7 +89,7 @@ ggplot(data = weapon_type, aes(x = 'Weapon Types', y = Percent, fill = weaptype1
   geom_bar(stat = 'identity', width = 1) +
   ggtitle('Different Types of Weapons Used') + xlab('') +
   scale_fill_brewer(palette = 'RdBu', name = '')
-ggsave('weapon_type.pdf')
+ggsave('weapon_type.png')
 
 # Targets
 targets = gtd %>% group_by(targtype1_txt) %>% summarise(n())
@@ -99,7 +99,7 @@ casualties = gtd %>% group_by(iyear) %>% summarise(Casualties = sum(nkill, na.rm
 ggplot(data = casualties, aes(x = iyear, y = Casualties, fill = iyear)) + geom_bar(stat = 'identity') +
   ggtitle('Casualties from Terrorist Attacks from 1970 to 2014') +
   xlab('Year') + scale_fill_gradient(low = 'red', high = 'red4') + guides(fill = F)
-ggsave('casualties_by_year.pdf')
+ggsave('casualties_by_year.png')
 
 
 # Casualties per year by attack type
@@ -110,7 +110,7 @@ ggplot(data = casulaties_attack_type, aes(x = iyear,
   position = 'stack') +
   ggtitle('Casualties per Attack Type by Year') + xlab('Year') +
   scale_fill_brewer(palette = 'RdBu', name = '')
-ggsave('casualties_attack_type.pdf')
+ggsave('casualties_attack_type.png')
 
 
 # Attacks per country

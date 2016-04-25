@@ -73,13 +73,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Terrorism by the Numbers
 
-<img src="./attacks_by_year.pdf" alt="output_option">
+<img src="./attacks_by_year.png" alt="output_option" width='600' height='400'>
 
 - The number of attacks look to have fallen in the 90s and then increased steadily in beginning 2005
 
 ## Terrorism by the Numbers
 
-<img src="./attacks_by_type.pdf" alt="output_option">
+<img src="./attacks_by_type.png" alt="output_option" width='600' height='400'>
 
 - Almost half of all attacks were of the bombing/explosion type
 
@@ -87,13 +87,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Terrorism by the Numbers
 
-<img src="./attacktype_by_year.pdf" alt="output_option">
+<img src="./attacktype_by_year.png" alt="output_option" width='600' height='400'>
 
 - The increase in number of attacks in recent years was driven by the bombing/explosion type
 
 ## Terrorism by the Numbers
 
-<img src="./weapon_type.pdf" alt="output_option">
+<img src="./weapon_type.png" alt="output_option" width='600' height='400'>
 
 - Half of all attacks consisted of explosives
 
@@ -101,13 +101,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Terrorism by the Numbers
 
-<img src="./casualties_by_year.pdf" alt="output_option">
+<img src="./casualties_by_year.png" alt="output_option" width='600' height='400'>
 
 - Interestingly, casualties decreased from 2007 to 2011
 
 ## Terrorism by the Numbers
 
-<img src="./casualties_attack_type.pdf" alt="output_option">
+<img src="./casualties_attack_type.png" alt="output_option" width='600' height='400'>
 
 - Prior to 2004, armed assault was the primary cause of deaths
 
@@ -117,7 +117,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Terrorism Globally
 
-- How does terrorism look like globally?
+- How does terrorism look like from country to country?
 ```{r, echo=F}
 suppressPackageStartupMessages(library(googleVis))
 library(openxlsx)

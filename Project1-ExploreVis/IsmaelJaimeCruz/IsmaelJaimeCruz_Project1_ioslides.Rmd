@@ -48,7 +48,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Why Terrorism?
 
-![](./gallup_survey.png)
+<img src="./gallup_survey.png" alt="output_option">
 
 - Americans say terrorism is the most important issue facing the US
 
@@ -73,13 +73,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Terrorism by the Numbers
 
-![](./attacks_by_year.pdf)
+<img src="./attacks_by_year.pdf" alt="output_option">
 
 - The number of attacks look to have fallen in the 90s and then increased steadily in beginning 2005
 
 ## Terrorism by the Numbers
 
-![](./attacks_by_type.pdf)
+<img src="./attacks_by_type.pdf" alt="output_option">
 
 - Almost half of all attacks were of the bombing/explosion type
 
@@ -87,13 +87,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Terrorism by the Numbers
 
-![](./attacktype_by_year.pdf)
+<img src="./attacktype_by_year.pdf" alt="output_option">
 
 - The increase in number of attacks in recent years was driven by the bombing/explosion type
 
 ## Terrorism by the Numbers
 
-![](./weapon_type.pdf)
+<img src="./weapon_type.pdf" alt="output_option">
 
 - Half of all attacks consisted of explosives
 
@@ -101,13 +101,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Terrorism by the Numbers
 
-![](./casualties_by_year.pdf)
+<img src="./casualties_by_year.pdf" alt="output_option">
 
 - Interestingly, casualties decreased from 2007 to 2011
 
 ## Terrorism by the Numbers
 
-![](./casualties_attack_type.pdf)
+<img src="./casualties_attack_type.pdf" alt="output_option">
 
 - Prior to 2004, armed assault was the primary cause of deaths
 

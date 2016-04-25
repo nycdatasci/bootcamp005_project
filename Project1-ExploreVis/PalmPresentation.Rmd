@@ -2,7 +2,7 @@
 title: "Visualizing the Impact of Palm Oil Production"
 author: "Wanda Wang"
 date: "April 24, 2016"
-output: pdf_document
+output: html_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -20,7 +20,7 @@ The UN Food and Agriculture organization provides information on global Palm oil
 
 ##Industry Overview
 To navigate to where Palm Oil production is at its highest volume, we first approach the UN Food and Agriculture dataset: 
-```{}
+```{r}
 setwd("/Users/drscholls303/Desktop/Project1")
 # Load the required R packages and specified datasets
 library(dplyr)
@@ -113,7 +113,7 @@ areaGraph
 The rise in Area Harvested over time is alarming over time. The drastic percent change from 2000 to 2014 was over 186%. From a value of 2,014,000 from 740,709. 
 
 ## Mill Distribution and Fire Hotspots
-```{ }
+```{r}
 library(dplyr)
 library(leaflet)
 mills<-read.csv("mills.csv")
@@ -133,5 +133,5 @@ There is a strong presence of fire hotspots within the last year where the major
 ##Future Questions
 Are there any geographic overlaps with existing nature reservations- what is the tree cover loss over time in those areas?
 How much has the Air Quality Index been impacted?
-Is there a trend corresponding between species extinction and their habitat location in Palm Oil producing nations? 
+Is there a trend between species extinction and habitat location in Palm Oil producing nations? 
  

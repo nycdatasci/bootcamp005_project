@@ -6,6 +6,7 @@ library(ggplot2)
 library(openxlsx)
 library("reshape2")
 library("ggplot2")
+library(leaflet)
 
 
 taxi<-read.xlsx('nyc_taxi_data.xlsx',sheet=1) 
@@ -68,6 +69,26 @@ g4+theme_bw()+scale_fill_continuous(low="blue", high="red",trans = "log")+
   guides(fill = guide_legend(title = "Log(count)", title.position = "left"))+
   theme(axis.text=element_text(size=16),axis.title=element_text(size=16,face="bold"))
 g4
+
+#leaflet(data = taxis[1:20000,]) %>% addTiles() %>%
+#  addMarkers(~pickup_longitude, ~pickup_latitude, clusterOptions = markerClusterOptions())
+
+leaflet(data = taxi[1:1000,]) %>% addTiles() %>%
+  addMarkers(~pickup_longitude, ~pickup_latitude, clusterOptions = markerClusterOptions())
+
+#leaflet(taximo[1:20000,]) %>% addTiles() %>%
+#  addCircleMarkers(~pickup_longitude, ~pickup_latitude,
+#    radius =2,
+#    color = 'red',
+#    stroke = FALSE, fillOpacity = 0.5)
+
+#leaflet(taximo[1:20000,]) %>% addTiles() %>%
+#  addCircleMarkers(~dropoff_longitude, ~dropoff_latitude,
+#                   radius =2,
+#                   color = 'blue',
+#                   stroke = FALSE, fillOpacity = 0.5)
+
+    
 #ggsave('drop.png',width=6,height = 5,dpi=500)
 
 ##  ---------------------------------------------------------------------------------
@@ -143,23 +164,39 @@ ggplot(xyd_tot,aes(x=x,y=y))+geom_point(aes(size=abs(dif),color=factor(base))) +
   xlab("Long")+ylab("Lat")+theme_bw()+theme(legend.position = "right")+theme(legend.position="none")+
   theme(axis.text=element_text(size=18),axis.title=element_text(size=18,face="bold"))
 
+leaflet(data = taxis[1:20000,]) %>% addTiles() %>%
+  addMarkers(~pickup_longitude, ~pickup_latitude, clusterOptions = markerClusterOptions())
 
+leaflet(data = taxis[1:20000,]) %>% addTiles() %>%
+  addMarkers(~dropoff_longitude, ~dropoff_latitude, clusterOptions = markerClusterOptions())
+
+ggsave('pick_Friday_MO_map.png',width=6,height = 5,dpi=500)
 
 ####------------------------------------------------------------------- 
 ### Part 3: Airport activity, in and out vs time
 ####------------------------------------------------------------------- 
 ### regime
+##LA
 rx1=-73.8834
 rx2=-73.8556
 ry1=40.668
 ry2=40.7740
-day_selected=1  # 1 Friday
+
+##JFK
+rx1=-73.8312
+rx2=-73.7426
+ry1=40.622
+ry2=40.684
+
+
+day_selected=3  # 1 Friday
 taxip<-filter(taxi,pickup_latitude<ry2,pickup_latitude>ry1)
 taxip<-filter(taxip,pickup_longitude<rx2,pickup_longitude>rx1)
 taxid<-filter(taxi,dropoff_latitude<ry2,dropoff_latitude>ry1)
 taxid<-filter(taxid,dropoff_longitude<rx2,dropoff_longitude>rx1)
 taxip<-filter(taxip,day==day_selected)
 taxid<-filter(taxid,day==day_selected)
+
 
 
 hourdis<-taxip  %>%
@@ -172,7 +209,7 @@ hourdrop<-taxid  %>%
 hourdis$drop<-hourdrop$drop
 pickdrop <- melt(hourdis, id="myhours")
 
-pad<-ggplot(data=pickdrop,aes(x=myhours, y=value, colour=variable))+geom_line(size=3)+geom_point(size=4)
+pad<-ggplot(data=pickdrop,aes(x=myhours, y=value, colour=variable))+geom_line(size=2)+geom_point(size=3)
 pad<-pad+ggtitle("Passager pickup and dropoff at LaGuardia Airport")+
   xlab("Hours")+ylab("count")+theme_bw()+theme(legend.position = "top")+ 
   scale_colour_discrete(name ="",labels = c("Pickup","Dropoff"))+
@@ -185,6 +222,39 @@ pad
 #} else {
 #  ggsave('Airport_Sunday.png',width=6,height = 5,dpi=500)
 #}
+
+##tips
+##normalized one
+taxis<-filter(taxi,pickup_latitude<ry2,pickup_latitude>ry1)
+taxis<-filter(taxis,pickup_longitude<rx2,pickup_longitude>rx1)
+taxis<-filter(taxis,day==day_selected)
+
+hourdis<-filter(taxis,tip_amount>0)  %>%
+  group_by(myhours) %>%
+  summarise(sur=sum(surcharge)/sum(total_amount),mta=sum(mta_tax)/sum(total_amount),tip=sum(tip_amount)/sum(fare_amount),fare=sum(fare_amount)/sum(total_amount),ttt=sum(total_amount)/sum(total_amount))
+
+hourdis_long<-melt(hourdis, id="myhours")
+tiptime<-ggplot(data=hourdis, aes(x=myhours, y=tip))+geom_point(size=3)+geom_line(size=2)+ylim(0.16,0.25)
+tiptime+xlab("Hours")+ylab("tip")+theme_bw()+
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
+ggsave('Tip_hr_airport_Sunday.png',width=6,height = 5,dpi=500)
+
+### three day
+
+taxis<-filter(taxi,pickup_latitude<ry2,pickup_latitude>ry1)
+taxis<-filter(taxis,pickup_longitude<rx2,pickup_longitude>rx1)
+
+hourdis<-filter(taxis,tip_amount>0)  %>%
+  group_by(myhours,day) %>%
+  summarise(sur=sum(surcharge)/sum(total_amount),mta=sum(mta_tax)/sum(total_amount),tip=sum(tip_amount)/sum(fare_amount),fare=sum(fare_amount)/sum(total_amount),ttt=sum(total_amount)/sum(total_amount))
+
+tip<-ggplot(data=hourdis,aes(x=myhours,y=tip,group=day,color=as.factor(day)))+geom_line(size=2)+geom_point(size=2)
+tip<-tip+xlab("Hours")+ylab("Tip ($)")+theme_bw()+theme(legend.position = "top")
+tip + scale_colour_discrete(name ="",labels = c("Friday","Saturday","Sunday"))+
+  theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
+
+ggsave('Tip_hr_JFKairport3days.png',width=6,height = 5,dpi=500)
+
 
 ##----------------------------------------
 ## Part 4 : passager number and paymenth method  
@@ -258,7 +328,7 @@ hourdis<-taxi  %>%
   group_by(myhours,day) %>%
   summarise(hn=n(),fare=sum(fare_amount),sur=sum(surcharge),mta=sum(mta_tax),tip=sum(tip_amount),tot=sum(total_amount))
 
-pa<-ggplot(data=hourdis,aes(x=myhours,y=hn,group=day,color=as.factor(day)))+geom_line(size=3)+geom_point(size=4)
+pa<-ggplot(data=hourdis,aes(x=myhours,y=hn,group=day,color=as.factor(day)))+geom_line(size=2)+geom_point(size=3)
 pa<-pa+ggtitle("passager pickup")+xlab("Hours")+ylab("count")+theme_bw()+theme(legend.position = "top")
 pa + scale_colour_discrete(name ="",labels = c("Friday","Saturday","Sunday"))+
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
@@ -267,28 +337,29 @@ ggsave('pickup_hour_day.png',width=6,height = 5,dpi=500)
 
 
 ##cost
-tot<-ggplot(data=hourdis,aes(x=myhours,y=tot,group=day,color=as.factor(day)))+geom_line(size=3)+geom_point(size=4)
+tot<-ggplot(data=hourdis,aes(x=myhours,y=tot,group=day,color=as.factor(day)))+geom_line(size=2)+geom_point(size=2)
 tot<-tot+xlab("Hours")+ylab("Total ($)")+theme_bw()+theme(legend.position = "top")
 tot + scale_colour_discrete(name ="",labels = c("Friday","Saturday","Sunday"))+
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
 
-ggsave('Total.png',width=6,height = 5,dpi=500)
+ggsave('TotalNew.png',width=6,height = 5,dpi=500)
 
-Far<-ggplot(data=hourdis,aes(x=myhours,y=fare,group=day,color=as.factor(day)))+geom_line(size=3)+geom_point(size=4)
+Far<-ggplot(data=hourdis,aes(x=myhours,y=fare,group=day,color=as.factor(day)))+geom_line(size=2)+geom_point(size=2)
 Far<-Far+xlab("Hours")+ylab("Fare ($)")+theme_bw()+theme(legend.position = "top")
 Far + scale_colour_discrete(name ="",labels = c("Friday","Saturday","Sunday"))+
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
 
 ggsave('Fare.png',width=6,height = 5,dpi=500)
 
-tip<-ggplot(data=hourdis,aes(x=myhours,y=tip,group=day,color=as.factor(day)))+geom_line(size=3)+geom_point(size=4)
+tip<-ggplot(data=hourdis,aes(x=myhours,y=tip,group=day,color=as.factor(day)))+geom_line(size=2)+geom_point(size=2)
 tip<-tip+xlab("Hours")+ylab("Tip ($)")+theme_bw()+theme(legend.position = "top")
 tip + scale_colour_discrete(name ="",labels = c("Friday","Saturday","Sunday"))+
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
-
+tip
 ggsave('tip.png',width=6,height = 5,dpi=500)
 
 
+#### Tip hour
 
 
 
@@ -306,7 +377,7 @@ ry2=40.9
 
 zoom1=coord_cartesian(xlim = c(-74.05, -73.85),ylim = c(40.6, 40.90))
 
-day_selected=1  # 1 Friday
+day_selected=3  # 1 Friday
 
 taxis<-filter(taxi,pickup_latitude<ry2,pickup_latitude>ry1)
 taxis<-filter(taxis,pickup_longitude<rx2,pickup_longitude>rx1)
@@ -338,16 +409,15 @@ ggplot(data=hourdis_long, aes(x=myhours, y=value, colour=variable)) +geom_area(a
 # scale_color_discrete(name ="",labels = c   ("Surcharge","MTA","Tip","Fare","Total"))
 ggsave('SunArea.png',width=6,height = 5,dpi=500)
 
-tiptime<-ggplot(data=hourdis, aes(x=myhours, y=tip))+geom_point(size=4)+ylim(0.16,0.25)
+tiptime<-ggplot(data=hourdis, aes(x=myhours, y=tip))+geom_point(size=3)+geom_line(size=2)+ylim(0.16,0.25)
 tiptime+xlab("Hours")+ylab("tip")+theme_bw()+
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
-ggsave('Tip_hr_Friday.png',width=6,height = 5,dpi=500)
+ggsave('Tip_hr_Sunday.png',width=6,height = 5,dpi=500)
 
 hm<-ggplot(data=taxis,aes(x=pickup_datetime))+geom_freqpoly(bins = 500)
 hm+xlab("Hours")+ylab("count")+theme_bw()+
   theme(axis.text=element_text(size=12),axis.title=element_text(size=14,face="bold"))
 hm+xlim(0,16)
 ggsave('pickuptimeFriday.png',width=6,height = 5,dpi=500)
-
 
 

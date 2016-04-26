@@ -28,14 +28,13 @@ library(ggplot2)
 faostat.palm <-read.csv("Faostats.csv")
 faostat.palm <- faostat.palm %>% na.omit()
 #Select relevant columns
-producers <-select(faostat.palm, AreaName, ElementName, Value, Year)
+producers <-select(faostat.palm, AreaName, ElementName, Value, Year, ItemName)
 # Filter for top producers in most recent available year of 2014
-producers.year<-filter(producers, Year == 2014) %>% 
-  group_by(AreaName, ElementName='Production') %>% 
+producers.year<-filter(producers, Year == 2014, ItemName == "Oil, palm") %>% group_by(AreaName, ElementName='Production') %>% 
   summarise(., Production=sum(Value)) 
-nrow(producers.year) #46 rows 
+nrow(producers.year) #15 rows 
 #Calculate percentage of world production for each country
-producers.year$Percent = round(producers.year$Production[1:46]*100/
+producers.year$Percent = round(producers.year$Production[1:15]*100/
           sum(producers.year$Production), digits = 1)
 producers.year<-tbl_df(producers.year)
 top<-top_n(producers.year,5,Production)
@@ -43,14 +42,16 @@ top
 top$Production = top$Production/1000
 top
 #top 5 graph
+
 library(scales)
-top.plot<-ggplot(top, aes(AreaName, Production, fill=factor(AreaName), label=top$Percent)) + geom_bar(stat="identity") + xlab("Country") + ylab(" Tonnes(1000's)") + ggtitle("Palm Oil Production(%)") 
+top.plot<-ggplot(top, aes(AreaName, Production, fill=factor(AreaName), label=top$Percent)) + geom_bar(stat="identity") + xlab("Country") + ylab("Tonnes(1000's)") + ggtitle("Palm Oil Production(%)") 
+
 top.plot<-top.plot + geom_text()+ guides(fill = guide_legend(title = "Top Five", title.position = "top"))
 
 top.plot 
 
 ```
-The top five producers in the world include Indonesia and Malaysia. Indonesia accounts for over 46% or worldwide production. Malaysia accounts for around 34%. The combined 80% allocation in this region should be noted. 
+The top five producers in the world include Indonesia and Malaysia. Indonesia accounts for over 55% or worldwide production. Malaysia accounts for around 37%. The combined 92% allocation in this region should be noted. 
 
 ## Industry Map - Bird's eye view 
 ```{r}

@@ -36,20 +36,19 @@ producers.year<-filter(producers, Year == 2014) %>%
 nrow(producers.year) #46 rows 
 #Calculate percentage of world production for each country
 producers.year$Percent = round(producers.year$Production[1:46]*100/
-          sum(producers.year$Production), digits = 2)
+          sum(producers.year$Production), digits = 1)
 producers.year<-tbl_df(producers.year)
 top<-top_n(producers.year,5,Production)
 top
+top$Production = top$Production/1000
+top
 #top 5 graph
 library(scales)
-top.plot<-ggplot(top, aes(AreaName, Production, fill=Percent)) + geom_bar(stat="identity") + xlab("Country") + ylab("Oil Production") +
-  ggtitle("Palm Oil Production by Country (Top 5)")
-  
-firstplot<- top.plot + 
-scale_y_log10(
-breaks = scales::trans_breaks("log10", function(x) 10^x),
-labels = scales::trans_format("log10", math_format(10^.x)))
-firstplot
+top.plot<-ggplot(top, aes(AreaName, Production, fill=factor(AreaName), label=top$Percent)) + geom_bar(stat="identity") + xlab("Country") + ylab(" Tonnes(1000's)") + ggtitle("Palm Oil Production(%)") 
+top.plot<-top.plot + geom_text()+ guides(fill = guide_legend(title = "Top Five", title.position = "top"))
+
+top.plot 
+
 ```
 The top five producers in the world include Indonesia and Malaysia. Indonesia accounts for over 46% or worldwide production. Malaysia accounts for around 34%. The combined 80% allocation in this region should be noted. 
 
@@ -63,9 +62,12 @@ library(dplyr)
 plotmap <- readShapePoly(fn="TM_WORLD_BORDERS-0.3/TM_WORLD_BORDERS-0.3.shp")
 palmHa <-read.csv("Faostats.csv", stringsAsFactors=F)
 palmHa <-filter(palmHa, ElementName == 'Area harvested')
+
+countriez <-distinct(palmHa, AreaName)
+countriez$AreaName[1:17]
+countriez$AreaName[19:44]
 names(plotmap)[5] <- "AreaName"
-target <- c("Indonesia", "Malaysia", "Colombia", "Thailand", 
-            "Philippines", "Nigeria", "Cameroon", "Ecuador", "Ghana", "Honduras","Guatemala")
+target <- c(countriez$AreaName[1:17],countriez$AreaName[19:44])
 #Use foritfy to transform spatial plotmap into dataframe
 plotmapDf <- fortify(plotmap, region = "AreaName") %>% 
   filter(id %in% target)
@@ -103,14 +105,14 @@ library(ggplot2)
 faostat.palm <-read.csv("Faostats.csv")
 faostat.palm <- faostat.palm %>% na.omit()
 AH<-filter(faostat.palm, ElementName=='Area harvested', AreaName=='Indonesia')
-
+AH$Value = AH$Value/1000
 areaGraph<-ggplot(AH, aes(Year, Value, fill=AreaName)) + geom_bar(stat="identity") +
-  ylab("Area Harvested") + ggtitle("Area Harvested through Time(Indonesia)")
+  ylab("Hectares(1000's)") + ggtitle("Area Harvested through Time") 
 areaGraph
 ```
 
 
-The rise in Area Harvested over time is alarming over time. The drastic percent change from 2000 to 2014 was over 186%. From a value of 2,014,000 from 740,709. 
+The rise in Area Harvested over time is alarming over time. The drastic percent change from 2000 to 2014 rose from a value of 2,014,000 to 7,407,090 hectares impacted or 2.7 times. 
 
 ## Mill Distribution and Fire Hotspots
 ```{r}
@@ -128,7 +130,7 @@ map
 ```
 
 ##Conclusion
-There is a strong presence of fire hotspots within the last year where the majority of Mills are located. Indonesia possesses the most Palm Oil Mills as currently reported in available data. There are hardly any visible fire hotspots in non-Palm Oil producing countries. 
+There is a strong presence of fire hotspots within the last year where the majority of Mills are located. Indonesia possesses the most Palm Oil Mills as currently reported in available data. 
 
 ##Future Questions
 Are there any geographic overlaps with existing nature reservations- what is the tree cover loss over time in those areas?

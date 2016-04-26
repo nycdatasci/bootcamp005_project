@@ -1,0 +1,144 @@
+---
+title: "Visualizing Hedge Fund Industry Performance in 2015"
+author: "Zi Jin"
+date: "April 23, 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Outline
+
+- Background
+- Fund Performance by Sector 
+- Total Fund Performance 
+- Conclusion & Future Analysis
+
+# Background
+
+## Why Do We Care?
+
+<img src="~/Desktop/Project1/Billions.jpeg" alt="output_option" width="750" height="300">
+
+## Dataset
+
+- Universe: Returns of Long Only Portfolio for 850+ funds based on Public SEC Regulatory Quarterly Filings (13F & D filings) in 2015
+- Sectors: Consumer Discretionary, Consumer Staples, Energy, Financials, Health Care, Industrials, Information Technology, Materials
+
+# Fund Performance by Sector 
+
+## Sector Overview
+
+<img src="~/Desktop/Project1/SectorOverview.png" alt="output_option" width="750" height="400">
+
+## Fund Performance Overview
+```{r echo=FALSE, message = FALSE, warning = FALSE}
+library(dplyr)
+library(ggplot2)
+setwd("~/Desktop/Project1")
+Data1<-read.csv("HedgeFundData1.csv", stringsAsFactors = FALSE)
+
+Data_1<- Data1 %>%
+  filter(., SHARPE>0, X..POSITIONS>10, Average.Weight>10, X..WIN.PER>50)
+
+Sector_1<- ggplot(data=Data1, aes(x= NAME, y= X2015.Return)) + geom_point(aes(color= SECTOR)) + facet_grid(SECTOR ~ .) 
+benchmark<- data.frame(SECTOR= c("Consumer Discretionary", "Consumer Staples", "Energy", "Financials", "Health Care", "Industrials", "Information Technology", "Materials"), X2015.Return= c(9.92, 6.89, -21.47, -1.74, 6.84, -4.3, 5.49, -8.67))
+Overview<- Sector_1 + geom_hline(aes(yintercept= X2015.Return), benchmark) + xlab("Fund") + ylab("Return") + ggtitle("Fund Performance by Sector Overview")
+plot(Overview)
+```
+
+## Fund Performance Distribution by Sector
+```{r echo=FALSE, message = FALSE, warning = FALSE}
+zoom_1<- coord_cartesian(xlim = c(-100, 100))
+Distribution_1<- ggplot(data=Data1, aes(x=X2015.Return)) + geom_density(aes(color=SECTOR)) + zoom_1 + xlab("Return") + ggtitle("Sector Return Distribution")
+plot(Distribution_1)
+```
+
+## What Were the Top Ten Performing Funds in Each Sector?
+* Top performing fund selection criteria:
+    + Sharpe ratio > 0
+    + Number of positions > 10
+    + Average weight > 10%
+    + % Win > 50%
+    + Return > Sector Benchmark Return
+    
+## What Were the Top Ten Performing Funds in Each Sector?
+- Sector Benchmarks: SPDR ETF's 
+    <img src="~/Desktop/Project1/Benchmark.png">
+
+## Sector Winner Performance Distribution
+```{r echo=FALSE, message = FALSE, warning = FALSE}
+zoom_2<- coord_cartesian(xlim = c(-20, 50), ylim = c(0, 0.2))
+Distribution_2<- ggplot(data=Data_1, aes(x=X2015.Return)) + geom_density(aes(color=SECTOR)) + zoom_2 + xlab("Return") + ggtitle("Sector Winner Return Distribution")
+plot(Distribution_2)
+```
+
+## Top Performing Funds in Consumer Discretionary
+
+<img src="~/Desktop/Project1/ConsumerDiscretionary.png" alt="output_option" width="750">
+
+## Top Performing Funds in Consumer Staples
+
+<img src="~/Desktop/Project1/ConsumerStaples.png" alt="output_option" width="750">
+
+## Top Performing Funds in Energy
+
+<img src="~/Desktop/Project1/Energy.png" alt="output_option" width="750">
+
+- Funds give avg. return -28.03, and avg. Sharpe -0.56
+- Sector benchmark return is -21.47
+- Although avg. excess return of top 4 is 23.65, #3 and #4’s absolute sector returns are negative  
+
+## Top Performing Funds in Financials
+
+<img src="~/Desktop/Project1/Financials.png" alt="output_option" width="750">
+
+## Top Performing Funds in Health Care
+
+<img src="~/Desktop/Project1/Health.png" alt="output_option" width="750">
+
+- Although the sector benchmark return 6.84 is relatively high, #1 fund has produced impressive excess return, Sharpe ratio, and % Win
+
+## Top Performing Funds in Industrials
+
+<img src="~/Desktop/Project1/Industrials.png" alt="output_option" width="750">
+
+## Top Performing Funds in Information Technology
+
+<img src="~/Desktop/Project1/IT.png" alt="output_option" width="750">
+
+## Top Performing Funds in Materials
+
+<img src="~/Desktop/Project1/Materials.png" alt="output_option" width="750">
+
+- Funds give avg. return -16.76, and avg. Sharpe -0.35
+- Sector benchmark return is -8.67
+
+# Total Fund Performance
+
+## Overall...
+```{r echo=FALSE, message = FALSE, warning = FALSE}
+setwd("~/Desktop/Project1")
+Data2<-read.csv("HedgeFundData2.csv", stringsAsFactors = FALSE)
+
+Distribution_3<- ggplot(data=Data2, aes(x=X2015.Total.Fund.Return)) + geom_density() + xlab("Total Fund Return") + ggtitle("Total Fund Return Distribution")
+plot(Distribution_3)
+```
+
+# Conclusion & Future Analysis
+
+## Conclusion
+
+* Most long only hedge funds didn't make money last year
+  + As an effect, Fund of Funds also performed poorly
+- Sectorwise, Consumer Discretionary, Consumer Staples outperformed, Energy underperformed 
+
+## Future Analysis
+
+- May want to look at the major underlying holdings of funds
+- May want to track historial performance of funds
+- May want to explore sector performance correlations 
+
+# Thank You

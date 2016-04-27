@@ -12,9 +12,9 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Outline
 
 - Background
-- Questions of Interest & Findings 
-- Future Analysis
-- Q & A
+- Fund Performance by Sector 
+- Total Fund Performance 
+- Conclusion & Future Analysis
 
 # Background
 
@@ -25,18 +25,15 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Dataset
 
 - Universe: Returns of Long Only Portfolio for 850+ funds based on Public SEC Regulatory Quarterly Filings (13F & D filings) in 2015
-* Sectors: 
-    + Sector Benchmarks: SPDR ETF's 
-    <img src="~/Desktop/Project1/Benchmark.png">
+- Sectors: Consumer Discretionary, Consumer Staples, Energy, Financials, Health Care, Industrials, Information Technology, Materials
 
-# Question of Interest 
+# Fund Performance by Sector 
 
-## How Did Each Sector Perform vs. Others?
+## Sector Overview
 
 <img src="~/Desktop/Project1/SectorOverview.png" alt="output_option" width="750" height="400">
 
 ## Fund Performance Overview
-
 ```{r echo=FALSE, message = FALSE, warning = FALSE}
 library(dplyr)
 library(ggplot2)
@@ -59,14 +56,17 @@ Distribution_1<- ggplot(data=Data1, aes(x=X2015.Return)) + geom_density(aes(colo
 plot(Distribution_1)
 ```
 
-## What Were the Top Performing Funds in Each Sector?
-
+## What Were the Top Ten Performing Funds in Each Sector?
 * Top performing fund selection criteria:
     + Sharpe ratio > 0
     + Number of positions > 10
-    + Avergae weight > 10%
+    + Average weight > 10%
     + % Win > 50%
-    + Return > Sector Benchmark
+    + Return > Sector Benchmark Return
+    
+## What Were the Top Ten Performing Funds in Each Sector?
+- Sector Benchmarks: SPDR ETF's 
+    <img src="~/Desktop/Project1/Benchmark.png">
 
 ## Sector Winner Performance Distribution
 ```{r echo=FALSE, message = FALSE, warning = FALSE}
@@ -116,7 +116,9 @@ plot(Distribution_2)
 - Funds give avg. return -16.76, and avg. Sharpe -0.35
 - Sector benchmark return is -8.67
 
-## Which Funds Were the Overall Winners?
+# Total Fund Performance
+
+## Overall...
 ```{r echo=FALSE, message = FALSE, warning = FALSE}
 setwd("~/Desktop/Project1")
 Data2<-read.csv("HedgeFundData2.csv", stringsAsFactors = FALSE)
@@ -125,7 +127,13 @@ Distribution_3<- ggplot(data=Data2, aes(x=X2015.Total.Fund.Return)) + geom_densi
 plot(Distribution_3)
 ```
 
-# Future Analysis
+# Conclusion & Future Analysis
+
+## Conclusion
+
+* Most long only hedge funds didn't make money last year
+  + As an effect, Fund of Funds also performed poorly
+- Sectorwise, Consumer Discretionary, Consumer Staples outperformed, Energy underperformed 
 
 ## Future Analysis
 
@@ -133,4 +141,4 @@ plot(Distribution_3)
 - May want to track historial performance of funds
 - May want to explore sector performance correlations 
 
-# Q & A
+# Thank You

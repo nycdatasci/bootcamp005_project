@@ -1,8 +1,9 @@
 library(dplyr)
 library(ggplot2)
-
+library(RColorBrewer)
+library(rworldmap)
 indicators = read.csv("subbeddata.csv", header = TRUE, stringsAsFactors = FALSE)
-
+allindicators = read.csv("/Users/YannickMac/Dropbox/Applications/Data science/NYCDSA/Data_visualization_project/world-development-indicators/Indicators.csv")
 counts <- indicators %>%
     group_by(IndicatorCode, IndicatorName) %>%
     summarise(NumCountries = n_distinct(CountryName),
@@ -29,22 +30,22 @@ subdata = function(indicatorCode) {
 researchexpn =  subdata("GB.XPD.RSDV.GD.ZS")
 res <- ggplot(researchexpn, aes(x = Year, y = Value)) +geom_line(aes(color = CountryCode), size = 1)
 res + theme_bw() + ggtitle("R&D expenditures as a percentage of GDP") +
-    scale_color_discrete(labels = c("China","Euro Union", "India",
-                                    "Japan", "Korea", "Russia", "USA")) + 
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + ylab("% of GDP") +
     guides(color=guide_legend(title="Countries")) 
 
 researchers = subdata("SP.POP.SCIE.RD.P6")
 respeople <- ggplot(researchers, aes(x = Year, y = Value)) +geom_line(aes(color = CountryCode), size = 1)
 respeople + theme_bw() + ggtitle("Number of Researchers in R&D per million people") +
-    scale_color_discrete(labels = c("China","Euro Union", "India",
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
                                     "Japan", "Korea", "Russia", "USA")) + 
-    guides(color=guide_legend(title="Countries")) 
+    ylab("# of researchers per million people") + guides(color=guide_legend(title="Countries")) 
 
 publications = subdata("IP.JRN.ARTC.SC")
 pub = ggplot(publications, aes(x = Year, y = Value)) +geom_line(aes(color = CountryCode), size = 1)
 pub + theme_bw() +  ggtitle("Number of scientific and technical journal articles") +
-    scale_color_discrete(labels = c("China","Euro Union", "India",
-                                    "Japan", "Korea", "Russia", "USA")) + 
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + ylab("# of articles") +
     guides(color=guide_legend(title="Countries")) 
 
 #data seperates patents by residents and non residents of a country, 
@@ -55,22 +56,31 @@ patents = filter(indicators, IndicatorCode == "IP.PAT.NRES" |
     summarise(totpap = sum(Value))
 pat = ggplot(patents, aes(x = Year, y = totpap)) + geom_line(aes(color = CountryCode), size = 1)
 pat + theme_bw() + ggtitle("Number of patents") + ylab("total patents") +xlim(1980, 2014) +
-    scale_color_discrete(labels = c("China","Euro Union", "India",
-                                    "Japan", "Korea", "Russia", "USA")) + 
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) +
     guides(color=guide_legend(title="Countries")) 
 
 #Total number of trademark applications
 trademark = subdata("IP.TMK.TOTL")
 trade = ggplot(trademark, aes(x = Year, y = Value)) + geom_line(aes(color = CountryCode), size = 1)
 trade + theme_bw() + ggtitle("Number of trademark applications") +
-    scale_color_discrete(labels = c("China","Euro Union", "India",
-                                    "Japan", "Korea", "Russia", "USA")) + 
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + ylab("# of trademark applications") +
     guides(color=guide_legend(title="Countries")) 
 
 #manufacturing, value added (% of GDP)
 manufacturing = subdata("NV.IND.MANF.ZS")
 manufact = ggplot(manufacturing, aes(x = Year, y = Value)) + geom_line(aes(color = CountryCode), size = 1)
 manufact + theme_bw() + ggtitle("Manufacturing, value added (% of GDP)") +
-    scale_color_discrete(labels = c("China","Euro Union", "India",
-                                    "Japan", "Korea", "Russia", "USA")) + 
-    guides(color=guide_legend(title="Countries")) 
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + ylab("% of GDP") +
+    guides(color=guide_legend(title="Countries"))
+
+manufacturing2013 = filter(allindicators, Year == 2013) %>% 
+    filter(IndicatorCode == "NV.IND.MANF.ZS")
+
+n <- joinCountryData2Map(manufacturing2013, joinCode="ISO3", nameJoinColumn="CountryCode")
+mapCountryData(n, nameColumnToPlot="Value", mapTitle="% of value added manufacturing as GDP in 2013", missingCountryCol = "lightgrey")
+
+
+ 

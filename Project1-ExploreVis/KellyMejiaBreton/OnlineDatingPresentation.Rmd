@@ -1,0 +1,244 @@
+---
+title: "Online Dating Usage has Grown Rapidly in Recent Years; A Possible Missing Market to Target"
+author: "Kelly Mejia Breton"
+date: "April 24, 2016"
+output: ioslides_presentation
+---
+
+## Matchmaking
+
+In many cultures matchmaking and arrange marriages are common.  
+
+Today technology developments have advanced matchmaking to connect people with good matches.
+
+
+## According to Pew Research Center:
+
+- The general public perception towards online dating has become much more positive since 2005 
+- One in ten Americans have used an online dating service themselves
+- Many people know someone using online dating, or who has found a spouse / long-term partner via online dating
+
+
+## Dataset:
+- Provided by Pew Research Center 
+- Survey was completed in 2013 via telephone
+- 2,252 adults participated, 185 variables
+
+
+## Internet, Mobile, & Social Networking
+
+The internet, along with mobile making it easier for us to access the internet, and trendy social networking sites, I wonder if online dating services are capturing all potential markets?
+
+
+
+
+```{r echo=FALSE, cache=FALSE, results=FALSE, warning=FALSE, comment=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(ggthemes)
+
+setwd("/Users/AlexandKelly/rkelly")
+online=read.csv("online.csv", stringsAsFactors = FALSE)
+
+#subseting the original dataset with the main variables used in the presentation
+sub_online=select(online, sex, intuse, q1, mar, mar2, mar4, date1a, date2a, date6, age, race, date9a, date9b, date9c, date9d, educ2)
+
+
+#Creating new columns labeling the factor variables 
+sub_online_status=mutate(sub_online,
+                         mar_status=factor(
+                                 sub_online$mar, c(1,2,3,4,5,6,8,9),
+                                 c("Married", "Living w/ Partner", 
+                                   "Divorced", "Separated", "Widowed", "Never Married", 
+                                   "Don't Know", "Refused")),
+                         mar2_status=factor(
+                                 sub_online$mar2, c(1,2,8,9),
+                                 c("In Committed Relationship", "Not In Committed Relationship", 
+                                   "Don't Know", "Refused")),
+                         mar4_status=factor(
+                                 sub_online$mar4, c(1,2,8,9),
+                                 c("Currently Looking", "Currently Not Looking", 
+                                   "Don't Know", "Refused")),
+                         sex_status=factor(
+                                 sub_online$sex, c(1,2),
+                                 c("Male", "Female")),
+                         date1a_status=factor(
+                                 sub_online$date1a, c(1,2,8,9),
+                                 c("Online Dating", "Not Online Dating", 
+                                   "Don't Know", "Refused")),
+                         date6_status=factor(
+                                 sub_online$date6, c(1,2,8,9),
+                                 c("Yes", "No", 
+                                   "Don't Know", "Refused")),
+                         race_status=factor(
+                                 sub_online$race, c(1,2,3,4,5,6,8,9),
+                                 c("White American", "Afr. American", "Asian", "Mixed race", 
+                                   "Native American", "Other", "Don't Know", "Refused")),
+                         date9a_status=factor(
+                                 sub_online$date9a, c(1,2,8,9),
+                                 c("Agree", "Disagree", 
+                                   "Don't Know", "Refused")),
+                         date9b_status=factor(
+                                 sub_online$date9b, c(1,2,8,9),
+                                 c("Agree", "Disagree", 
+                                   "Don't Know", "Refused")),
+                         date9c_status=factor(
+                                 sub_online$date9c, c(1,2,8,9),
+                                 c("Agree", "Disagree", 
+                                   "Don't Know", "Refused")),
+                         date9d_status=factor(
+                                 sub_online$date9d, c(1,2,8,9),
+                                 c("Agree", "Disagree", 
+                                   "Don't Know", "Refused")),
+                         age_status=ifelse(age<25,"18-24",
+                                           ifelse(age<35 & age>24, "25-34",
+                                                  ifelse(age<45 & age>34, "35-44",
+                                                         ifelse(age<55 & age>44, "45-54",
+                                                                ifelse(age<65 & age>54,"55-64","65+"))))),
+                         educ2_status=ifelse(educ2<=3,"1. H.S. Degree or Less",
+                                             ifelse(educ2==4, "2. Some College",
+                                                    ifelse(educ2==5, "2. Some College",
+                                                           ifelse(educ2==6, "3. 4YR-College",
+                                                                  ifelse(educ2==7, "4. Some Postgraduate Schooling",
+                                                                         ifelse(educ2==8,"5. Postgraduate Degree",
+                                                                                ifelse(educ2==98,"6. Don't Know", "7. Refused")))))))
+)
+
+
+```
+
+
+## Marriage Status
+
+```{r, echo=FALSE}
+marriage_status=group_by(sub_online_status, mar_status) %>%
+        select(mar_status) %>%
+        summarize(count_mar=n()) %>%
+        mutate(., m_percent = (count_mar/sum(count_mar))*100)
+
+g1 = ggplot(data = marriage_status, aes(x= mar_status, y=m_percent))
+g1a = g1 + geom_bar(stat= "identity", fill="dodgerblue4", colour="black") 
+g1b = g1a + theme_bw() + theme_minimal() + xlab("Marriage Status") + ylab("Percent of Dataset") + coord_cartesian(ylim=c(0,50))
+g1b + ggtitle("35% are Single and Not in a Committed Relationship") + theme(plot.title = element_text(lineheight=.8, face="bold"))+theme(text = element_text(size=12),axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+
+
+## Singles Looking for Romance
+
+```{r, echo=FALSE}
+single=filter(sub_online_status, mar==3 | mar==4 | mar==5 | mar==6, mar2!=1)
+
+
+s_romance=group_by(single, mar4_status) %>%#### single's romance status
+        select(mar4_status) %>%
+        summarize(count_mar4=n()) %>%
+        mutate(., s_percent = (count_mar4/sum(count_mar4))*100)
+
+g2 = ggplot(data = s_romance, aes(x= mar4_status, y=s_percent))
+g2a = g2 + geom_bar(stat= "identity", fill="darkgoldenrod", colour="black") 
+g2b = g2a + theme_bw() + theme_minimal() + xlab("Romance Status") + ylab("Percent of Singles") + coord_cartesian(ylim=c(0,100))
+g2b + ggtitle("15% of Singles are Looking for Romance")+ theme(plot.title = element_text(lineheight=.8, face="bold"))+theme(text = element_text(size=12),axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+## Who is Online Dating
+
+```{r, echo=FALSE}
+s_looking_dating=group_by(filter(single, mar4=="1"| mar4=="3"| mar4=="4", date1a==1|date1a==2|date1a==8|date1a==9), date1a_status) %>%#### are you currently using online dating? (all who have used online dating)
+        select(date1a_status) %>%
+        summarize(count_date1a=n())%>%
+        mutate(., s_looking_dating_percent = (count_date1a/sum(count_date1a))*100)
+g3 = ggplot(data = s_looking_dating, aes(x= date1a_status, y=s_looking_dating_percent)) #bar graph on romance status
+g3a = g3 + geom_bar(stat= "identity", fill="dodgerblue4", colour="black", width = 0.5)
+g3b = g3a + theme_bw() + theme_minimal() + xlab("Currently Using Online Dating Service") + ylab("Percent of Singles Looking for Romance") + coord_cartesian(ylim=c(0,100))
+g3b + ggtitle("60% of Singles Looking for Romance are Not Online Dating") + theme(plot.title = element_text(lineheight=.8, face="bold"))+theme(text = element_text(size=12))
+
+```
+
+
+
+## The Target By Gender
+
+```{r, echo=FALSE}
+s_looking_dating_bysex=group_by(filter(single, mar4=="1"| mar4=="3"| mar4=="4", date1a==1|date1a==2|date1a==8|date1a==9), sex_status, date1a_status) %>%#### are you currently using online dating? (all who have used online dating)
+        select(sex_status) %>%
+        summarize(count_sex=n())%>%
+        mutate(., s_looking_dating_sex_percent = (count_sex/sum(count_sex))*100)
+g4 = ggplot(data = s_looking_dating_bysex, aes(x= date1a_status, y=count_sex, fill=sex_status)) #bar graph on romance status
+g4a = g4 + geom_bar(position="dodge", stat= "identity", colour="black", width = 0.5) 
+g4b = g4a + theme_bw() + theme_minimal() + xlab("Currently Using Online Dating Service") + ylab("Number of Singles Looking for Romance") + coord_cartesian(ylim=c(0,60))
+g4c= g4b + ggtitle("Males Looking for Romance are Not Online Dating") + theme(plot.title = element_text(lineheight=.8, face="bold"))+theme(text = element_text(size=12))
+g4c + scale_fill_manual("Gender",values = c('dodgerblue4', 'darkolivegreen4'))
+
+```
+
+
+
+## The Target By Age
+
+```{r, echo=FALSE}
+
+s_looking_not_dating=group_by(filter(single, mar4=="1"| mar4=="3"| mar4=="4", date1a==2), age_status) %>%#### are you currently using online dating? (all who have used online dating)
+        select(age_status) %>%
+        summarize(count_age=n())%>%
+        mutate(., s_looking_age_percent = (count_age/sum(count_age))*100)
+
+g5 = ggplot(data = s_looking_not_dating, aes(x= age_status, y=s_looking_age_percent)) 
+g5a = g5 + geom_bar(stat= "identity", fill="darkgoldenrod", colour="black") 
+g5b = g5a + theme_bw() + theme_minimal() + xlab("Age Group") + ylab("Percent of Singles Looking for Romance") + coord_cartesian(ylim=c(0,50))
+g5b + ggtitle("The Target are Primarily between the Ages of 18-34") + theme(plot.title = element_text(lineheight=.8, face="bold"))+theme(text = element_text(size=11),axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+## The Target By Education
+
+```{r, echo=FALSE}
+s_looking_not_dating_educ=group_by(filter(single, mar4=="1"| mar4=="3"| mar4=="4", date1a==2), educ2_status) %>%#### are you currently using online dating? (all who have used online dating)
+        select(educ2_status) %>%
+        summarize(count_educ2=n())%>%
+        mutate(., s_looking_educ2_percent = (count_educ2/sum(count_educ2))*100)
+g6 = ggplot(data = s_looking_not_dating_educ, aes(x= educ2_status, y=s_looking_educ2_percent)) 
+g6a = g6 + geom_bar(stat= "identity", fill="dodgerblue4", colour="black", width = 0.7) 
+g6b = g6a + theme_bw() + theme_minimal() + xlab("Level of Education Completed") + ylab("Percent of Singles Looking for Romance") + coord_cartesian(ylim=c(0,50))
+g6b + ggtitle("40% of the Target have a  H.S. Degree or Less") + theme(plot.title = element_text(lineheight=.8, face="bold"))+theme(text = element_text(size=12),axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+## The Target By Ethnicity
+
+```{r, echo=FALSE}
+s_looking_not_dating_race=group_by(filter(single, mar4=="1"| mar4=="3"| mar4=="4", date1a==2), race_status) %>%#### are you currently using online dating? (all who have used online dating)
+        select(race_status) %>%
+        summarize(count_race=n())%>%
+        mutate(., s_looking_race_percent = (count_race/sum(count_race))*100)
+g7 = ggplot(data = s_looking_not_dating_race, aes(x= race_status, y=s_looking_race_percent))
+g7a = g7 + geom_bar(stat= "identity", fill="darkolivegreen4", colour="black", width = 0.7) 
+g7b = g7a + theme_bw() + theme_minimal() + xlab("Ethnicity") + ylab("Percent of Singles Looking for Romance") + coord_cartesian(ylim=c(0,80))
+g7b + ggtitle("Over 60% of the Target are White Americans") + theme(plot.title = element_text(lineheight=.8, face="bold"))+theme(text = element_text(size=12),axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+## Conclusions:
+
+- 60% of singles looking for romance are currently not using Online Dating sites.  
+- From this group it seems the target are adults who fall in the following groups:
+
+-   Gender: Males
+-   Age: Between the ages of 18-34
+-   Education: With a H.S. Degree or less
+-   Ethnicity: White American
+        
+        
+## Next Steps:
+
+- Analyze the main location of the target; is it a possible regional market? 
+- Search for data released in the last year, compare the findings
+- Look for possible relationships between other variables
+

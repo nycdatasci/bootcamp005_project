@@ -91,7 +91,7 @@ output:
 
 ## Further directions
 
-> - Analayze categories of products.
+> - Analyze categories of products.
 > - Prediction model for the helpfulness of a review.
 > - Relationship between products and reviewers.
 

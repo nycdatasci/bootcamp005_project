@@ -1,0 +1,86 @@
+CODE_Num,ShortDefn
+4,Parked in bus lane SOHO
+5,Failure to turn right from bus lane
+6,Tractor-trailer on residential st at night
+7,Red light camera
+8,Idling in restricted area
+9,Blocking the box
+10,Stopping or Standing where not allowed
+11,Stopping or standing in hotel unloading zone
+12,Stopping or standing in snow emergency zone
+13,Stopping or standing in taxi stand
+14,General no standing zone
+16,Stopping or standing in loading-unloading zone
+17,Stopping or standing in Authorized vehicle zone
+18,Stopping or standing in bus lane
+19,Stopping or standing in bus stop
+20,General no parking
+21,Street cleaning
+22,Parking in hotel unloading zone
+23,Parking in taxi stand
+24,Parking in authorized vehicle zone
+25,Standing at commuter bus stop
+26,Standing at for-hire vehicle stop
+27,Parking in off-street handicapped zone
+28,Overtime standing - diplomat
+31,Non-comm vehicle standing in comm vehicle zone
+32,Parking at broken meter longer than permitted
+33,Parking at meter longer than permitted
+34,Parking at meter after meter expires
+35,Parking at meter for sales
+37,Muni-meter (a)
+38,Muni-meter (b)
+39,Parking longer than allowed time
+40,within 15 feet of hydrant
+42,Muni meter has expired
+43,Parking at comm. Muni meter with time expired
+44,Parking at comm. Muni meter longer than allowed
+45,Parking or standing too far from curb
+46,Double parking
+47,"Double parking, midtown"
+48,"Standing or parking, bicycle lane"
+49,"Standing or parking, street construction"
+50,"Standing or parking, crosswalk"
+51,"Standing or parking, sidewalk"
+52,"Standing or parking, intersection"
+53,"Standing or parking, safety zone"
+55,"Standing or parking, bridge or tunnel"
+56,"Standing or parking, barrier or divided highway"
+57,Parking in the Blue Zone
+58,Parking on a marginal street or waterfront
+59,Parking at angle to curb (a)
+60,Parking at angle to curb (b)
+61,Parking at angle to curb ©
+62,Parking outside of marked parking spot
+63,Standing or parking at night in park
+64,Standing or parking in diplomat spaces (a)
+65,Standing or parking in diplomat spaces (b)
+66,parking a trailer not attached to tractor
+67,Parking in front of pedestrian ramp
+68,No parking sign
+69,Failing to show Muni receipt
+70,No registration sticker
+71,No inspection sticker
+72,Damaged or fake inspection sticker
+73,Damaged or fake registration sticker
+74,Missing Plates
+75,Registration does not match plates
+77,Parking bus in undesignated spot
+78,"Parking comm vehicle on residential street, night"
+79,Standing in a bus without passengers
+80,Vehicle without headlamps
+81,No standing except diplomat
+82,Commercial vehicle without all seats removed
+83,Improper registration
+84,Leaving lift lowered and unattended
+85,Parking Comm vehicle over 3hrs
+86,"Vehicle making deliveries, standing >3hrs"
+89,"Vehicle making deliveries, garment dist"
+91,Parking in order to sell vehicles
+92,Parking to wash car
+93,Parking to change tire
+94,Release by NYPD Violation Tow Program
+96,"Standing or parking, 50ft of railroad xing"
+97,Unauthorized parking in vacant lot
+98,Parking in front of private driveway
+99,All other parking or standing violations

@@ -1,0 +1,174 @@
+---
+title: "Exploring Global Terrorism Data"
+author: "Ismael Jaime Cruz"
+date: "24 April 2016"
+output: ioslides_presentation
+---
+
+## Outline
+
+- Global Terrorism Database
+
+- Why Terrorism?
+
+- Terrorism by the Numbers
+
+- Terrorism Globally
+
+- Closing Remarks
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+# Global Terrorism Database
+
+## Global Terrorism Database
+
+- Maintained by National Consortium for the Study of Terrorism and Responses to Terrorism (START)
+
+- A research and education center for the study of the causes and effects of terrorism around the world
+
+<img src="./start_logo.png" alt="output_option">
+
+## Global Terrorism Database
+
+- A Center of Excellence by the Department of Homeland Security
+
+- Headquartered at the University of Maryland
+
+## Global Terrorism Database
+
+- A highly comprehensive and consistent terrorism incident dataset from 1970 to 2014
+
+- Data collection methodology consists of a combination of automated and manual data collection strategies of over a million media articles worldwide
+
+- Filtered using natural language processing and machine learning techniques
+
+# Why Terrorism?
+
+## Why Terrorism?
+
+<img src="./gallup_survey.png" alt="output_option">
+
+- Americans say terrorism is the most important issue facing the US
+
+- Highest percentage of Americans to mention terrorism in a decade
+
+
+## Why Terrorism?
+
+- What is the average number of attacks per year?
+
+- What are the types of attacks?
+
+- How do casualties compare across different attacks?
+
+# Terrorism by the Numbers
+
+## Terrorism by the Numbers
+
+- Since 1970, there have been about 3,227 terrorist attacks a year
+
+- On average, there are 7,046 deaths a year due to terrorist attacks
+
+## Terrorism by the Numbers
+
+<img src="./attacks_by_year.png" alt="output_option" width='600' height='400'>
+
+- The number of attacks look to have fallen in the 90s and then increased steadily in beginning 2005
+
+## Terrorism by the Numbers
+
+<img src="./attacks_by_type.png" alt="output_option" width='600' height='400'>
+
+- Almost half of all attacks were of the bombing/explosion type
+
+- The second and third most common were armed assault and assassination at 24% and 12%, respectively
+
+## Terrorism by the Numbers
+
+<img src="./attacktype_by_year.png" alt="output_option" width='600' height='400'>
+
+- The increase in number of attacks in recent years was driven by the bombing/explosion type
+
+## Terrorism by the Numbers
+
+<img src="./weapon_type.png" alt="output_option" width='600' height='400'>
+
+- Half of all attacks consisted of explosives
+
+- 33% consisted of firearms
+
+## Terrorism by the Numbers
+
+<img src="./casualties_by_year.png" alt="output_option" width='600' height='400'>
+
+- Interestingly, casualties decreased from 2007 to 2011
+
+## Terrorism by the Numbers
+
+<img src="./casualties_attack_type.png" alt="output_option" width='600' height='400'>
+
+- Prior to 2004, armed assault was the primary cause of deaths
+
+- Only in the last decade did bombing/explosion attacks overtake armed assault in terms of casualties
+
+# Terrorism Globally
+
+## Terrorism Globally
+
+- How does terrorism look like from country to country?
+```{r, echo=F}
+suppressPackageStartupMessages(library(googleVis))
+library(openxlsx)
+suppressPackageStartupMessages(library(dplyr))
+gtd = read.xlsx('globalterrorismdb_0615dist.xlsx')
+attacks_per_country = gtd %>% group_by(country_txt) %>% summarise(Attacks = n())
+country_rank = arrange(attacks_per_country, desc(Attacks))
+colnames(country_rank) = c('Country', 'Attacks')
+country_rank$Rank = seq.int(nrow(country_rank))
+
+```
+
+## Terrorism Globally
+
+Total Terrorist Attacks by Country
+
+```{r, results='asis'}
+plot(gvisGeoChart(attacks_per_country, "country_txt", "Attacks",
+                  options=list(projection="kavrayskiy-vii")), "chart")
+```
+
+## Terrorism Globally
+
+Total Terrorist Attacks by Country
+
+```{r, results='asis'}
+table = gvisTable(country_rank, options = list(width = 500, height = 300))
+plot(table, 'chart')
+```
+
+# Closing Remarks
+
+## Closing Remarks
+
+Findings:
+
+- Numerous types of terrorist attacks with bombings and armed assault as the most common
+
+- There was a period of improvement from 2007 to 2011 when casualties from terrorist attacks fell despite the steady number of attacks in the same period
+
+- Despite being the most common type of attack, bombings only overtook armed assault in terms of casualties after 2004
+
+## Closing Remarks
+
+Future exploration:
+
+- How did casualties per attack change through time?
+
+- What specific countries started experiencing more attacks in recent years?
+
+- What were the possible causes in the changes of number of attacks throughout the years?
+
+# Thank you
+

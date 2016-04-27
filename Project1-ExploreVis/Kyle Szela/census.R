@@ -180,6 +180,72 @@ educationPlot_mf = ggplot(education_numbers_males, aes(x = education, y = pct)) 
   facet_wrap( ~ sex)
 educationPlot_mf
 
+#Plot earnings based on education male and female
+education_income = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
+
+new_levels = c("Children", "Less than 1st grade", "1st 2nd 3rd or 4th grade", 
+               "5th or 6th grade", "7th and 8th grade", "9th grade", "10th grade", 
+               "11th grade", "12th grade no diploma", "High school graduate", 
+               "Associates degree-academic program", "Associates degree-occup /vocational", 
+               "Some college but no degree", "Bachelors degree(BA AB BS)", 
+               "Masters degree(MA MS MEng MEd MSW MBA)", "Doctorate degree(PhD EdD)", 
+               "Prof school degree (MD DDS DVM LLB JD)")
+
+education_income$education = factor(education_income$education, levels = new_levels)
+
+education_income = group_by(education_income, education, sex) %>%
+  summarise(., 
+            count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
+            count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
+            pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
+
+education_incomePlot = ggplot(education_income, aes(x = education, y = pct_geq50)) + 
+  geom_bar(stat = "identity", aes(fill = education)) + 
+  #scale_fill_brewer(name = "Education", palette = "Set1") + 
+  theme_bw() + 
+  scale_fill_discrete(name = "Education") + 
+  ggtitle("Income by Education 94' - 95'") + 
+  xlab("") + 
+  ylab("Percentage of X Education with Full-time Income >50k") + 
+  theme(axis.ticks = element_blank(), axis.text.x = element_blank()) + 
+  facet_wrap( ~ sex)
+education_incomePlot
+
+education_difference = group_by(education_income, education) %>%
+  summarise(.,
+            difference = (pct_geq50[sex == "Male"] - pct_geq50[sex == "Female"]) / pct_geq50[sex == "Male"])
+
+education_difference = education_difference[-(1:7),]
+
+education_differencePlot = ggplot(education_difference, aes(x = education, y = difference)) + 
+  geom_bar(stat = "identity", aes(fill = education)) + 
+  #scale_fill_brewer(name = "Education", palette = "Set1") + 
+  theme_bw() + 
+  scale_fill_discrete(name = "Education") + 
+  ggtitle("Relative Difference by Education 94' - 95'") + 
+  xlab("") + 
+  ylab("Percent Difference Relative to Male Percentage") + 
+  theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+education_differencePlot
+
+#Just Males vs Females alone
+mvf = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
+
+mvf = group_by(mvf, sex) %>%
+  summarise(., 
+            count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
+            count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
+            pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
+mvfPlot = ggplot(mvf, aes(x = sex, y = pct_geq50)) + 
+  geom_bar(stat = "identity", aes(fill = sex)) + 
+  scale_fill_brewer(name = "Sex", palette = "Set1") + 
+  ggtitle("Income by Sex 94' - 95'") + 
+  xlab("") + 
+  ylab("Percentage of Sec with Full-time Income >50k") + 
+  theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+mvfPlot
+
+
 
 Names = c("Both", "Males", "Females")
 

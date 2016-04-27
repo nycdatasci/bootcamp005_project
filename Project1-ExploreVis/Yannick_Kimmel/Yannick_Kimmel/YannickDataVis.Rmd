@@ -1,0 +1,171 @@
+---
+title: "Research and Development Performance in Various Countries"
+author: "Yannick Kimmel"
+date: "April 24, 2016"
+output: ioslides_presentation
+image: ![scientists](scientists.jpg)
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+## Introduction
+
+* Research & development (R&D) can increase the productivity of a nation. 
+* Personally became aware of the lack of R&D jobs available in manufacturing when finishing PhD.
+* Personally wanted to understand how this is affecting the country.
+* Understanding how this is changing is important to policy makers, economists, and researchers.
+
+<center>![scientists](scientists.jpg)</center>
+
+```{r set, echo=FALSE, cache=FALSE}
+setwd("/Users/YannickMac/Dropbox/Applications/Data science/NYCDSA/Data_visualization_project/Yannick_Kimmel")
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(rworldmap)
+indicators = read.csv("subbeddata.csv", header = TRUE, stringsAsFactors = FALSE)
+allindicators = read.csv("/Users/YannickMac/Dropbox/Applications/Data science/NYCDSA/Data_visualization_project/world-development-indicators/Indicators.csv")
+indicators = read.csv("subbeddata.csv", header = TRUE, stringsAsFactors = FALSE)
+countries = c("EUU", "USA", "CHN", "JPN", 
+              "RUS", "IND", "KOR") #WLD, OED
+
+indicatorcodes = c("GB.XPD.RSDV.GD.ZS", "SP.POP.SCIE.RD.P6", 
+                   "IP.JRN.ARTC.SC", "IP.PAT.NRES", "IP.PAT.RESD", "IP.TMK.TOTL",
+                   "NV.IND.MANF.ZS")
+subdata = function(indicatorCode) {
+    filter(indicators, IndicatorCode == indicatorCode) %>%
+        filter(CountryCode %in% countries)
+}
+```
+## World development indicators dataset from World Bank 
+
+* Statistics on up to 247 countries and regions on 1,344 development indicators 
+* Yearly indicators as early as 1960 to 2014
+* Countries of interest : China, Euro Union, India, Japan, Korea, Russia, USA
+* Easy to use: 
+
+```{r sample, eval=FALSE, echo=TRUE}
+        filter(indicators, IndicatorCode == indicatorCode) %>%
+        filter(CountryCode %in% countries)
+```
+
+## Input: R&D expenditure as % of GDP 
+<center>
+```{r R&D expenditure, fig.height= 3, fig.width=6}
+researchexpn =  subdata("GB.XPD.RSDV.GD.ZS")
+res <- ggplot(researchexpn, aes(x = Year, y = Value)) +geom_line(aes(color = CountryCode), size = 1)
+res + theme_bw() + ggtitle("R&D expenditures as a percentage of GDP") +
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + ylab("% of GDP") +
+    guides(color=guide_legend(title="Countries"))  
+```
+</center>
+* Korea and China rapidly increasing. 
+* Japan and USA steady and high. 
+
+## R&D output: Journal publications
+* Mostly an academic measure. 
+* Measure of quantity not quality. 
+<center>
+```{r publications, fig.height= 3, fig.width=6}
+publications = subdata("IP.JRN.ARTC.SC")
+pub = ggplot(publications, aes(x = Year, y = Value)) +geom_line(aes(color = CountryCode), size = 1)
+pub + theme_bw() +  ggtitle("Number of scientific and technical journal articles") +
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + ylab("# of articles") +
+    guides(color=guide_legend(title="Countries")) 
+```
+</center>
+* Euro Union and USA publish a high amount. Euro Union increasing. 
+* Japan on decline. 
+* China rapidly rising.
+
+## R&D output: Patent applications
+* Mostly an industrial measure. 
+* Measure of quantity not quality. 
+<center>
+```{r patents, fig.height= 3, fig.width=6, warning = FALSE}
+patents = filter(indicators, IndicatorCode == "IP.PAT.NRES" | 
+                     IndicatorCode == "IP.PAT.RESD") %>%
+    filter(CountryCode %in% countries) %>% group_by(CountryCode, Year) %>%
+    summarise(totpap = sum(Value))
+pat = ggplot(patents, aes(x = Year, y = totpap)) + geom_line(aes(color = CountryCode), size = 1)
+pat + theme_bw() + ggtitle("Number of patents") + ylab("total patents") +xlim(1980, 2014) +
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) +
+    guides(color=guide_legend(title="Countries")) 
+```
+</center>
+* China increasing rapidly. USA also high. 
+
+## Output: Trademark applications
+* Software mostly not protected by patents
+
+<center>
+```{r trademarks, fig.height= 3, fig.width=6}
+trademark = subdata("IP.TMK.TOTL")
+trade = ggplot(trademark, aes(x = Year, y = Value)) + geom_line(aes(color = CountryCode), size = 1)
+trade + theme_bw() + ggtitle("Number of trademark applications") +
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + ylab("# of trademark applications") +
+    guides(color=guide_legend(title="Countries")) 
+```
+</center>
+
+* China rapidly increasing. 
+* USA also increasing.
+
+## Number of Researchers in R&D 
+<center>
+```{r researchers, fig.height= 3, fig.width=6}
+researchers = subdata("SP.POP.SCIE.RD.P6")
+respeople <- ggplot(researchers, aes(x = Year, y = Value)) +geom_line(aes(color = CountryCode), size = 1)
+respeople + theme_bw() + ggtitle("Number of Researchers in R&D per million people") +
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + 
+    ylab("# of researchers per million people") + guides(color=guide_legend(title="Countries")) 
+```
+</center>
+* Korea and EU increasing. 
+* Other countries are flat.
+
+
+## Value added manufacturing
+<center>
+```{r manufacturing, fig.height= 3, fig.width=6, warning=FALSE}
+manufacturing = subdata("NV.IND.MANF.ZS")
+manufact = ggplot(manufacturing, aes(x = Year, y = Value)) + geom_line(aes(color = CountryCode), size = 1)
+manufact + theme_bw() + ggtitle("Manufacturing, value added (% of GDP)") + xlim(1980, 2014) +
+    scale_color_brewer(palette = "Set2", labels = c("China","Euro Union", "India",
+                                    "Japan", "Korea", "Russia", "USA")) + ylab("% of GDP") +
+    guides(color=guide_legend(title="Countries"))
+
+```
+</center>
+* Manufacturing high part of China’s economy but decreasing. 
+* USA dropping and Japan rapidly decreasing. 
+
+##Conclusions
+
+
+
+* China’s R&D expenditure and output rapidly increasing. 
+* There is a discrepency between research and manufacturing output in USA and EU. This could explain why there are a lack of research jobs in the USA.
+
+* Future work:
+     - Correlate economic performance with R&D. 
+     - Measure quality of research
+
+## World map 
+* Data missing for a lot of countries, not clear why. 
+* Manufacturing still important in Eastern Europe and Asia. 
+
+```{r world map, results="hide"}
+manufacturing2013 = filter(allindicators, Year == 2013) %>% 
+    filter(IndicatorCode == "NV.IND.MANF.ZS")
+
+n <- joinCountryData2Map(manufacturing2013, joinCode="ISO3", nameJoinColumn="CountryCode")
+mapCountryData(n, nameColumnToPlot="Value", mapTitle="% of value added manufacturing as GDP in 2013", missingCountryCol = "lightgrey")
+```
+

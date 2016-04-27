@@ -101,7 +101,7 @@ ggplot(flight1,aes(x=ORIGIN_STATE_ABR, y=ddelay)) + geom_point() + coord_polar()
 Why does California, a state unaffected by the blizzard, have worse departure delay times than Georgia, Florida, and Texas?
 
 
-[California](library())
+[California](http://127.0.0.1:16690/custom/googleVis/GeoChartID3b48744c22a5.html)
 ```{r plot9, echo = F, message=FALSE, warning=F}
 blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
 flightdate2 <- group_by(blizzard, ORIGIN_STATE_ABR)

@@ -145,15 +145,525 @@ flightdate &lt;- airdata2</pre>
 
 </article></slide><slide class=''><hgroup><h2>Departure delays and geography.2</h2></hgroup><article  id="departure-delays-and-geography.2">
 
-<p>Why does California, a state unaffected by the blizzard, have worse departure delay times than Georgia, Florida, and Texas?</p>
+<p>Why does California, a state unaffected by the blizzard, have worse departure delay times than Georgia, Florida, and Texas? <!-- GeoChart generated in R 3.2.4 by googleVis 0.5.10 package --> <!-- Wed Apr 27 15:04:36 2016 --></p>
 
-<p><a href='http://127.0.0.1:16690/custom/googleVis/GeoChartID3b48744c22a5.html' title=''>California</a></p>
+<!-- jsHeader -->
+
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataGeoChartID11002c83478f () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "CA",
+724242272 
+],
+[
+ "FL",
+518591996 
+],
+[
+ "GA",
+401174613 
+],
+[
+ "TX",
+340524670 
+],
+[
+ "IL",
+186556536 
+],
+[
+ "NY",
+134384765 
+],
+[
+ "CO",
+62578988 
+],
+[
+ "NC",
+58240074 
+],
+[
+ "AZ",
+41621580 
+],
+[
+ "MI",
+38202908 
+],
+[
+ "NJ",
+30886014 
+],
+[
+ "MA",
+29685295 
+],
+[
+ "NV",
+29183920 
+],
+[
+ "VA",
+27675414 
+],
+[
+ "PA",
+24967314 
+],
+[
+ "MN",
+23439660 
+],
+[
+ "WA",
+18365301 
+],
+[
+ "UT",
+15729842 
+],
+[
+ "TN",
+14415732 
+],
+[
+ "MO",
+13140252 
+],
+[
+ "OH",
+8642328 
+],
+[
+ "LA",
+7245336 
+],
+[
+ "HI",
+5842545 
+],
+[
+ "MD",
+4327218 
+],
+[
+ "WI",
+3394809 
+],
+[
+ "PR",
+2844904 
+],
+[
+ "OR",
+2832148 
+],
+[
+ "IN",
+2453776 
+],
+[
+ "SC",
+1661440 
+],
+[
+ "AL",
+1225601 
+],
+[
+ "KY",
+1111880 
+],
+[
+ "OK",
+937296 
+],
+[
+ "NE",
+734692 
+],
+[
+ "AK",
+597540 
+],
+[
+ "CT",
+587523 
+],
+[
+ "ID",
+555009 
+],
+[
+ "MT",
+476376 
+],
+[
+ "NM",
+410916 
+],
+[
+ "RI",
+393048 
+],
+[
+ "MS",
+352368 
+],
+[
+ "AR",
+301589 
+],
+[
+ "VI",
+299455 
+],
+[
+ "ND",
+221959 
+],
+[
+ "KS",
+172845 
+],
+[
+ "IA",
+145860 
+],
+[
+ "WY",
+134915 
+],
+[
+ "SD",
+123497 
+],
+[
+ "NH",
+84070 
+],
+[
+ "ME",
+17110 
+],
+[
+ "WV",
+11191 
+],
+[
+ "VT",
+9672 
+],
+[
+ "TT",
+1176 
+] 
+];
+data.addColumn('string','ORIGIN_STATE_ABR');
+data.addColumn('number','ddelay');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartGeoChartID11002c83478f() {
+var data = gvisDataGeoChartID11002c83478f();
+var options = {};
+options["width"] =    600;
+options["height"] =    400;
+options["region"] = "US";
+options["displayMode"] = "regions";
+options["resolution"] = "provinces";
+
+    var chart = new google.visualization.GeoChart(
+    document.getElementById('GeoChartID11002c83478f')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "geochart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartGeoChartID11002c83478f);
+})();
+function displayChartGeoChartID11002c83478f() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+
+<!-- jsChart -->
+
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID11002c83478f"></script>
+
+<!-- divChart -->
+
+<div id="GeoChartID11002c83478f" style="width: 600; height: 400;">
+</div>
 
 </article></slide><slide class=''><hgroup><h2>A California-local phenomenon?</h2></hgroup><article  id="a-california-local-phenomenon">
 
-<p>I suspected that it is because of where the California flights are headed, so I looked to the arrival delays for flights headed from California during the blizzard. <a href='http://127.0.0.1:16575/custom/googleVis/GeoChartID367445e41b1.html' title=''>Kentucky</a></p>
+<p>As it turns out, the highest proportions of arrival delays are concentrated in states that experienced some of the highest snowfall measurements during the blizzard (KY, NJ, AR, MA, PA, GA, IN, MO, OH). <!-- GeoChart generated in R 3.2.4 by googleVis 0.5.10 package --> <!-- Wed Apr 27 15:04:37 2016 --></p>
 
-<p>As it turns out, the highest proportions of arrival delays are concentrated in states that experienced some of the highest snowfall measurements during the blizzard (KY, NJ, AR, MA, PA, GA, IN, MO, OH).</p></article></slide>
+<!-- jsHeader -->
+
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataGeoChartID11001bd92d96 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "KY",
+37.75 
+],
+[
+ "NJ",
+20.99305556 
+],
+[
+ "AR",
+20 
+],
+[
+ "MA",
+19.625 
+],
+[
+ "PA",
+19.20967742 
+],
+[
+ "GA",
+18.65714286 
+],
+[
+ "IN",
+17.70588235 
+],
+[
+ "MO",
+16.05263158 
+],
+[
+ "MI",
+14.86 
+],
+[
+ "OH",
+14.03448276 
+],
+[
+ "NM",
+13.38888889 
+],
+[
+ "WY",
+12.69230769 
+],
+[
+ "NY",
+12.25806452 
+],
+[
+ "FL",
+11.81521739 
+],
+[
+ "MN",
+11.81415929 
+],
+[
+ "NC",
+11.7 
+],
+[
+ "TN",
+11.25714286 
+],
+[
+ "CA",
+10.7900494 
+],
+[
+ "HI",
+10.52836879 
+],
+[
+ "UT",
+9.44047619 
+],
+[
+ "LA",
+8.285714286 
+],
+[
+ "IL",
+7.813218391 
+],
+[
+ "TX",
+7.486725664 
+],
+[
+ "ID",
+7.4375 
+],
+[
+ "WI",
+7.125 
+],
+[
+ "NV",
+6.782113821 
+],
+[
+ "AZ",
+6.126959248 
+],
+[
+ "CO",
+5.993520518 
+],
+[
+ "WA",
+5.864970646 
+],
+[
+ "VA",
+5.758064516 
+],
+[
+ "OR",
+4.494318182 
+],
+[
+ "MD",
+2.676470588 
+],
+[
+ "OK",
+2.333333333 
+],
+[
+ "AK",
+0 
+] 
+];
+data.addColumn('string','DEST_STATE_ABR');
+data.addColumn('number','arrdelay');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartGeoChartID11001bd92d96() {
+var data = gvisDataGeoChartID11001bd92d96();
+var options = {};
+options["width"] =    600;
+options["height"] =    400;
+options["region"] = "US";
+options["displayMode"] = "regions";
+options["resolution"] = "provinces";
+
+    var chart = new google.visualization.GeoChart(
+    document.getElementById('GeoChartID11001bd92d96')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "geochart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartGeoChartID11001bd92d96);
+})();
+function displayChartGeoChartID11001bd92d96() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+
+<!-- jsChart -->
+
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID11001bd92d96"></script>
+
+<!-- divChart -->
+
+<div id="GeoChartID11001bd92d96" style="width: 600; height: 400;">
+</div></article></slide>
 
 
   <slide class="backdrop"></slide>

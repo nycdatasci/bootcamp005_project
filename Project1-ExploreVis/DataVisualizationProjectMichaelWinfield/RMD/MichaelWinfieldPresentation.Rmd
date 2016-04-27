@@ -99,25 +99,20 @@ ggplot(flight1,aes(x=ORIGIN_STATE_ABR, y=ddelay)) + geom_point() + coord_polar()
 
 ## Departure delays and geography.2
 Why does California, a state unaffected by the blizzard, have worse departure delay times than Georgia, Florida, and Texas?
-
-
-[California](http://127.0.0.1:16690/custom/googleVis/GeoChartID3b48744c22a5.html)
-```{r plot9, echo = F, message=FALSE, warning=F}
+```{r plot9, echo = F, message=FALSE, warning=F, results='asis'}
 blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
 flightdate2 <- group_by(blizzard, ORIGIN_STATE_ABR)
 flight1 <- mutate(flightdate2, totaldelay = sum(DEP_DELAY_NEW, na.rm=T) * sum(FLIGHTS)) %>% select(.,ORIGIN_STATE_ABR, totaldelay) %>% summarise(., ddelay = max(totaldelay)) %>% arrange(., desc(ddelay))
 G3 <- gvisGeoChart(flight1, "ORIGIN_STATE_ABR", "ddelay", options=list(region="US", displayMode="regions", resolution="provinces", width=600, height=400))
-plot(G3)
+plot(G3, "chart")
 ```
 
 ## A California-local phenomenon?
-
-I suspected that it is because of where the California flights are headed, so I looked to the arrival delays for flights headed from California during the blizzard.
-[Kentucky](http://127.0.0.1:16575/custom/googleVis/GeoChartID367445e41b1.html)
-```{r plot10, echo = F, message=FALSE, warning=F}
+As it turns out, the highest proportions of arrival delays are concentrated in states that experienced some of the highest snowfall measurements during the blizzard (KY, NJ, AR, MA, PA, GA, IN, MO, OH). 
+```{r plot10, message=FALSE, warning=F, results='asis'}
 blizzard <- filter(flightdate, FL_DATE == '2016-01-23' | FL_DATE == '2016-01-24'|FL_DATE == '2016-01-22' | FL_DATE == '2016-01-25'|FL_DATE == '2016-01-26')
 CAdep <- filter(blizzard, ORIGIN_STATE_ABR == 'CA') %>% group_by(., DEST_STATE_ABR) %>% mutate(., totalarrd = sum(ARR_DELAY_NEW, na.rm=T)/sum(FLIGHTS)) %>% select(., DEST_STATE_ABR, totalarrd) %>% summarise(., arrdelay = max(totalarrd)) %>% arrange(., desc(arrdelay))
 G3 <- gvisGeoChart(CAdep, "DEST_STATE_ABR", "arrdelay", options=list(region="US", displayMode="regions", resolution="provinces", width=600, height=400))
-plot(G3)
+plot(G3, "chart")
 ```
-As it turns out, the highest proportions of arrival delays are concentrated in states that experienced some of the highest snowfall measurements during the blizzard (KY, NJ, AR, MA, PA, GA, IN, MO, OH).               
+              

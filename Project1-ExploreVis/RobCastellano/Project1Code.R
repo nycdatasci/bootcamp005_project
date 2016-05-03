@@ -72,7 +72,7 @@ pcthelpful_score = mutate(pcthelpful_score, pct = num/numrating)
 ggplot(filter(pcthelpful_score, helpful != "Neither"), aes(x = Score, y = pct*100, fill = helpful)) +
   geom_bar(aes(fill = helpful), stat = "identity", position = 'dodge') + 
   theme_minimal() + xlab("Rating (Stars)") + ylab("Percent") +
-  ggtitle("Percent of Reviews Found\n Helpful/Not Helpful by Rating") + 
+  ggtitle("Percent of Reviews Found Helpful/Not Helpful\nAmong Voted on Reviews by Rating ") + 
   scale_fill_brewer(palette = "Pastel1", name = "Helpfulness", labels = c("Helpful (> 75%)", "Not helpful (< 25%)")) 
 
 ####################Word count#####################
@@ -136,8 +136,8 @@ ggplot(freqscore, aes(x = Score, y = pctbyfreq*100, fill = freq)) +
   geom_bar(aes(fill = freq), stat = "identity", position = 'dodge') + 
   theme_minimal() + xlab("Rating (Stars)") + ylab("Percent of reviews") +
   ggtitle("Distribution of Ratings") + 
-  scale_fill_brewer(palette = "Pastel1", name = "Frequency of review", 
-                    labels = c("Not frequent", "Frequent"))
+  scale_fill_brewer(palette = "Pastel1", name = "Frequency of reviewer", 
+                    labels = c("Not frequent (1-50 reviews)", "Frequent (> 50 reviews)"))
 
 
 ########Word count for frequent/non-frequent reviewers
@@ -148,7 +148,7 @@ ggplot(reviewsHelpfulLengthsFreq, aes(x = freq, y = numWord)) +
   ggtitle("Word Count by Reviewer Frequency") + 
   scale_fill_brewer(palette = "Pastel1") +
   guides(fill = F) +
-  scale_x_discrete(labels = c("Not frequent reviewer", "Frequent reviewer"))
+  scale_x_discrete(labels = c("Not frequent reviewer\n(1-50 reviews)", "Frequent reviewer\n(> 50 reviews)"))
 
 
 #######Helpfulness and user frequency
@@ -166,8 +166,8 @@ helpfulfreq$pct = helpfulfreq$count/helpfulfreq$tot
 ggplot(helpfulfreq, aes(x = helpful, y = pct*100, fill = freq)) + 
   geom_bar(aes(fill = freq), stat = "identity", position = 'dodge') + 
   theme_minimal() + xlab("Helpfulness") + ylab("Percent of reviews") +
-  ggtitle("Helpfulness of Frequent Reviewers") + 
-  scale_fill_brewer(palette = "Pastel1", name = "Frequency\nof reviewer", labels = c("Not frequent", "Frequent")) +
+  ggtitle("Helpfulness by Reviewer Frequency") + 
+  scale_fill_brewer(palette = "Pastel1", name = "Frequency\nof reviewer", labels = c("Not frequent reviewer\n(1-50 reviews)\n", "Frequent reviewer\n(> 50 reviews)\n")) +
   scale_x_discrete(labels=c("NA" = "No\nindication", "Helpful" = "> 75%", "Neither" = "25 - 75%",
                           "Not helpful" = "< 25%"))
 

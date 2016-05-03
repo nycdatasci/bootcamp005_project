@@ -19,13 +19,13 @@ output:
 
 > - Amazon reviews are often the most publicly visible reviews of consumer products.
 
-> - How helpful are reviews?
+> - Basic exploratory analysis to better understand reviews.
 
-> - What factors affect a review's helpfulness?
+> - What are the properties of helpful reviews?
 
 ## Ratings
 
-![Caption](GreatGraphs/RatingDist.png)
+![Caption](Graphs/RatingDist.png)
 
 ## Commonly used words in reviews
 
@@ -40,27 +40,27 @@ output:
 
 ## How many reviews are helpful?
 \pause
-![Caption](GreatGraphs/HelpfulnessDist.png)
+![Caption](Graphs/HelpfulnessDist.png)
 
-## How do ratings affect helpfulness?
+## How do ratings relate to helpfulness?
 \pause
-![Caption](GreatGraphs/PercentHelpfulByRating.png)
+![Caption](Graphs/PercentHelpfulByRating.png)
 
 #III. Word count
 
 ## How do word counts vary by rating?
 \pause
-![Caption](GreatGraphs/WordCountRating.png)
+![Caption](Graphs/WordCountRating.png)
 
 ## How do word counts affect helpfulness?
 \pause
-![Caption](GreatGraphs/WordCountHelpfulness.png)
+![Caption](Graphs/WordCountHelpfulness.png)
 
 # IV. Frequency
 
 ## Reviewer frequency
 
-> - Defining a frequent reviewer as one who has made over 50 reviews, frequent reviewers account for almost 10% of all reviews.
+> - Defining a frequent reviewer as one who has made over 50 reviews, frequent reviewers account for over 5% of all reviews.
 
 > - Does the behavior of frequent reviews differ from that of infrequent reviews?
 
@@ -68,15 +68,15 @@ output:
 ## Are frequent reviewers more discerning?
 
 \pause
-![Caption](GreatGraphs/FreqScoreDist.png)
+![Caption](Graphs/FreqScoreDist.png)
 
 ## Are frequent reviewers more helpful?
 \pause
-![Caption](GreatGraphs/FreqHelpful.png)
+![Caption](Graphs/FreqHelpful.png)
 
 ## Are frequent reviews more verbose?
 \pause
-![Caption](GreatGraphs/FreqWord.png)
+![Caption](Graphs/FreqWord.png)
 
 
 # V. Conclusions

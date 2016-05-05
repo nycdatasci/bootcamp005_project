@@ -1,36 +1,57 @@
+#Load libraries.
 library(ggplot2)
 library(dplyr)
 library(RColorBrewer)
 setwd("~/Downloads/census")
 
+#Get census data.
 census <- read.csv("census-income.csv", stringsAsFactors = T, strip.white = T)
 
-#women may have been more concentrated in the lower paying jobs, 
-#so it’s not necessarily solely due to different wages for the same jobs
+#######
 
-#So it could signify gender discrimination practices for certain jobs or 
-#it could signifify lower relative pay for the same jobs
-
-#Graph showing income by sector without sex.
-ratio_class_of_worker = census[!(census$class.of.worker == "Not in universe" | 
-                                   census$class.of.worker == "Without pay"),]
-ratio_class_of_worker = ratio_class_of_worker[(ratio_class_of_worker$full.or.part.time.employment.stat == "Full-time schedules"),]
-
-ratio_class_of_worker = group_by(ratio_class_of_worker, class.of.worker) %>% 
+#Subset by race and sex.
+ratio_race_of_worker = group_by(census, race, sex) %>% 
   summarise(., 
             count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
             count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
             pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
-classPlot = ggplot(ratio_class_of_worker, aes(x = class.of.worker, y = pct_geq50)) + 
-  geom_bar(stat = "identity", aes(fill = class.of.worker)) + 
-  scale_fill_brewer(name = "Class of Worker", palette = "Set1") +
-  ggtitle("Income by Sector 94' - 95'") + 
-  xlab("") + 
-  ylab("Percent of Sector with Full-time Income >50k") + 
-  theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-classPlot
 
-#Graph showing income by sector and sex.
+#Plot graph.
+racePlot_sex = ggplot(ratio_race_of_worker, aes(x = race, y = pct_geq50)) + 
+  geom_bar(stat = "identity", aes(fill = race)) + 
+  scale_fill_brewer(name = "Race", palette = "Set1") +
+  ggtitle("Income by Race 94' - 95'") + 
+  xlab("") + 
+  ylab("Percent of Race with Income >50k") + 
+  theme(axis.ticks = element_blank(), axis.text.x = element_blank()) + 
+  facet_wrap( ~ sex)
+racePlot_sex
+
+#######
+
+#Subset by only those with full time jobs, and by race and sex.
+ratio_race_of_worker = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
+
+ratio_race_of_worker = group_by(ratio_race_of_worker, race, sex) %>% 
+  summarise(., 
+            count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
+            count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
+            pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
+
+#Plot graph.
+racePlot_sex = ggplot(ratio_race_of_worker, aes(x = race, y = pct_geq50)) + 
+  geom_bar(stat = "identity", aes(fill = race)) + 
+  scale_fill_brewer(name = "Race", palette = "Set1") +
+  ggtitle("Income by Race 94' - 95'") + 
+  xlab("") + 
+  ylab("Percent of Race with Full-time Income >50k") + 
+  theme(axis.ticks = element_blank(), axis.text.x = element_blank()) + 
+  facet_wrap( ~ sex)
+racePlot_sex
+
+######
+
+#Subset the census data by full-time, sector, and sex.
 ratio_class_of_worker = census[!(census$class.of.worker == "Not in universe" | 
                                    census$class.of.worker == "Without pay"),]
 ratio_class_of_worker = ratio_class_of_worker[(ratio_class_of_worker$full.or.part.time.employment.stat == "Full-time schedules"),]
@@ -40,6 +61,8 @@ ratio_class_of_worker = group_by(ratio_class_of_worker, class.of.worker, sex) %>
             count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
             count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
             pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
+
+#Plot graph.
 classPlot_sex = ggplot(ratio_class_of_worker, aes(x = class.of.worker, y = pct_geq50)) + 
   geom_bar(stat = "identity", aes(fill = class.of.worker)) + 
   scale_fill_brewer(name = "Class of Worker", palette = "Set1") + 
@@ -51,81 +74,100 @@ classPlot_sex = ggplot(ratio_class_of_worker, aes(x = class.of.worker, y = pct_g
   facet_wrap( ~ sex)
 classPlot_sex
 
-#Graph showing income by race.
-ratio_race_of_worker = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
+######
 
-ratio_race_of_worker = group_by(ratio_race_of_worker, race) %>% 
-  summarise(., 
-          count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
-          count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
-          pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
-racePlot = ggplot(ratio_race_of_worker, aes(x = race, y = pct_geq50)) + 
-  geom_bar(stat = "identity", aes(fill = race)) + 
-  scale_fill_brewer(name = "Race", palette = "Set1") +
-  ggtitle("Income by Race 94' - 95'") + 
+#Subset data by similarly, but for population percentage measurements.
+ratio_class_of_worker_population = census[!(census$class.of.worker == "Not in universe" | 
+                                              census$class.of.worker == "Without pay"),]
+
+ratio_class_of_worker_population = ratio_class_of_worker_population[(ratio_class_of_worker_population$full.or.part.time.employment.stat == "Full-time schedules"),]
+
+#Tally the total of males and females.
+sector_totals = summarise(ratio_class_of_worker_population, 
+                             Both = sum(instance.weight),
+                             Males = sum(instance.weight[sex == "Male"]),
+                             Females = sum(instance.weight[sex == "Female"]))
+
+#Get percentages of population per sector.
+sector_numbers_males = group_by(ratio_class_of_worker_population, class.of.worker, sex) %>%
+  summarise(.,
+            pct = (sum(instance.weight[sex == "Male"]) / sector_totals$Males) * 100)
+
+sector_numbers_females = group_by(ratio_class_of_worker_population, class.of.worker, sex) %>%
+  summarise(.,
+            pct = (sum(instance.weight[sex == "Female"]) / sector_totals$Females) * 100)
+
+sector_numbers_males$pct = sector_numbers_males$pct + sector_numbers_females$pct
+
+#Male/female side by side plot.
+sectorPlot_mf = ggplot(sector_numbers_males, aes(x = class.of.worker, y = pct)) + 
+  geom_bar(stat = "identity", aes(fill = class.of.worker)) + 
+  scale_fill_brewer(name = "Class of Worker", palette = "Set1") + 
+  #theme_bw() + 
+  ggtitle("Sector of Population 94' - 95'") + 
   xlab("") + 
-  ylab("Percent of Race with Full-time Income >50k") + 
-  theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-racePlot
-
-#Graph showing income by race and sex.
-ratio_race_of_worker = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
-
-ratio_race_of_worker = group_by(ratio_race_of_worker, race, sex) %>% 
-  summarise(., 
-            count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
-            count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
-            pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
-racePlot_sex = ggplot(ratio_race_of_worker, aes(x = race, y = pct_geq50)) + 
-  geom_bar(stat = "identity", aes(fill = race)) + 
-  scale_fill_brewer(name = "Race", palette = "Set1") +
-  ggtitle("Income by Race 94' - 95'") + 
-  xlab("") + 
-  ylab("Percent of Race with Full-time Income >50k") + 
+  ylab("Percent of Population in Sector") + 
   theme(axis.ticks = element_blank(), axis.text.x = element_blank()) + 
   facet_wrap( ~ sex)
-racePlot_sex
+sectorPlot_mf
 
-#Graph showing income by age
-ratio_age_census = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
+######
 
-#Both Sexes
+#Subset census by those with full-time jobs and are 18 or above.
+ratio_age_census = census[(census$full.or.part.time.employment.stat == "Full-time schedules" & 
+                             census$age >= 18 & 
+                             census$age <= 70),]
+
+#Get percentage of each age with selected income.
+
+#Both
 ratio_age = group_by(ratio_age_census, age) %>% 
   summarise(.,
-            Both = (sum(instance.weight[X == "50000+."]) / 
-                               (sum(instance.weight[X == "50000+."]) + 
-                                  sum(instance.weight[X == "-50000"]))) * 100)
+            Both = (sum(instance.weight[X == "50000+." & age >= 18]) / 
+                      (sum(instance.weight[X == "50000+." & age >= 18]) + 
+                         sum(instance.weight[X == "-50000" & age >= 18]))) * 100)
 #Just males
 ratio_age_male = group_by(ratio_age_census, age) %>%
   summarise(.,
-            Males = (sum(instance.weight[X == "50000+." & sex == "Male"]) / 
-                       (sum(instance.weight[X == "50000+." & sex == "Male"]) + 
-                          sum(instance.weight[X == "-50000" & sex == "Male"]))) * 100)
+            Males = (sum(instance.weight[X == "50000+." & sex == "Male" & age >= 18]) / 
+                       (sum(instance.weight[X == "50000+." & sex == "Male" & age >= 18]) + 
+                          sum(instance.weight[X == "-50000" & sex == "Male" & age >= 18]))) * 100)
 #Just females
 ratio_age_female = group_by(ratio_age_census, age) %>%
   summarise(.,
-            Females = (sum(instance.weight[X == "50000+." & sex == "Female"]) / 
-                       (sum(instance.weight[X == "50000+." & sex == "Female"]) + 
-                          sum(instance.weight[X == "-50000" & sex == "Female"]))) * 100)
+            Females = (sum(instance.weight[X == "50000+." & sex == "Female" & age >= 18]) / 
+                         (sum(instance.weight[X == "50000+." & sex == "Female" & age >= 18]) + 
+                            sum(instance.weight[X == "-50000" & sex == "Female" & age >= 18]))) * 100)
+
+#Inner join all three together.
 ratio_age = inner_join(ratio_age, ratio_age_male, by = "age")
 ratio_age = inner_join(ratio_age, ratio_age_female, by = "age")
-age_Plot = ggplot(ratio_age, aes(age)) +
-  stat_smooth(aes(y = Both, colour = "Both"), # continuous x-axis
-              se = F, method = "lm", formula = y ~ poly(x, 12)) + 
-  stat_smooth(aes(y = Males, colour = "Males"), # continuous x-axis
-              se = F, method = "lm", formula = y ~ poly(x, 12)) + 
-  stat_smooth(aes(y = Females, colour = "Females"), # continuous x-axis
-              se = F, method = "lm", formula = y ~ poly(x, 9)) + 
+
+#Stack them for ggplot2.
+ratio_age_stacked = with(ratio_age,
+                         data.frame(value = c(Both, Males, Females),
+                                    variable = factor(rep(c("Both", "Males", "Females"),
+                                                          each = NROW(ratio_age))),
+                                    age = rep(age, 3)))
+
+#Plot graph.
+agePlot = ggplot(ratio_age_stacked, aes(age, value, colour = variable)) + 
+  geom_line() +
   theme(legend.title=element_blank()) +
   ggtitle("Income by Age 94' - 95'") + 
   xlab("Age (years)") + 
   ylab("Percent at Age with Full-time Income >50k")
-age_Plot
+agePlot
+
+######
 
 #Looking at female to male education factor and earnings
 #First graph number of females and males for each education level
-education_numbers = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
+#Subset census data by those making full-time incomes with age >=18.
+education_numbers = census[(census$full.or.part.time.employment.stat == "Full-time schedules" & 
+                              census$age >= 18),]
 
+#New levels by increasing education.
 new_levels = c("Children", "Less than 1st grade", "1st 2nd 3rd or 4th grade", 
                "5th or 6th grade", "7th and 8th grade", "9th grade", "10th grade", 
                "11th grade", "12th grade no diploma", "High school graduate", 
@@ -134,8 +176,10 @@ new_levels = c("Children", "Less than 1st grade", "1st 2nd 3rd or 4th grade",
                "Masters degree(MA MS MEng MEd MSW MBA)", "Doctorate degree(PhD EdD)", 
                "Prof school degree (MD DDS DVM LLB JD)")
 
+#Refactoring
 education_numbers$education = factor(education_numbers$education, levels = new_levels)
 
+#Tally the totals for each level of education.
 education_totals = summarise(education_numbers, 
                              Both = sum(instance.weight),
                              Males = sum(instance.weight[sex == "Male"]),
@@ -155,108 +199,35 @@ education_numbers_females = group_by(education_numbers, education, sex) %>%
 
 education_numbers_males$pct = education_numbers_males$pct + education_numbers_females$pct
 
-#Plot for both
-educationPlot_both = ggplot(education_numbers_both, aes(x = education, y = Both)) + 
-  geom_bar(stat = "identity", aes(fill = education)) + 
-  #scale_fill_brewer(name = "Education", palette = "Set1") + 
-  theme_bw() + 
-  scale_fill_discrete(name = "Education") + 
-  ggtitle("Education of Population 94' - 95'") + 
-  xlab("") + 
-  ylab("Percent of Population with Education") + 
-  theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-educationPlot_both
+#Getting education by income
+education_income = group_by(education_numbers, education, sex) %>%
+  summarise(., 
+            count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
+            count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
+            pct = (count_geq50 / (count_l50 + count_geq50)) * 100) %>%
+  select(., education, sex, pct)
 
-#Male/female side by side
-educationPlot_mf = ggplot(education_numbers_males, aes(x = education, y = pct)) + 
+#Stack data for ggplot2
+population.ident = rep("Percent of Total Population", NROW(education_numbers_males))
+income.ident = rep("Percent with Certain Education with Income >$50,000", NROW(education_income))
+
+education_numbers_males$Identifier = population.ident
+education_income$Identifier = income.ident
+
+education_stacked = rbind(education_numbers_males, education_income)
+
+#Male/female side by side education/income vertically
+educationPlot_mf = ggplot(education_stacked, aes(x = education, y = pct)) + 
   geom_bar(stat = "identity", aes(fill = education)) + 
-  #scale_fill_brewer(name = "Education", palette = "Set1") + 
   theme_bw() + 
   scale_fill_discrete(name = "Education") + 
-  ggtitle("Education of Population 94' - 95'") + 
+  ggtitle("Education Grid 94' - 95'") + 
   xlab("") + 
-  ylab("Percent of Population with Education") + 
+  ylab("") + 
   theme(axis.ticks = element_blank(), axis.text.x = element_blank()) + 
-  facet_wrap( ~ sex)
+  facet_grid(Identifier ~ sex)
+ # facet_wrap( ~ sex) + 
+ # facet_wrap( ~ Identifier)
 educationPlot_mf
 
-#Plot earnings based on education male and female
-education_income = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
-
-new_levels = c("Children", "Less than 1st grade", "1st 2nd 3rd or 4th grade", 
-               "5th or 6th grade", "7th and 8th grade", "9th grade", "10th grade", 
-               "11th grade", "12th grade no diploma", "High school graduate", 
-               "Associates degree-academic program", "Associates degree-occup /vocational", 
-               "Some college but no degree", "Bachelors degree(BA AB BS)", 
-               "Masters degree(MA MS MEng MEd MSW MBA)", "Doctorate degree(PhD EdD)", 
-               "Prof school degree (MD DDS DVM LLB JD)")
-
-education_income$education = factor(education_income$education, levels = new_levels)
-
-education_income = group_by(education_income, education, sex) %>%
-  summarise(., 
-            count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
-            count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
-            pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
-
-education_incomePlot = ggplot(education_income, aes(x = education, y = pct_geq50)) + 
-  geom_bar(stat = "identity", aes(fill = education)) + 
-  #scale_fill_brewer(name = "Education", palette = "Set1") + 
-  theme_bw() + 
-  scale_fill_discrete(name = "Education") + 
-  ggtitle("Income by Education 94' - 95'") + 
-  xlab("") + 
-  ylab("Percentage of X Education with Full-time Income >50k") + 
-  theme(axis.ticks = element_blank(), axis.text.x = element_blank()) + 
-  facet_wrap( ~ sex)
-education_incomePlot
-
-education_difference = group_by(education_income, education) %>%
-  summarise(.,
-            difference = (pct_geq50[sex == "Male"] - pct_geq50[sex == "Female"]) / pct_geq50[sex == "Male"])
-
-education_difference = education_difference[-(1:7),]
-
-education_differencePlot = ggplot(education_difference, aes(x = education, y = difference)) + 
-  geom_bar(stat = "identity", aes(fill = education)) + 
-  #scale_fill_brewer(name = "Education", palette = "Set1") + 
-  theme_bw() + 
-  scale_fill_discrete(name = "Education") + 
-  ggtitle("Relative Difference by Education 94' - 95'") + 
-  xlab("") + 
-  ylab("Percent Difference Relative to Male Percentage") + 
-  theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-education_differencePlot
-
-#Just Males vs Females alone
-mvf = census[(census$full.or.part.time.employment.stat == "Full-time schedules"),]
-
-mvf = group_by(mvf, sex) %>%
-  summarise(., 
-            count_geq50 = sum(instance.weight[X == "50000+." & age >= 18]), 
-            count_l50 = sum(instance.weight[X == "-50000" & age >= 18]),
-            pct_geq50 = (count_geq50 / (count_l50 + count_geq50)) * 100)
-mvfPlot = ggplot(mvf, aes(x = sex, y = pct_geq50)) + 
-  geom_bar(stat = "identity", aes(fill = sex)) + 
-  scale_fill_brewer(name = "Sex", palette = "Set1") + 
-  ggtitle("Income by Sex 94' - 95'") + 
-  xlab("") + 
-  ylab("Percentage of Sec with Full-time Income >50k") + 
-  theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-mvfPlot
-
-
-
-Names = c("Both", "Males", "Females")
-
-unique(census$detailed.household.summary.in.household)
-unique(census$full.or.part.time.employment.stat)
-
-num_sex_noincome = census[!(census$full.or.part.time.employment.stat == "Not in labor force" |
-                            census$full.or.part.time.employment.stat == "Unemployed full-time" |
-                            census$full.or.part.time.employment.stat == "Unemployed part- time"),]
-
-num_sex_noincome = group_by(num_sex_noincome, full.or.part.time.employment.stat, sex) %>%
-  summarise(.,
-            num = sum(instance.weight))
 

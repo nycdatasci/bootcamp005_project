@@ -4,6 +4,7 @@ library(reshape)
 library(plotly)
 library(maps)
 library(readxl)
+library(dplyr)
 
 Hometype <- c("All Homes" = "All Homes", 
               "Single Family" = "Single Fam",

@@ -89,12 +89,10 @@ shinyUI(
                column(width = 9,
                       tabsetPanel(
                         tabPanel("Map",
-                                 column(width = 12,
-                                        htmlOutput("country.map"))),
+                                 htmlOutput("country.map")),
                         tabPanel("Bar Chart",
-                                 column(width = 12,
-                                        htmlOutput("country.bar")
-                                 ))
+                                  htmlOutput("country.bar")
+                                 )
                       )
                ))),
     

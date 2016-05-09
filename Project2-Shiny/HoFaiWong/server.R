@@ -120,7 +120,8 @@ shinyServer(function(input, output){
                    options=list(legend="{position: 'top'}",
                                 height=900,
                                 align='top',
-                                fontSize=8)
+                                chartArea='{left:200, top:50, width:\'100%\', height:\'100%\'}',
+                                fontSize=10)
       )
     }
     

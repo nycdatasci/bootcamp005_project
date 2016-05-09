@@ -6,12 +6,27 @@ shinyServer(function(input, output) {
     graphdat <- graphdat[graphdat$sex == input$sex,]
     graphdat <- graphdat[graphdat$year >= input$year[1] & 
                            graphdat$year <= input$year[2],]
-    #input$population = 
+    i <- c()
+    i <- c("total_pop","births","total_deaths","total_nim")
+    print(input$population %in% i)
+    if (input$population %in% "total_pop") {
+      i[length(i)+1] <- 179
+    }
+    if (input$population %in% "births") {
+      i[length(i)+1] <- 179
+    }
+    if (input$population %in% "total_deaths") {
+      i[length(i)+1] <- 179
+    }
+    if (input$population %in% "total_nim") {
+      i[length(i)+1] <- 179
+    }
+    
+
     graphdat[, c(3,179)]
   })
   
   output$plot <- renderGvis({
-    #print(input$year)
     gvisLineChart(
       graphInput(), options=list(
         lineWidth=3, pointSize=5,

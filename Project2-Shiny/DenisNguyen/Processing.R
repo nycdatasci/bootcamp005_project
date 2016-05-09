@@ -40,6 +40,7 @@ for (i in 2014:2060) { # Create new rows with Hispanic and non-Hispanic in the r
 pop <- filter(pop, origin == 0) # Filter ignoring origin
 pop$origin <- NULL # Remove origin column 
 final2014 <- merge(bdm2014, pop) # Merged to get complete table
+colnames(final2014)[c(5,92,179)] <- c("deaths","migrants","total population") # Rename columns
 
 saveRDS(final2014, "dat2014.rds") # Export to RDS file
 
@@ -83,6 +84,7 @@ for (i in 2012:2060) { # Create new rows with Hispanic and non-Hispanic in the r
 pop <- filter(pop, origin == 0) # Filter ignoring origin
 pop$origin <- NULL # Remove origin column 
 final2012 <- merge(bdm2012, pop) # Merged to get complete table
+colnames(final2012)[c(5,92,179)] <- c("deaths","migrants","total population") # Rename columns
 
 saveRDS(final2012, "dat2012.rds")
 
@@ -126,5 +128,6 @@ for (i in 2000:2050) { # Create new rows with Hispanic and non-Hispanic in the r
 pop <- filter(pop, origin == 0) # Filter ignoring origin
 final2008 <- merge(bdm2008, pop) # Merged to get complete table
 final2008$origin <- NULL # Remove origin column
+colnames(final2012)[c(5,6,7)] <- c("deaths","migrants","total population") # Rename columns
 
 saveRDS(final2008, "dat2008.rds")

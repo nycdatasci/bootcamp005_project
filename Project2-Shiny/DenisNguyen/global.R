@@ -26,8 +26,8 @@ sex <- c(
 )
   
 population <- c(
-  "Total" = "total_pop",
+  "Total" = "total population",
   "Births" = "births",
-  "Deaths" = "total_deaths",
-  "Migration" = "total_nim"
+  "Deaths" = "deaths",
+  "Migration" = "migrants"
 )

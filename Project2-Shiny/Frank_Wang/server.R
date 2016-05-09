@@ -25,6 +25,8 @@ CA_county<-c("CA"="CA","Alameda"="Alameda","Amador"="Amador","Butte"="Butte",
              "Ventura"="Ventura","Yolo"="Yolo", "Yuba"="Yuba",
              "Los Angeles Metropolitan Area"="Los_Angeles_Metropolitan_Area", 
              "S.F.Bay Area"="S.F._Bay_Area","Inland_Empire"="Inland_Empire")
+rentzipdata<-read.csv("Zip_Zri_AllHomes_rent.csv")
+housingzipdata<-read.csv("Zip_Zhvi_AllHomes.csv")
 
 shinyServer(function(input, output) {
 
@@ -48,6 +50,26 @@ shinyServer(function(input, output) {
       paste("Total cost for",input$years_stay, "years rent home is $",round(rent_cost,0))
     })    
 
+    output$text5 <- renderText({
+      home_intrest<-sum(summarydata()[,3])
+      paste("Total interest you will pay is $",round(home_intrest,0))
+    })    
+    output$text6 <- renderText({
+        years_term<-dim(summarydata())[1]
+        for (i in 1:years_term) {
+          home_cost<-sum(summarydata()[1:i,5])+
+         input$home_price*(1+input$home_price_growth_rate*0.01)^i*input$cost_sell_rate*0.01
+          rent_cost<-sum(summarydata()[1:i,6])
+          year_breakeven<-i
+          if (home_cost<rent_cost){
+            break
+          }
+        }
+      paste("If you will stay longer than",year_breakeven, "years, then it's better to buy")
+    
+    })
+    
+  
 summarydata<-  reactive({
   #loan_term=Home_Global$loan_term
   if (input$loan_term=="10 years") {
@@ -221,15 +243,25 @@ summarydata<-  reactive({
     for (i in 2:ncol(CA_housing)){
       CA_housing[,i]<-as.numeric(unlist(CA_housing[,i]))
     }
-#      pca<-ggplot(data=CA_housing,aes(Mon_Yr,CA_housing$county))+geom_point()
-    pca<-ggplot(data=CA_housing,aes(Mon_Yr,CA_housing[,ID]))+geom_point()+geom_line()+
+     pca<-ggplot(data=CA_housing,aes(Mon_Yr,CA_housing[, county]))+geom_point()+
+#    pca<-ggplot(data=CA_housing,aes(Mon_Yr,CA_housing[,ID]))+geom_point()+geom_line()+
       ggtitle(paste(county,'County Median Housing Price'))+
       theme(plot.title = element_text(size=22)) +xlab('Year')+ylab('Price ($)')+
       theme(axis.text=element_text(size=12),axis.title=element_text(size=12,face="bold"))
          pca
     ggplotly(pca)
   }) 
+  output$zip_housing_rent1 <- renderText({
+    ID2<-grep(input$zipcode,housingzipdata$RegionName)
+    ziphousingprice<-housingzipdata[ID2,247]
+    paste("Home price at zip code",input$zipcode," is ",ziphousingprice,'$')
+  })
+  output$zip_housing_rent2 <- renderText({
+    ID<-grep(input$zipcode,rentzipdata$RegionName)
+    ziprent<-rentzipdata[ID,72]
+     paste("Monthly rent at zip code",input$zipcode," is ",ziprent,'$')
+  })
 
-  
+    
   output$mytable1 = renderDataTable({summarydata()})
 })

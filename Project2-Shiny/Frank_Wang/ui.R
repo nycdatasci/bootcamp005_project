@@ -84,9 +84,12 @@ mainPanel(
     tabPanel("Summary",
              h2("Summary of recommendation"),
         h3(textOutput("text1")),
-        h3(textOutput("text2")),  
+        h3(textOutput("text5")),
+        h3(textOutput("text2")),
+        br(),
         h3(textOutput("text3")), 
-        h3(textOutput("text4"))  
+        h3(textOutput("text4")),
+        h3(textOutput("text6"))
     ),
     tabPanel("Explore", 
        mainPanel(plotlyOutput("plot"),height=400,width=300),
@@ -101,7 +104,10 @@ mainPanel(
              mainPanel(plotlyOutput("housingpriceplot"),height=400,width=300),
              selectizeInput("CA_county", "California County", CA_county, selected="CA"),
              br(),
-             mainPanel(plotlyOutput("CAhousingplot"),height=400,width=300)
+             mainPanel(plotlyOutput("CAhousingplot"),height=400,width=300),
+             numericInput("zipcode", "Hosing/Rent at zip code (Mar.2016)", 95014),
+             h3(textOutput("zip_housing_rent1")),
+             h3(textOutput("zip_housing_rent2"))
     ),
   tabPanel("About",
            fluidPage(theme = shinytheme("cosmo"), sidebarPanel(fluidRow(

@@ -1,0 +1,88 @@
+library(googleVis)
+library(ggplot2)
+library(signal)
+shinyServer(function(input, output){
+  
+  dataframe<-reactive({
+    inFile <- input$file1
+    if (is.null(inFile))
+      return(NULL)
+    
+    tab = read.csv(inFile$datapath, header = input$header,
+                   sep = input$sep, quote = input$quote)
+    tab[,1] = as.POSIXct(tab[,1])
+    tab
+  })
+  
+  output$dataChart <- renderGvis({
+    if (!is.null(dataframe()))
+      gvisLineChart(dataframe()[,c(1,2)], xvar = colnames(dataframe())[1], yvar = colnames(dataframe())[2],
+                    options = list(
+                      crosshair.trigger = 'selection',
+                      enableInteractivity = FALSE,
+                      hAxis.maxTextLines = 10,
+                      tooltip.trigger = 'none'
+                    ))
+  })
+  
+  output$contents <- renderGvis({
+    if (!is.null(dataframe()))
+      gvisTable(dataframe(), 
+                options = list(page='enable'))
+  })
+  
+  output$dataChartFiltered <- renderGvis({
+    if (input$filt == "none") {
+      return(NULL)
+    } else if (input$filt == "butt") {
+      bf <- butter(as.numeric(input$buttern), as.numeric(input$butterf), type = input$buttert)
+      filtered = data.frame(timestamp = dataframe()[,1], 
+                            count = as.numeric(filter(bf, dataframe()[,2])))
+      gvisLineChart(filtered, xvar = colnames(dataframe())[1], yvar = colnames(dataframe())[2],
+                    options = list(
+                      crosshair.trigger = 'selection',
+                      enableInteractivity = FALSE,
+                      hAxis.maxTextLines = 10,
+                      tooltip.trigger = 'none'
+                    ))
+    } else if (input$filt == "cheby2") {
+      ch <- cheby2(as.numeric(input$chebyn), as.numeric(input$chebyd), 
+                   as.numeric(input$chebyf), type = input$chebyt)
+      filtered = data.frame(timestamp = dataframe()[,1], 
+                            count = as.numeric(filter(ch, dataframe()[,2])))
+      gvisLineChart(filtered, xvar = colnames(dataframe())[1], yvar = colnames(dataframe())[2],
+                    options = list(
+                      crosshair.trigger = 'selection',
+                      enableInteractivity = FALSE,
+                      hAxis.maxTextLines = 10,
+                      tooltip.trigger = 'none'
+                    ))
+    }
+    
+  })
+  output$dataChartAnoms <- renderPlot({
+    tab = dataframe()
+    if (input$anomalyd != "none") {
+      if (input$filt == "none") {
+        tab = dataframe()
+      } else if (input$filt == "butt") {
+        bf <- butter(as.numeric(input$buttern), as.numeric(input$butterf), type = input$buttert)
+        tab = data.frame(timestamp = dataframe()[,1], 
+                              count = as.numeric(filter(bf, dataframe()[,2])))
+      } else if (input$filt == "cheby2") {
+        ch <- cheby2(as.numeric(input$chebyn), as.numeric(input$chebyd), 
+                     as.numeric(input$chebyf), type = input$chebyt)
+        tab = data.frame(timestamp = dataframe()[,1], 
+                              count = as.numeric(filter(ch, dataframe()[,2])))
+      }
+      stamped = data.frame(timestamp = as.POSIXct(tab[,1]),
+                           count = tab[,2])
+      res = AnomalyDetectionTs(stamped, max_anoms=as.numeric(input$anomalym),
+                               direction=input$anomalyd, 
+                               alpha = as.numeric(input$anomalya),
+                               plot=TRUE)
+      print(res$plot)
+    }
+  })
+  
+})

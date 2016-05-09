@@ -10,6 +10,8 @@ sex_vec=c(1,2)
 sex_desc=c("male","female")
 credi_tbl_temp$SEX=factor(x=credit_tbl$SEX,levels=sex_vec,labels=sex_desc)
 
+
+library(ggplot2)
 # Creating Bar Plots for Gender as factors for fill and default as factor on x-axis
 s=ggplot(data = credi_tbl_temp, aes(x = default.payment.next.month)) + 
   geom_bar(aes (fill = SEX), position = "fill") + 

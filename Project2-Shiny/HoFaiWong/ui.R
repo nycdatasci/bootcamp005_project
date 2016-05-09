@@ -202,14 +202,14 @@ shinyUI(
                                conditionalPanel(
                                  condition = "input.sourceScatterX == 3", #CWUR
                                  sliderInput("x.c.rank", "CWUR rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.education", "Education score:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.alumni", "Alumni employment score:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.faculty", "Faculty score:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.pub", "Publications score:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.influence", "Influence score:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.citations", "Citations score:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.impact", "Broad impact score:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.patents", "Patents score:", min=0, max=1000, value=c(1,1000))
+                                 sliderInput("x.c.education", "Education rank:", min=0, max=1000, value=c(1,1000)),
+                                 sliderInput("x.c.alumni", "Alumni employment rank:", min=0, max=1000, value=c(1,1000)),
+                                 sliderInput("x.c.faculty", "Faculty rank:", min=0, max=1000, value=c(1,1000)),
+                                 sliderInput("x.c.pub", "Publications rank:", min=0, max=1000, value=c(1,1000)),
+                                 sliderInput("x.c.influence", "Influence rank:", min=0, max=1000, value=c(1,1000)),
+                                 sliderInput("x.c.citations", "Citations rank:", min=0, max=1000, value=c(1,1000)),
+                                 sliderInput("x.c.impact", "Broad impact rank:", min=0, max=1000, value=c(1,1000)),
+                                 sliderInput("x.c.patents", "Patents rank:", min=0, max=1000, value=c(1,1000))
                                ) )
                       )
                )

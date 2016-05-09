@@ -29,5 +29,5 @@ population <- c(
   "Total" = "total population",
   "Births" = "births",
   "Deaths" = "deaths",
-  "Migration" = "migrants"
+  "Migrants" = "migrants"
 )

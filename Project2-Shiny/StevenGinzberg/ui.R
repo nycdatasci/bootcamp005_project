@@ -13,7 +13,7 @@ shinyUI(dashboardPage(
             menuItem('Map',tabName='map',icon=icon('map'))),
         br(),
         sliderInput('yrSlider',label='Year',
-                    min=1840,max=2000,value=1840,sep=''),
+                    min=1840,max=2016,value=1840,sep=''),
         sliderInput('moSlider',label='Month(s)',min=1,max=12,value=c(1,12)),
         br(),
         br(),

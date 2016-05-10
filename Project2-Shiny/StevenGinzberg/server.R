@@ -50,5 +50,4 @@ shinyServer(function(input, output) {
                         height=500
                     ))
      })
-   
 })

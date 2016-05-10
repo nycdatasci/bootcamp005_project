@@ -4,27 +4,30 @@ shinyServer(function(input, output){
   #---------------INTERACTIVE MAP------------------
   
   output$map <- renderLeaflet({
-    leaflet(NYPD_sample) %>%
-            addTiles() %>%
+    leaflet(NYPD_for_map) %>%
+      addProviderTiles("CartoDB.Positron") %>%
       setView(-74.0059700, 40.7142700, zoom = 10)
 
   }) #End of renderLeaflet
   
 
   data_map <- reactive({
-  df <-  NYPD_sample %>% 
-      filter(Borough %in% input$borough, Offense %in% input$offense)
+    
+      df <-  NYPD_for_map %>% 
+          filter(Borough %in% input$borough, Offense %in% input$offense) %>%
+          subset(Date > input$date[1] & Date < input$date[2])
+    
   })
 
 
   observe ({
     result = data_map()
-    
+    print(data_map())
     if(nrow(result) > 1) {
-      print(data_map())
+      print(input$date)
       leafletProxy('map', data = result) %>%
         clearMarkers() %>%
-        addCircleMarkers(radius = 7,
+        addCircleMarkers(radius = 5,
                          stroke = FALSE,
                          fillOpacity = 1,
                          popup = paste("Offense:",result$Offense, "<br>",
@@ -56,7 +59,7 @@ shinyServer(function(input, output){
   }) #End of barchardata reactive
   
   output$barchart1 <- renderPlot({
-       
+    print(barchartdata())   
     p <- ggplot(barchartdata(), aes_string(x=input$x, y= input$y)) + 
       geom_bar(stat="identity") +
       theme_bw() +
@@ -78,7 +81,7 @@ shinyServer(function(input, output){
   
   output$data_table <- DT::renderDataTable(DT::datatable({
     
-    data <- NYPD_sample
+    data <- NYPD_for_map
     
         if (input$off != "All") {
           data <- data[data$Offense == input$off,]
@@ -92,6 +95,25 @@ shinyServer(function(input, output){
     
     data
   })) #End of data table
+  
+  
+  
+  output$heatMap <- renderUI({
+    
+    ## here I'm creating the JSON through 'paste0()'.
+    ## you can also use jsonlite::toJSON or RJSONIO::toJSON
+    
+    j <- paste0("[",NYPD_for_map[,"Latitude"], ",", NYPD_for_map[,"Longitude"], ",", "]", collapse=",")
+    j <- paste0("[",j,"]")
+    j
+    
+    tags$body(tags$script(HTML(sprintf("
+                                       var addressPoints = %s
+                                       var heat = L.heatLayer(addressPoints).addTo(map)"
+                                       , j
+    ))))
+  })
+  
   
 }) #End of shinyServer
 

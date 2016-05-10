@@ -111,6 +111,24 @@ library(dplyr)
         left_join(USAStations,by = 'ID')
     MapData$Hover = paste0(MapData$Name,', Alt=',MapData$StElev)
 
+    OverallAvg = c()
+    OverallAvg[1] = mean(Combined$Val1, na.rm = TRUE)
+    OverallAvg[2] = mean(Combined$Val2, na.rm = TRUE)
+    OverallAvg[3] = mean(Combined$Val3, na.rm = TRUE)
+    OverallAvg[4] = mean(Combined$Val4, na.rm = TRUE)
+    OverallAvg[5] = mean(Combined$Val5, na.rm = TRUE)
+    OverallAvg[6] = mean(Combined$Val6, na.rm = TRUE)
+    OverallAvg[7] = mean(Combined$Val7, na.rm = TRUE)
+    OverallAvg[8] = mean(Combined$Val8, na.rm = TRUE)
+    OverallAvg[9] = mean(Combined$Val9, na.rm = TRUE)
+    OverallAvg[10] = mean(Combined$Val10, na.rm = TRUE)
+    OverallAvg[11] = mean(Combined$Val11, na.rm = TRUE)
+    OverallAvg[12] = mean(Combined$Val12, na.rm = TRUE)
+    
+    plot(x=1:12, y=OverallAvg, col='blue', type='l')
+    
+    
+    
     
     write.csv(ChartData,'chartdata.csv')
     write.csv(MapData,'mapdata.csv')

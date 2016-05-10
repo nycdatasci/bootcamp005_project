@@ -33,13 +33,13 @@ SGAvg2 = function(ds, Start, End) {
     }
 }
 
-setwd("C:/Users/steve/OneDrive/Documents/BootCamp/R Working Dir/Shiny Project/App v1")
+#setwd("C:/Users/steve/OneDrive/Documents/BootCamp/R Working Dir/Shiny Project/App v1")
 
 MoHeader = c('Jan','Feb','Mar','Apr','May','Jun',
              'Jul','Aug','Sep','Oct','Nov','Dec')
 
-ChartData = read.csv('Data/Chartdata.csv',header = TRUE, sep = ',')
-MapData = read.csv('Data/MapData.csv',header = TRUE, sep = ',')
+ChartData = read.csv('Data/chartdata.csv',header = TRUE, sep = ',')
+MapData = read.csv('Data/mapdata.csv',header = TRUE, sep = ',')
 
 ChartData$YrAvg = SGAvg(ChartData,c('Avg1','Avg2','Avg3','Avg4','Avg5','Avg6',
                                     'Avg7','Avg8','Avg9','Avg10','Avg11','Avg12'))

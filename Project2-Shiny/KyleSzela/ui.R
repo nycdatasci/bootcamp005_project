@@ -8,6 +8,7 @@
 #
 library(signal)
 library(shiny)
+library(AnomalyDetection)
 library(ggplot2)
 # Define UI for application that draws a histogram
 library(shinydashboard)
@@ -42,17 +43,6 @@ shinyUI(dashboardPage(
         ),
         fluidRow(
           box(
-            fileInput('file1', 'Choose file to upload',
-                      accept = c(
-                        'text/csv',
-                        'text/comma-separated-values',
-                        'text/tab-separated-values',
-                        'text/plain',
-                        '.csv',
-                        '.tsv'
-                      )
-            ),
-            tags$hr(),
             checkboxInput('header', 'Header', TRUE),
             radioButtons('sep', 'Separator',
                          c(Comma=',',
@@ -64,7 +54,16 @@ shinyUI(dashboardPage(
                            'Double Quote'='"',
                            'Single Quote'="'"),
                          '"'),
-            tags$hr(),
+            fileInput('file1', 'Choose file to upload',
+                      accept = c(
+                        'text/csv',
+                        'text/comma-separated-values',
+                        'text/tab-separated-values',
+                        'text/plain',
+                        '.csv',
+                        '.tsv'
+                      )
+            ),
             title = "Select File",
             status = "info",
             solidHeader = T,
@@ -97,7 +96,7 @@ shinyUI(dashboardPage(
             status = "info",
             solidHeader = T,
             collapsible = T,
-            width = 3,
+            width = 4,
             radioButtons("filt", NULL,
                          c("None" = "none",
                            "Butterworth" = "butt",
@@ -109,7 +108,7 @@ shinyUI(dashboardPage(
             status = "info",
             solidHeader = T,
             collapsible = T,
-            width = 3,
+            width = 4,
             textInput("buttern", label = "Filter Order", value = "3"),
             textInput("butterf", label = "Critical Frequencies", value = "0.1"),
             radioButtons("buttert", "Type",
@@ -121,7 +120,7 @@ shinyUI(dashboardPage(
             status = "info",
             solidHeader = T,
             collapsible = T,
-            width = 3,
+            width = 4,
             textInput("chebyn", label = "Filter Order", value = "5"),
             textInput("chebyd", label = "dB of Pass Band", value = "20"),
             textInput("chebyf", label = "Critical Frequencies", value = "0.2"),
@@ -157,6 +156,14 @@ shinyUI(dashboardPage(
                            "Negative" = "neg",
                            "Both" = "both")),
             submitButton("Filter")
+          ),
+          box(
+            title = "Data",
+            status = "info",
+            solidHeader = T,
+            collapsible = T,
+            htmlOutput('anomsit'),
+            downloadButton('downloadData', 'Download')
           )
         )
         

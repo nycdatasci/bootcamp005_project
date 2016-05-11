@@ -133,8 +133,8 @@ shinyUI(dashboardPage(
                              )
                          ),
                          helpText("As a preliminary prediction analysis, multiple linear regression was used
-                                  on 16 variables of interest to predict obesity rates. Stepwise regression 
-                                  showed that at least 9 variables are significant. Basic diagnostics indicate
+                                  on 17 variables of interest to predict obesity rates. Stepwise regression 
+                                  showed that at least 10 variables are significant. Basic diagnostics indicate
                                   model assumptions were not violated. 76% of the data was complete cases, while 
                                   the rest had at least one NA. Only the complete cases were used in prediction.")
                      )

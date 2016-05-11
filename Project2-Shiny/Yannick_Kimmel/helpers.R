@@ -36,7 +36,7 @@ fulldb = full_join(socioeconomic, health, by = "FIPS") %>%
 
 #Selecting just the columns of interest.
 fulldb = fulldb[, c("FIPS", "State", "County", "PCT_LACCESS_POP10", "GROCPTH12",
-                    "CONVSPTH12", "FFRPTH12", "FOODINSEC_10_12", 
+                    "CONVSPTH12", "FFRPTH12", "FOODINSEC_10_12", "FSRPTH12",
                     "DIRSALES_FARMS07", "FMRKTPTH13", "VEG_FARMS07", "PCT_DIABETES_ADULTS10",
                     "PCT_OBESE_ADULTS10", "PCT_HSPA09", "RECFACPTH12", "MEDHHINC10", 
                     "POVRATE10", "PCT_65OLDER10", "PCT_18YOUNGER10")]
@@ -46,7 +46,7 @@ tabledb = fulldb
 names(tabledb) = c("County ID", "State", "County", "Population low access to store percent 2010",
                    "Grocery stores div 1000 pop 2012", "Convenience stores div 1000 pop 2012",
                    "Fastfood restaurants div 1000 pop 2012", "Household food insecurity percent 201012",
-                   "Farms with direct sales 2007", "Farmers markets div 1000 pop 2013", 
+                   "Full-service restaurants/1,000 pop, 2012", "Farms with direct sales 2007", "Farmers markets div 1000 pop 2013", 
                    "Vegetable farms 2007", "Adult diabetes rate 2010", "Adult obesity rate 2010",
                    "High schoolers physically active percent 2009", "Recreation and fitness facilities div 1000 pop 2012",
                    "Median household income 2010", "Poverty rate 2010", "Population percent 65 years or older 2010",
@@ -97,10 +97,10 @@ scope = list(lower = formula(model.empty), upper = formula(model.saturated))
 backwardAIC = step(model.saturated, scope, direction = "backward", k = 2)
 
 predfunc <- function(GROC, Conv, FF, LACCESS, MEDHHIN, PCT18, FOODINS, FARMRT, 
-                     VEGFARM, DIABETE, HSACT,POVRT, PCT65, RECFAC) {
-    newdata = data.frame(PCT_LACCESS_POP10 = LACCESS, GROCPTH12 = GROC,
+                     VEGFARM, DIABETE, HSACT,POVRT, PCT65, RECFAC, Full) {
+    newdata = data.frame(PCT_LACCESS_POP10 = LACCESS, GROCPTH12 = GROC, CONVSPTH12 = Conv,
                          FFRPTH12 = FF, FOODINSEC_10_12 = FOODINS, VEG_FARMS07 = VEGFARM,
-                         FMRKTPTH13 = FARMRT,  PCT_DIABETES_ADULTS10 = DIABETE,
+                         FMRKTPTH13 = FARMRT,  PCT_DIABETES_ADULTS10 = DIABETE, FSRPTH12 = Full,
                          PCT_HSPA09 = HSACT, MEDHHINC10 = MEDHHIN, POVRATE10 = POVRT,
                          PCT_65OLDER10 = PCT65, PCT_18YOUNGER10 = PCT18, RECFACPTH12 = RECFAC)
     predict(backwardAIC, newdata, interval = "prediction")

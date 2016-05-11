@@ -1,6 +1,6 @@
 library(shiny)
 library(shinydashboard)
-
+library(plotly)
 shinyUI(dashboardPage(
     dashboardHeader(title = "Health demographics in the USA", titleWidth = 340), 
     dashboardSidebar(
@@ -11,7 +11,8 @@ shinyUI(dashboardPage(
             menuItem("Trends", tabName = "trends", icon = icon("line-chart")),
             menuItem("Predictions", tabName = "predict", icon = icon("chevron-right")),
             menuItem("Data", tabName = "data", icon = icon("database"))
-        )
+        ),
+        helpText("  Information from the USDA's Food Environment Atlas on counties in the USA.")
     ),
      dashboardBody(
          tabItems(
@@ -19,8 +20,7 @@ shinyUI(dashboardPage(
                      fluidRow(
                          column(width = 12, 
                          box(
-                             # helpText("Create demographic maps with
-                             #          information from the USDA's Food Environment Atlas."),
+                             
                              selectInput("var", # choose the residents
                                          label = "Choose a variable to display",
                                          choices = c("Percent Adult Obese 2009", 
@@ -91,7 +91,8 @@ shinyUI(dashboardPage(
              
              tabItem(tabName = "predict",
                      fluidRow(
-                         h1("Let's make a prediction:"),
+                         
+                         h1("Let's predict using multiple linear regression:"),
                          h2(htmlOutput("predtable")),
                          column(width = 12, 
                              box(numericInput("GROC", label = h5("Grocery stores/1000 people"), 
@@ -100,13 +101,17 @@ shinyUI(dashboardPage(
                                               value = 0.60),
                                  numericInput("FF", label = h5("fast-food stores/1000 people"), 
                                               value = 0.58),
+                                 numericInput("Full", label = h5("Full-service restaurants/1,000 pop, 2012"), 
+                                              value = 0.80),
                                  numericInput("LACCESS", label = h5("Population, low access to store 
                                                                     (%), 2010"), 
                                               value = 23),
                                  numericInput("MEDHHIN", label = h5("Median household income, 2010"), 
-                                              value = 4200),
+                                              value = 42000),
                                  numericInput("PCT18", label = h5("% Population under age 18, 2010"), 
-                                              value = 24)
+                                              value = 24),
+                                 numericInput("RECFAC", label = h5("Recreation & fitness facilities/1,000 pop, 2012"), 
+                                              value = 0.067)
                                  ),
 
                              box(
@@ -124,11 +129,14 @@ shinyUI(dashboardPage(
                                  numericInput("POVRT", label = h5("Poverty rate, 2010"), 
                                               value = 17),
                                  numericInput("PCT65", label = h5("% Population 65 years or older, 2010"), 
-                                              value = 16),
-                                 numericInput("RECFAC", label = h5("Recreation & fitness facilities/1,000 pop, 2012"), 
-                                              value = 0.067)
+                                              value = 16)
                              )
-                         )
+                         ),
+                         helpText("As a preliminary prediction analysis, multiple linear regression was used
+                                  on 16 variables of interest to predict obesity rates. Stepwise regression 
+                                  showed that at least 9 variables are significant. Basic diagnostics indicate
+                                  model assumptions were not violated. 76% of the data was complete cases, while 
+                                  the rest had at least one NA. Only the complete cases were used in prediction.")
                      )
              ),
              

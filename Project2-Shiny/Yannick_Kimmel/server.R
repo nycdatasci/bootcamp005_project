@@ -3,7 +3,7 @@ library(shiny)
 library(maps)
 library(mapproj)
 library(shinydashboard)
-
+library(plotly)
 source("helpers.R")
 
 
@@ -91,7 +91,7 @@ shinyServer(
         })
         
         output$predtable <- renderUI({
-            g <- predfunc(GROC = input$GROC, Conv = input$Conv, FF = input$FF, LACCESS = 
+            g <- predfunc(GROC = input$GROC, Conv = input$Conv, Full = input$Full, FF = input$FF, LACCESS = 
                          input$LACCESS, MEDHHIN = input$MEDHHIN, RECFAC = input$RECFAC,
                      PCT18 = input$PCT18, FOODINS = input$FOODINS, FARMRT = input$FARMRT, 
                      VEGFARM = input$VEGFARM, DIABETE = input$DIABETE, HSACT = input$HSACT,

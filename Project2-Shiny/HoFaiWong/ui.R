@@ -4,12 +4,12 @@
 ########################################
 
 
-## ui.R ##
+## ui.r ##
 shinyUI(
   navbarPage(
     title = "2015 World University Rankings",
     id = "nav",
-    theme = shinytheme("united"),
+    theme = shinytheme("flatly"),
     
     #####################
     ####Country Stats####
@@ -19,6 +19,7 @@ shinyUI(
              
              fluidRow(
                column(width = 3,
+                      style = "background-color:#F8F8F8",
                       h4("Ranking organization"),
                       radioButtons("sourceCountry",
                                    "Select organization",
@@ -91,8 +92,8 @@ shinyUI(
                         tabPanel("Map",
                                  htmlOutput("country.map")),
                         tabPanel("Bar Chart",
-                                  htmlOutput("country.bar")
-                                 )
+                                 htmlOutput("country.bar")
+                        )
                       )
                ))),
     
@@ -104,6 +105,7 @@ shinyUI(
     tabPanel("Org Comparison",
              fluidRow(
                column(3,
+                      style = "background-color:#F8F8F8",
                       h4("Ranking organization"),
                       radioButtons("sourceScatterY",
                                    "Select organization for y-axis",
@@ -139,6 +141,7 @@ shinyUI(
                       ),
                       fluidRow(
                         column(6,
+                               #style = "background-color:#F8F8F8",
                                h4(paste0('Modify Y-axis criteria')),
                                
                                conditionalPanel(
@@ -176,6 +179,7 @@ shinyUI(
                                ) ),
                         
                         column(6,
+                               #style = "background-color:#F8F8F8",
                                h4(paste0('Modify X-axis criteria')),
                                
                                conditionalPanel(
@@ -225,6 +229,7 @@ shinyUI(
     tabPanel("University Profile",
              fluidRow(
                column(width = 3,
+                      style = "background-color:#F8F8F8",
                       selectInput('selectUni',
                                   'Select university',
                                   universities,
@@ -259,6 +264,7 @@ shinyUI(
                tabPanel("Country Data",
                         fluidRow(
                           column(3,
+                                 style = "background-color:#F8F8F8",
                                  selectizeInput('selectCountry',
                                                 'Select one or more countries',
                                                 countries,
@@ -278,6 +284,7 @@ shinyUI(
                tabPanel("University Data",
                         fluidRow(
                           column(3,
+                                 style = "background-color:#F8F8F8",
                                  selectizeInput('selectUniData',
                                                 'Select one or more universities',
                                                 universities,
@@ -307,66 +314,30 @@ shinyUI(
              fluidRow(
                column(12,
                       tabsetPanel(
-                        tabPanel("Data Sources & Definitions",
-                                 column(12,
-                                        
-                                        strong('Shanghai Rankings'),
-                                        tags$ul(
-                                          tags$li(strong('world_rank'),' - world rank for university. Contains rank ranges and equal ranks (eg. 101-152). For this analysis, the middle of each range was used.'),
-                                          tags$li(strong('alumni'),' - Alumni Score, based on the number of alumni of an institution winning nobel prizes and fields medals.'),
-                                          tags$li(strong('award'),' - Award Score, based on the number of staff of an institution winning Nobel Prizes in Physics, Chemistry, Medicine, and Economics and Fields Medals in Mathematics.'),
-                                          tags$li(strong('hici'),' - HiCi Score, based on the number of Highly Cited Researchers selected by Thomson Reuters.'),
-                                          tags$li(strong('ns'),' - N&S Score, based on the number of papers published in Nature and Science.'),
-                                          tags$li(strong('pub'),' - PUB Score, based on total number of papers indexed in the Science Citation Index-Expanded and Social Science Citation Index.'),
-                                          tags$li(strong('pcp'),' - PCP Score, the weighted scores of the above five indicators divided by the number of full time academic staff.')
-                                        ),
-                                        
-                                        strong('Times World University Rankings'),
-                                        tags$ul(
-                                          tags$li(strong("world_rank")," - world rank for the university. Contains rank ranges and equal ranks (eg. =94 and 201-250). For this analysis, the middle of each range was used."),
-                                          tags$li(strong("teaching")," - university score for teaching (the learning environment)."),
-                                          tags$li(strong("international")," - university score international outlook (staff, students, research)."),
-                                          tags$li(strong("research")," - university score for research (volume, income and reputation)."),
-                                          tags$li(strong("citations")," - university score for citations (research influence)."),
-                                          tags$li(strong("income")," - university score for industry income (knowledge transfer)."),
-                                          tags$li(strong("num_students")," - number of students at the university."),
-                                          tags$li(strong("student_staff_ratio")," - Number of students divided by number of staff."),
-                                          tags$li(strong("international_students")," - Percentage of students who are international."),
-                                          tags$li(strong("female_male_ratio")," - Female student to Male student ratio.")
-                                        ),
-                                        
-                                        strong('Center for World University Rankings'),
-                                        tags$ul(
-                                          tags$li(strong('world_rank'),' - world rank for university.'),
-                                          tags$li(strong('national_rank'),' - rank of university within its country.'),
-                                          tags$li(strong('quality_of_education - rank for quality of education.'),
-                                                  tags$li(strong('alumni_employment'),' - rank for alumni employment.'),
-                                                  tags$li(strong('quality_of_faculty'),' - rank for quality of faculty.'),
-                                                  tags$li(strong('publications'),' - rank for publications.'),
-                                                  tags$li(strong('influence'),' - rank for influence.'),
-                                                  tags$li(strong('citations'),' - rank for citations.'),
-                                                  tags$li(strong('broad_impact'),' - rank for broad impact (only available for 2014 and 2015)'),
-                                                  tags$li(strong('patents'),' - rank for patents.')
-                                          )
-                                        )
-                                 )
-                        ),
-                        tabPanel("About the dataset",
+                        tabPanel("About the data",
                                  fluidRow(
-                                   column(4,
+                                   column(6,
                                           h4('Summary'),
-                                          p("2015 university rankings from 3 organizations covering 1015 institutions across 61 countries were reconciled and analyzed:"),
+                                          p(a("Kaggle", href="https://www.kaggle.com/mylesoneill/world-university-rankings")," provided world university rankings from 3 different ranking organizations. 
+                                            This Shiny application focuses on the 2015 rankings, covering 1015 institutions across 61 countries."),
                                           tags$ul(
-                                            tags$li(strong("Shanghai Rankings"),": 500 universities"),
-                                            tags$li(strong("Times World University Rankings"),": 401 universities"),
-                                            tags$li(strong("Center for World University Rankings"),": 1000 universities")
+                                            tags$li(strong(a("Shanghai Rankings", href='http://www.shanghairanking.com/')),
+                                                    ": 500 universities"),
+                                            tags$li(strong(a("Times World University Rankings", href='https://www.timeshighereducation.com/world-university-rankings')),
+                                                    ": 401 universities"),
+                                            tags$li(strong(a("Center for World University Rankings", href='http://cwur.org/')),
+                                                    ": 1000 universities")
                                           ),
-                                          br(),
-                                          p('Missing data, assumed to be Missing At Random, was imputed using K-Nearest Neigbhors with k=sqrt(n).'),
-                                          p('In cases where the world rank was a range, the middle of the range was used for visualization purposes.'),
-                                          p('Times and Shanghai data contained scores for sub-criteria, but CWUR data contained rankings. For this visualization project, CWUR rankings were not converted to scores.')
+                                          hr(),
+                                          h4('Notes'),
+                                          tags$ul(
+                                            tags$li('University and country names were reconciled across organizations, and missing countries filled in when necessary.'),
+                                            tags$li('When a university\'s world rank is a range, the middle of the range was used for visualization purposes.'),
+                                            tags$li('Times and Shanghai data contained scores for sub-criteria, but CWUR data contained rankings. For this visualization project, CWUR rankings were not converted to scores.'),
+                                            tags$li('Missing sub-criteria ranks/scores, assumed to be Missing At Random, were imputed using K-Nearest Neigbhors with k=sqrt(n).')
+                                          )
                                    ),
-                                   column(8,
+                                   column(6,
                                           h4('Gaps in ranked universities across the 3 ranking organizations'),
                                           plotOutput('overlap'))
                                  ),
@@ -382,8 +353,55 @@ shinyUI(
                                           h4('CWUR criteria correlations'),
                                           plotOutput('cwur.correlation'))
                                  )
+                        ),
+                        
+                        tabPanel("Criteria Definitions",
+                                 column(4,
+                                        strong('Shanghai Rankings'),
+                                        tags$ul(
+                                          tags$li(strong('world_rank'),' - world rank for university. Contains rank ranges and equal ranks (eg. 101-152). For this analysis, the middle of each range was used.'),
+                                          tags$li(strong('alumni'),' - Alumni Score, based on the number of alumni of an institution winning nobel prizes and fields medals.'),
+                                          tags$li(strong('award'),' - Award Score, based on the number of staff of an institution winning Nobel Prizes in Physics, Chemistry, Medicine, and Economics and Fields Medals in Mathematics.'),
+                                          tags$li(strong('hici'),' - HiCi Score, based on the number of Highly Cited Researchers selected by Thomson Reuters.'),
+                                          tags$li(strong('ns'),' - N&S Score, based on the number of papers published in Nature and Science.'),
+                                          tags$li(strong('pub'),' - PUB Score, based on total number of papers indexed in the Science Citation Index-Expanded and Social Science Citation Index.'),
+                                          tags$li(strong('pcp'),' - PCP Score, the weighted scores of the above five indicators divided by the number of full time academic staff.')
+                                        )
+                                 ),
+                                 column(4,
+                                        strong('Times World University Rankings'),
+                                        tags$ul(
+                                          tags$li(strong("world_rank")," - world rank for the university. Contains rank ranges and equal ranks (eg. =94 and 201-250). For this analysis, the middle of each range was used."),
+                                          tags$li(strong("teaching")," - university score for teaching (the learning environment)."),
+                                          tags$li(strong("international")," - university score international outlook (staff, students, research)."),
+                                          tags$li(strong("research")," - university score for research (volume, income and reputation)."),
+                                          tags$li(strong("citations")," - university score for citations (research influence)."),
+                                          tags$li(strong("income")," - university score for industry income (knowledge transfer)."),
+                                          tags$li(strong("num_students")," - number of students at the university."),
+                                          tags$li(strong("student_staff_ratio")," - Number of students divided by number of staff."),
+                                          tags$li(strong("international_students")," - Percentage of students who are international."),
+                                          tags$li(strong("female_male_ratio")," - Female student to Male student ratio.")
+                                        )
+                                 ),
+                                 column(4,
+                                        strong('Center for World University Rankings'),
+                                        tags$ul(
+                                          tags$li(strong('world_rank'),' - world rank for university.'),
+                                          tags$li(strong('national_rank'),' - rank of university within its country.'),
+                                          tags$li(strong('quality_of_education - rank for quality of education.'),
+                                                  tags$li(strong('alumni_employment'),' - rank for alumni employment.'),
+                                                  tags$li(strong('quality_of_faculty'),' - rank for quality of faculty.'),
+                                                  tags$li(strong('publications'),' - rank for publications.'),
+                                                  tags$li(strong('influence'),' - rank for influence.'),
+                                                  tags$li(strong('citations'),' - rank for citations.'),
+                                                  tags$li(strong('broad_impact'),' - rank for broad impact (only available for 2014 and 2015)'),
+                                                  tags$li(strong('patents'),' - rank for patents.')
+                                          )
+                                        )
+                                 )
                         )
                       )
+                      
                )
              )
     )

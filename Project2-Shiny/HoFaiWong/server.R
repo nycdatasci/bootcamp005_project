@@ -4,8 +4,8 @@
 ########################################
 
 
-## server.R ##
-source('./helpers.R')
+## server.r ##
+#source('helpers.r')
 
 shinyServer(function(input, output){
   

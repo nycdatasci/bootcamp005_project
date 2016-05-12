@@ -17,6 +17,7 @@ countrylist <- c("France", "Germany", "Spain", "United Kingdom", "United States"
                  "Australia", "Belgium", "Switzerland", "Portugal", "Italy", "Austria")
 
 #there are multiple coutries coded in the country field column. Here are the 
+
 newtable <- data.frame()
 for (i in (1:length(countrylist))){
   for (j in (1: length(FoodFacts$countries_en))){
@@ -30,16 +31,17 @@ for (i in (1:length(countrylist))){
 }
 topcountry.food.facts <- newtable
 colnames(topcountry.food.facts)[1] <- "country"
+country.food.facts <- filter(topcountry.food.facts, is.na(topcountry.food.facts$nutrition_score_uk_100g) == FALSE)
 
-country.table<-group_by(topcountry.food.facts, country) %>%
-  summarise("ave.score" = mean(nutrition_score_uk_100g),
-            "ave.energy" = mean(energy_100g),
-            "ave.fat" =  mean(fat_100g),
-            "ave.carb" =  mean(carbohydrates_100g),
-            "ave.protein" = mean(proteins_100g),
-            "ave.sodium" = mean(sodium_100g),
-            "ave.fiber" =  mean(fiber_100g),
-            "ave.sugar" = mean(sugars_100g))
+country.table<-group_by(country.food.facts, country) %>%
+  summarise("ave.score" = mean(nutrition_score_uk_100g, na.rm = T),
+            "ave.energy" = mean(energy_100g, na.rm = T),
+            "ave.fat" =  mean(fat_100g, na.rm = T),
+            "ave.carb" =  mean(carbohydrates_100g, na.rm = T),
+            "ave.protein" = mean(proteins_100g, na.rm = T),
+            "ave.sodium" = mean(sodium_100g,na.rm = T),
+            "ave.fiber" =  mean(fiber_100g, na.rm = T),
+            "ave.sugar" = mean(sugars_100g, na.rm = T))
 
 write.csv(country.table, "~/Desktop/shiny_project/country.table.csv")
 
@@ -50,16 +52,27 @@ TopCategory <- as.data.frame(main_category[order(-main_category$Freq),][1:10, 1]
 topcategory.food.facts <- filter(FoodFacts,main_category_en %in% TopCategory[,1])
 
 category.table<-group_by(topcategory.food.facts, main_category_en) %>%
-  summarise("ave.score" = mean(nutrition_score_uk_100g),
-            "ave.energy" = mean(energy_100g),
-            "ave.fat" =  mean(fat_100g),
-            "ave.carb" =  mean(carbohydrates_100g),
-            "ave.protein" = mean(proteins_100g),
-            "ave.sodium" = mean(sodium_100g),
-            "ave.fiber" =  mean(fiber_100g),
-            "ave.sugar" = mean(sugars_100g))
+  summarise("ave.score" = mean(nutrition_score_uk_100g, na.rm = T),
+            "ave.energy" = mean(energy_100g, na.rm = T),
+            "ave.fat" =  mean(fat_100g, na.rm = T),
+            "ave.carb" =  mean(carbohydrates_100g, na.rm = T),
+            "ave.protein" = mean(proteins_100g, na.rm = T),
+            "ave.sodium" = mean(sodium_100g, na.rm = T),
+            "ave.fiber" =  mean(fiber_100g, na.rm = T),
+            "ave.sugar" = mean(sugars_100g, na.rm = T))
 
 write.csv(category.table, "~/Desktop/shiny_project/category.table.csv")
 
 category <- as.character(category.table[,1])
+
+max(country.food.facts$energy_100g, na.rm= T)
+
+
+ggplot(topcountry.food.facts, aes(nutrition_score_uk_100g)) +
+  geom_density() +
+  theme_light(base_size=1)+
+  theme_bw()+
+  xlab("input$nutrition2")+
+  ylab("nutrition_score_uk_100g")+
+  title("Nutrition Scores by Nutrition Factors")
 

@@ -1,0 +1,5 @@
+body {
+  background-image: url("nba_datasci_logo.jpg");
+  background: #cccccc;
+  transition: opacity 500ms 1s;
+}

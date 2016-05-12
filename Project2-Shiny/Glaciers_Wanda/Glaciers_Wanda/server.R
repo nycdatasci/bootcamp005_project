@@ -11,10 +11,11 @@ shinyServer(function(input, output){
                  <a href="http://stamen.com">Stamen Design</a>,<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash;
                  Map data &copy; <a href="http://www.openstreetmap.org
                  /copyright">OpenStreetMap</a>') %>% 
-        addCircles(~LONGITUDE, ~LATITUDE, popup=, weight = 3, 
+        addCircles(~LONGITUDE, ~LATITUDE, popup=paste("Name:", gen.data$NAME,"<br>",
+                                                      "Lat:", gen.data$LATITUDE, "<br>",
+                                                      "Long:", gen.data$LONGITUDE,"<br>"), weight = 3, 
                    radius=400,color="#00ecff", stroke = TRUE, fillOpacity = 0.8)
-   #popup???
-   #zooming in?
+  
   })
 
   ## glacier map
@@ -30,7 +31,7 @@ shinyServer(function(input, output){
   })
   
 linechart_data <- reactive({
-    return (filter(NE.Gr, GEN_LOCATION %in% input$selectedts)%>% group_by(., YEAR) %>% summarise(., mean.annual
+    return (filter(NE.Gr.new, GEN_LOCATION %in% input$selectedts)%>% group_by(., YEAR) %>% summarise(., mean.annual
             = mean(ANNUAL_BALANCE))%>% mutate(., mean.cumulative = cumsum(mean.annual))
             )
 })

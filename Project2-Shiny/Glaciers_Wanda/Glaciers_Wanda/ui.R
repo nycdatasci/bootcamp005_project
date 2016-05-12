@@ -5,7 +5,7 @@
 glacier.choice<-c("East Central Greenland","Northeast Greenland","Iceland", "Northern Cordillera", "Alaska")
 #Map: keep only the ones that work
 
-locations <- unique(as.character(NE.Gr$GEN_LOCATION))
+locations <- unique(as.character(NE.Gr.new$GEN_LOCATION))
 
 shinyUI(dashboardPage( skin = "purple",
   dashboardHeader(title = "Glacier Mass Balance", titleWidth=230),
@@ -81,9 +81,10 @@ shinyUI(dashboardPage( skin = "purple",
                                selected = "NE GREENLAND"
               )),
               
-              box("Crucial to the survival of a glacier is its mass balance or surface mass balance (SMB), 
-             the difference between accumulation and ablation (sublimation and melting). Climate change may cause variations in both 
-                  temperature and snowfall, causing changes in the surface mass balance"
+              box("Global Land Ice Measurements from Space (GLIMS) surveys glaciers worldwide,
+              built up from data contributions from many glaciological institutions.GLIMS uses data 
+             collected by the Advanced Spaceborne Thermal Emission and Reflection Radiometer (ASTER) 
+              instrument aboard the Terra satellite and the LANDSAT series of satellites, along with historical observations."
               )
             ),
             #image 

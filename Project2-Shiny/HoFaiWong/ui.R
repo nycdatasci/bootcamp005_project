@@ -3,7 +3,6 @@
 #### Ho Fai Wong - May 8, 2016      ####
 ########################################
 
-
 ## ui.r ##
 shinyUI(
   navbarPage(
@@ -72,15 +71,16 @@ shinyUI(
                                      choices = list("Top rank" = 1, 
                                                     "Median rank" = 2,
                                                     "Count of ranked universities" = 3,
-                                                    "Mean education rank" = 5,
-                                                    "Mean alumni employment rank" = 6,
-                                                    "Mean faculty rank" = 7,
-                                                    "Mean publications rank" = 8,
-                                                    "Mean influence rank" = 9,
-                                                    "Mean citations rank" = 10,
-                                                    "Mean broad impact rank" = 11,
-                                                    "Mean patents rank" = 12),
-                                     selected = 1)
+                                                    "Mean education score*" = 5,
+                                                    "Mean alumni employment score*" = 6,
+                                                    "Mean faculty score*" = 7,
+                                                    "Mean publications score*" = 8,
+                                                    "Mean influence score*" = 9,
+                                                    "Mean citations score*" = 10,
+                                                    "Mean broad impact score*" = 11,
+                                                    "Mean patents score*" = 12),
+                                     selected = 1),
+                        helpText("* CWUR sub-criteria rankings were converted to scores. See Reference tab for details")
                       ),
                       hr(),
                       em("Note:"),
@@ -146,7 +146,9 @@ shinyUI(
                                
                                conditionalPanel(
                                  condition = "input.sourceScatterY == 1", #Shanghai
+                                 h5('Filter by university rank (lower is better)'),
                                  sliderInput("y.sh.rank", "Shanghai rank:", min=0, max=500, value=c(1,500)),
+                                 h5('Filter by criteria score (higher is better)'),
                                  sliderInput("y.sh.alumni", "Alumni score:", min=0, max=100, value=c(0,100)),
                                  sliderInput("y.sh.award", "Award score:", min=0, max=100, value=c(0,100)),
                                  sliderInput("y.sh.hici", "HiCi score:", min=0, max=100, value=c(0,100)),
@@ -157,7 +159,9 @@ shinyUI(
                                
                                conditionalPanel(
                                  condition = "input.sourceScatterY == 2", #Times
+                                 h5('Filter by university rank (lower is better)'),
                                  sliderInput("y.t.rank", "Times rank:", min=0, max=400, value=c(1,400)),
+                                 h5('Filter by criteria score (higher is better)'),
                                  sliderInput("y.t.teaching", "Teaching score:", min=0, max=100, value=c(0,100)),
                                  sliderInput("y.t.international", "International score:", min=0, max=100, value=c(0,100)),
                                  sliderInput("y.t.research", "Research score:", min=0, max=100, value=c(0,100)),
@@ -167,15 +171,18 @@ shinyUI(
                                
                                conditionalPanel(
                                  condition = "input.sourceScatterY == 3", #CWUR
+                                 h5('Filter by university rank (lower is better)'),
                                  sliderInput("y.c.rank", "CWUR rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("y.c.education", "Education rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("y.c.alumni", "Alumni employment rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("y.c.faculty", "Faculty rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("y.c.pub", "Publications rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("y.c.influence", "Influence rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("y.c.citations", "Citations rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("y.c.impact", "Broad impact rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("y.c.patents", "Patents rank:", min=0, max=1000, value=c(1,1000))
+                                 h5('Filter by criteria score (higher is better)'),
+                                 sliderInput("y.c.education", "Education score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("y.c.alumni", "Alumni employment score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("y.c.faculty", "Faculty score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("y.c.pub", "Publications score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("y.c.influence", "Influence score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("y.c.citations", "Citations score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("y.c.impact", "Broad impact score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("y.c.patents", "Patents score*:", min=0, max=100, value=c(1,100)),
+                                 helpText("* CWUR sub-criteria rankings were converted to scores. See Reference tab for details")
                                ) ),
                         
                         column(6,
@@ -184,7 +191,9 @@ shinyUI(
                                
                                conditionalPanel(
                                  condition = "input.sourceScatterX == 1", #Shanghai
+                                 h5('Filter by university rank (lower is better)'),
                                  sliderInput("x.sh.rank", "Shanghai rank:", min=0, max=500, value=c(1,500)),
+                                 h5('Filter by criteria score (higher is better)'),
                                  sliderInput("x.sh.alumni", "Alumni score:", min=0, max=100, value=c(0,100)),
                                  sliderInput("x.sh.award", "Award score:", min=0, max=100, value=c(0,100)),
                                  sliderInput("x.sh.hici", "HiCi score:", min=0, max=100, value=c(0,100)),
@@ -195,7 +204,9 @@ shinyUI(
                                
                                conditionalPanel(
                                  condition = "input.sourceScatterX == 2", #Times
+                                 h5('Filter by university rank (lower is better)'),
                                  sliderInput("x.t.rank", "Times rank:", min=0, max=400, value=c(1,400)),
+                                 h5('Filter by criteria score (higher is better)'),
                                  sliderInput("x.t.teaching", "Teaching score:", min=0, max=100, value=c(0,100)),
                                  sliderInput("x.t.international", "International score:", min=0, max=100, value=c(0,100)),
                                  sliderInput("x.t.research", "Research score:", min=0, max=100, value=c(0,100)),
@@ -205,15 +216,18 @@ shinyUI(
                                
                                conditionalPanel(
                                  condition = "input.sourceScatterX == 3", #CWUR
+                                 h5('Filter by university rank (lower is better)'),
                                  sliderInput("x.c.rank", "CWUR rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.education", "Education rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.alumni", "Alumni employment rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.faculty", "Faculty rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.pub", "Publications rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.influence", "Influence rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.citations", "Citations rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.impact", "Broad impact rank:", min=0, max=1000, value=c(1,1000)),
-                                 sliderInput("x.c.patents", "Patents rank:", min=0, max=1000, value=c(1,1000))
+                                 h5('Filter by criteria score (higher is better)'),
+                                 sliderInput("x.c.education", "Education score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("x.c.alumni", "Alumni employment score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("x.c.faculty", "Faculty score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("x.c.pub", "Publications score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("x.c.influence", "Influence score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("x.c.citations", "Citations score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("x.c.impact", "Broad impact score*:", min=0, max=100, value=c(1,100)),
+                                 sliderInput("x.c.patents", "Patents score*:", min=0, max=100, value=c(1,100)),
+                                 helpText("* CWUR sub-criteria rankings were converted to scores. See Reference tab for details")
                                ) )
                       )
                )
@@ -241,16 +255,17 @@ shinyUI(
              ),
              hr(),
              fluidRow(width=12,
-                      box(width = 4,
-                          h4("Shanghai Scores (out of 100)"),
-                          htmlOutput("bar.shanghai")
+                      column(width = 4,
+                             h4("Shanghai Scores"),
+                             htmlOutput("bar.shanghai")
                       ),
-                      box(width = 4,
-                          h4("Times Scores (out of 100)"),
-                          htmlOutput("bar.times")),
-                      box(width = 4,
-                          h4("CWUR Ranks (out of 1000 universities)"),
-                          htmlOutput("bar.cwur"))
+                      column(width = 4,
+                             h4("Times Scores"),
+                             htmlOutput("bar.times")),
+                      column(width = 4,
+                             h4("CWUR Scores*"),
+                             htmlOutput("bar.cwur"),
+                             helpText("* CWUR sub-criteria rankings were converted to scores. See Reference tab for details"))
              )
     ),    
     
@@ -318,6 +333,7 @@ shinyUI(
                                  fluidRow(
                                    column(6,
                                           h4('Summary'),
+                                          p("This Shiny application was developed by Ho Fai Wong as part of the NYC Data Science Academy bootcamp and last updated on 5/13/2016."),
                                           p(a("Kaggle", href="https://www.kaggle.com/mylesoneill/world-university-rankings")," provided world university rankings from 3 different ranking organizations. 
                                             This Shiny application focuses on the 2015 rankings, covering 1015 institutions across 61 countries."),
                                           tags$ul(
@@ -333,7 +349,7 @@ shinyUI(
                                           tags$ul(
                                             tags$li('University and country names were reconciled across organizations, and missing countries filled in when necessary.'),
                                             tags$li('When a university\'s world rank is a range, the middle of the range was used for visualization purposes.'),
-                                            tags$li('Times and Shanghai data contained scores for sub-criteria, but CWUR data contained rankings. For this visualization project, CWUR rankings were not converted to scores.'),
+                                            tags$li('CWUR sub-criteria rankings were converted to scores out of 100 for consistency and comparison with Times and Shanghai data: score = (1-rank/max)*100'),
                                             tags$li('Missing sub-criteria ranks/scores, assumed to be Missing At Random, were imputed using K-Nearest Neigbhors with k=sqrt(n).')
                                           )
                                    ),
@@ -388,21 +404,20 @@ shinyUI(
                                         tags$ul(
                                           tags$li(strong('world_rank'),' - world rank for university.'),
                                           tags$li(strong('national_rank'),' - rank of university within its country.'),
-                                          tags$li(strong('quality_of_education - rank for quality of education.'),
-                                                  tags$li(strong('alumni_employment'),' - rank for alumni employment.'),
-                                                  tags$li(strong('quality_of_faculty'),' - rank for quality of faculty.'),
-                                                  tags$li(strong('publications'),' - rank for publications.'),
-                                                  tags$li(strong('influence'),' - rank for influence.'),
-                                                  tags$li(strong('citations'),' - rank for citations.'),
-                                                  tags$li(strong('broad_impact'),' - rank for broad impact (only available for 2014 and 2015)'),
-                                                  tags$li(strong('patents'),' - rank for patents.')
-                                          )
+                                          tags$li(strong('quality_of_education')," - measured by the number of a university's alumni who have won major international awards, prizes, and medals relative to the university's size."),
+                                          tags$li(strong('alumni_employment'),"measured by the number of a university's alumni who have held CEO positions at the world's top companies relative to the university's size"),
+                                          tags$li(strong('quality_of_faculty'),"measured by the number of academics who have won major international awards, prizes, and medals"),
+                                          tags$li(strong('publications'),"measured by the number of research papers appearing in reputable journals"),
+                                          tags$li(strong('influence'),"measured by the number of research papers appearing in highly-influential journals"),
+                                          tags$li(strong('citations'),"measured by the number of highly-cited research papers"),
+                                          tags$li(strong('broad_impact'),"measured by the university's h-index"),
+                                          tags$li(strong('patents'),"measured by the number of international patent filings")
                                         )
                                  )
                         )
                       )
-                      
                )
+               
              )
     )
   )

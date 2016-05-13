@@ -21,7 +21,7 @@ dashboardPage(
   ),
   
   dashboardSidebar(
-    
+    sidebarUserPanel("By R. Castellano"),
     sidebarMenu(
       menuItem("Map Cultural Institutions", tabName = "mapmenu", icon = icon("bank")),
       menuItem("Examine by Zipcodes", tabName = "zipcodemenu", icon = icon("map")),

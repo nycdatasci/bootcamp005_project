@@ -1,6 +1,4 @@
 library(shiny)
-library(shinydashboard)
-library(googleVis)
 library(dplyr)
 library(ggplot2)
 library(shinythemes)
@@ -43,22 +41,36 @@ rings_df = filter(playoffs, finals == 'Y') %>%
 nextrings = unique(rings_df)
 nextrings = summarise(group_by(nextrings, fran_id), Total = n())
 
-#df for opponents
-
 
 ui <- navbarPage(
-  #includeCSS("style.css"),
-  theme = shinytheme('cerulean'),
+  
   title = "NBA Stats 1947-2015",
-  id = "nav",
+  tags$head(
+    tags$style(HTML("
+                    @import url('//fonts.googleapis.com/css?family=Lobster|Cabin:400,700');
+
+                    body {
+                    background-color: white;
+                    background-image: url('n_1.png');
+                    background-size:cover;
+                    background-attachment:fixed;
+                    }
+                    "))
+    ),
   tabPanel("Stat Leaders",
            fluidRow(
-             column(4,
+             column(12,
+                    plotlyOutput("rings"))
+           ),
+           br(),
+           br(),
+           fluidRow(
+             column(6,
                     selectInput("game",
                          "Season or Playoff",
                          choices = c("Season", "Playoffs"),
                          multiple = F)),
-             column(4,
+             column(6,
                     sliderInput("range",
                                 "Range Top Records",
                                 min = 1,
@@ -66,18 +78,17 @@ ui <- navbarPage(
                                 value = c(1,5))
                     )
              ),
+           br(),
            fluidRow(
              column(12,
                     plotlyOutput("home"))
            ),
+           br(),
+           br(),
            fluidRow(
              column(12,
                     plotlyOutput("t_points")
-                    )),
-           fluidRow(
-             column(12,
-                    plotlyOutput("rings"))
-           )
+                    ))
            ),
            
   tabPanel("Team",
@@ -92,17 +103,19 @@ ui <- navbarPage(
                     selectInput("season",
                                 "Season or Playoff",
                                 choices = c("Season", "Playoffs"),
-                                multiple = F)
-                    ),
-             column(4,
-                    selectInput("year",
-                                "Year",
-                                choices = c(unique(season$year_id))))
+                                multiple = F))
+             #        ,
+             # column(4,
+             #        selectInput("year",
+             #                    "Year",
+             #                    choices = c(unique(season$year_id))))
              ),
            fluidRow(
              column(12,
                     plotlyOutput("teamplot"))
              ),
+           br(),
+           br(),
            fluidRow(
              column(12,
                     plotlyOutput("win_loss"))
@@ -110,11 +123,13 @@ ui <- navbarPage(
            ),
   tabPanel("Data",
            fluidRow(
-             column(6,
+             column(12,
              textInput("inputId",
                        label = NULL,
-                       value = "Link to code: https://www.putdat.com/rsVnH9T"))
-           ))
+                       value = "Data: https://www.putdat.com/rsVnH9T"))
+           )),
+  windowTitle = "NBA Stats",
+  theme = "bootstrap.css"
 )
 
 
@@ -141,16 +156,18 @@ server <- function(input, output) {
   #create plot for each team for either playoffs or season
   output$teamplot <- renderPlotly({
     p <- ggplot(seasoninput(), aes(x=year_id, y=ppg)) +
-      geom_bar(stat="identity", fill = "#FE2E2E", color= 'white') +
+      geom_bar(stat="identity", fill = "#FE2E2E", color= rgb(1,1,1,0.1), width = 0.9) +
       labs(title = paste0("Average PPG in ", input$season, collapse = NULL),
            x = " ",
            y = " ") +
-      theme_bw() +
+     theme_bw() +
       guides(color="none")
-    ggplotly(p)
+    p <- ggplotly(p)
     x = list(title = input$season)
     y = list(title = "Average Points per Game")
-    p %>% layout(xaxis = x, yaxis = y)
+    layout(p, xaxis = x, yaxis = y, paper_bgcolor = "rgba(0,0,0,0)", 
+           plot_bgcolor= 'rgba(255,255,255,0.1)', 
+           bgcolor= 'rgba(255,255,255,0.1)')
   })
   
   #create graph for userinput year for each team and season/playoff
@@ -166,7 +183,9 @@ server <- function(input, output) {
     ggplotly(g)
     x = list(title = "Year")
     y = list(title = "Winning Ratio")
-    g %>% layout(xaxis = x, yaxis = y)
+    layout(g, xaxis = x, yaxis = y, paper_bgcolor = "rgba(0,0,0,0)", 
+           plot_bgcolor= 'rgba(255,255,255,0.1)', 
+           bgcolor= 'rgba(255,255,255,0.1)')
   })
   
   #Best Record First, Second, Third
@@ -179,13 +198,17 @@ server <- function(input, output) {
       scale_x_continuous(breaks=seq(1947, 2015, by = 3)) +
       scale_y_continuous(breaks=seq(0, 1, by = .2)) +
       theme_bw() + 
-      scale_fill_discrete(name = "Teams")
+      scale_fill_discrete(name = "Teams",
+                          labels = c("Away", "Home"))
     ggplotly(q)
     x = list(title = "Year")
-    y = list(title = "Number of Wins")
-    q %>% layout(xaxis = x, yaxis = y)
+    y = list(title = "Wins/Total Games")
+    layout(q, xaxis = x, yaxis = y, paper_bgcolor = "rgba(0,0,0,0)", 
+           plot_bgcolor= 'rgba(255,255,255,0.1)', 
+           bgcolor= 'rgba(255,255,255,0.1)')
   })
   
+  #Graph for 
   output$t_points <- renderPlotly({
     t <- ggplot(bpinput(), aes(x=year_id, y=ppg, fill = fran_id)) +
       geom_bar(stat = "identity", color = "white") +
@@ -197,7 +220,9 @@ server <- function(input, output) {
     ggplotly(t)
     x = list(title = "Year")
     y = list(title = "Average PPG")
-    t %>% layout(xaxis = x, yaxis = y)
+    layout(t, xaxis = x, yaxis = y, paper_bgcolor = "rgba(0,0,0,0)", 
+           plot_bgcolor= 'rgba(255,255,255,0.1)', 
+           bgcolor= 'rgba(255,255,255,0.1)')
   })
   
   output$rings <- renderPlotly({
@@ -212,7 +237,12 @@ server <- function(input, output) {
      ggplotly(z)
      x = list(title = "Team")
      y = list(title = "Number of Championships")
-     z %>% layout(xaxis = x, yaxis = y)
+     layout(z, xaxis = x, 
+            yaxis = y,
+            showlegend = FALSE,
+            paper_bgcolor = "rgba(0,0,0,0)", 
+            plot_bgcolor= 'rgba(255,255,255,0.1)', 
+            bgcolor= 'rgba(255,255,255,0.1)')
                         
   })
 }

@@ -2,7 +2,7 @@ shinyUI(fluidPage(
       titlePanel("Cost of Living Estimator Between Cities"),
       fluidRow(
         column(4,
-        wellPanel(sliderInput("Salary", "Annual Salary in Dollars:",min = 10000, max = 500000, value= 10000)),
+        wellPanel(sliderInput("Salary", "Current Annual Salary in Dollars:",min = 20000, max = 500000, value= 10000)),
                selectInput("From.city", "From City:",Place,selected=1),
                selectInput("To.city", "To City:",Place,selected=1),
                br(),

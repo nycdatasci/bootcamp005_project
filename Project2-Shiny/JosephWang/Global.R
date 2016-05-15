@@ -1,4 +1,4 @@
-setwd("C:/Users/Joseph/Desktop/NY/Project2")
+#setwd("C:/Users/Joseph/Desktop/NY/Project2")
 library(shiny)
 library(openxlsx)
 data=read.xlsx("data.xlsx",sheet=1)

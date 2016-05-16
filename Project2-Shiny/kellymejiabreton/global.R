@@ -11,7 +11,7 @@ library(wordcloud)
 library(leaflet)
 
 
-setwd("/Users/AlexandKelly/rkelly")
+#setwd("/Users/AlexandKelly/rkelly")
 #x=read.xlsx2("311.xlsx", 1)
 x=read.csv("311new.csv")
 

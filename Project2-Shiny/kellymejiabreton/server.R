@@ -32,12 +32,16 @@ shinyServer(function(input, output) {
         
         #wordcloud_rep <- repeatable(wordcloud)
         
+     
+
+        
+        
         
         output$wordCloud1 <- renderPlot({
                 v <- y() 
-                
-                wordcloud(v$Complaint.Type, scale=c(11,.5),min.freq=3,
-                          max.words=100, random.order=FALSE, rot.per=.15, colors= brewer.pal(8, "Paired"), vfont=c("sans serif","bold"))
+                #par(mar=c(7,1,1,1))
+                wordcloud(v$Complaint.Type, scale=c(15,5),min.freq=1,
+                          max.words=100, random.order=FALSE, rot.per=0.15, colors= brewer.pal(8, "Paired"), vfont=c("sans serif","bold"))
                 
                 })
         
@@ -45,7 +49,7 @@ shinyServer(function(input, output) {
         output$map <- renderLeaflet({
                 u <- y()
                 leaflet() %>%
-                setView(-73.94197, 40.73638, zoom = 10) %>% 
+                setView(-73.94197, 40.73638, zoom = 12) %>% 
                 addTiles() %>%  # Add default OpenStreetMap map tiles
                 #addMarkers(lng=na.omit(df2$Longitude), lat=na.omit(df2$Latitude),  popup=df2$Complaint.Type)
                 addMarkers(lng=na.omit(u$Longitude), lat=na.omit(u$Latitude), popup=u$Complaint.Type)

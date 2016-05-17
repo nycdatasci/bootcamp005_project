@@ -10,7 +10,7 @@ shinyServer(function(input, output) {
         y <- reactive({
                 
                 #w=as.factor(input$boro)
-                select(filter(df2, Borough==input$boro), Complaint.Type, Longitude, Latitude, MONTH, ANNUAL, DAY)
+                select(filter(df2, Borough==input$boro), Borough, Complaint.Type, Longitude, Latitude, MONTH, ANNUAL, DAY)
                 #switch(input$dataset,
                  #      "Borough" = Borough,
                   #     "Month" = start.MMM,
@@ -27,14 +27,18 @@ shinyServer(function(input, output) {
                 
                 #w=y()[,input$Fre_q] data[,input$Fre_q]
                
-                ggplot(data = y(), aes_string(x= input$Fre_q)) + geom_bar(colour="Green", fill="Blue") +facet_grid(~Borough) + theme_gdocs()
+                ggplot(data = y(), aes_string(x= input$Fre_q)) + 
+                        geom_bar(colour="Green", fill="Blue")  +
+                        facet_grid(~Borough) +
+                        theme(axis.text = element_text(size = 16),
+                              axis.title = element_text(size = 16))# + theme_gdocs()
         })
         
         #wordcloud_rep <- repeatable(wordcloud)
         
      
 
-        
+      
         
         
         output$wordCloud1 <- renderPlot({
@@ -45,11 +49,11 @@ shinyServer(function(input, output) {
                 
                 })
         
-        
+        #setView(-73.94197, 40.73638, zoom = 12) %>% 
         output$map <- renderLeaflet({
                 u <- y()
                 leaflet() %>%
-                setView(-73.94197, 40.73638, zoom = 12) %>% 
+                setView(-73.95756, 40.71772, zoom = 17) %>% 
                 addTiles() %>%  # Add default OpenStreetMap map tiles
                 #addMarkers(lng=na.omit(df2$Longitude), lat=na.omit(df2$Latitude),  popup=df2$Complaint.Type)
                 addMarkers(lng=na.omit(u$Longitude), lat=na.omit(u$Latitude), popup=u$Complaint.Type)
@@ -59,8 +63,8 @@ shinyServer(function(input, output) {
         
         
        
-        output$table <- renderTable({
-                head(group_by(filter(df, Borough==input$boro), Complaint.Type) %>%
+        output$table <- renderDataTable({
+                head(group_by(filter(df2, Borough==input$boro), Complaint.Type) %>%
                         summarise(Count=n()) %>%
                         arrange(desc(Count)), n=10) %>%
                         rename(Complaint = Complaint.Type)

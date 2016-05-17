@@ -25,7 +25,7 @@ shinyUI(
                 selectInput(inputId = "boro",
                             label = "Select a Borough:",
                             choices = c("BROOKLYN", "QUEENS", "MANHATTAN", "BRONX", "STATEN ISLAND"),
-                            selected = "BROOKLYN"),
+                            selected = pre_selected),
         
                    
                         # 

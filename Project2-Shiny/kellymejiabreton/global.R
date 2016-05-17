@@ -90,5 +90,5 @@ df2$MONTH=factor(df2$MONTH, levels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "
 #wordcloud(ap.d$word,ap.d$freq, scale=c(8,.2),min.freq=3,
 #          max.words=Inf, random.order=FALSE, rot.per=.15, colors=pal2)
 
-
+pre_selected = "BROOKLYN"
 

@@ -4,6 +4,7 @@ library(maps)
 library(mapproj)
 library(shinydashboard)
 library(plotly)
+library(DT)
 source("helpers.R")
 
 

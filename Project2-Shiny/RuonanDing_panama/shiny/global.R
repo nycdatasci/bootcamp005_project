@@ -4,7 +4,7 @@
 #data from: 
 #https://cloudfront-files-1.publicintegrity.org/offshoreleaks/data-csv.zip#_ga=1.150637622.1225731120.1462845567
 
-setwd("~/offshore_leaks_csvs")
+#setwd("~/offshore_leaks_csvs")
 entities <- read.csv("Entities.csv", header = T)
 intermediaries <- read.csv("Intermediaries.csv", header= T)
 

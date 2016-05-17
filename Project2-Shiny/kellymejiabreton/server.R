@@ -16,6 +16,11 @@ shinyServer(function(input, output) {
                   #     "Month" = start.MMM,
                    #    "Year" = start.yr)
         })
+        
+        mapdata <- reactive({
+          res = select(filter(df2, Borough==input$boro), Borough, Complaint.Type, Longitude, Latitude, MONTH, ANNUAL, DAY)
+          return (res[complete.cases(res), ])
+        })
 
         #maybe create a function where input$boro is the input
        
@@ -51,13 +56,33 @@ shinyServer(function(input, output) {
         
         #setView(-73.94197, 40.73638, zoom = 12) %>% 
         output$map <- renderLeaflet({
-                u <- y()
-                leaflet() %>%
-                setView(-73.95756, 40.71772, zoom = 17) %>% 
-                addTiles() %>%  # Add default OpenStreetMap map tiles
-                #addMarkers(lng=na.omit(df2$Longitude), lat=na.omit(df2$Latitude),  popup=df2$Complaint.Type)
-                addMarkers(lng=na.omit(u$Longitude), lat=na.omit(u$Latitude), popup=u$Complaint.Type)
-                })
+          mapdata <- select(filter(df2, Borough=="BROOKLYN"), Borough, Complaint.Type, Longitude, Latitude)
+          mapdata <- mapdata[complete.cases((mapdata)),]
+          
+          ##########
+          leaflet(data = mapdata) %>% addTiles() %>%
+            setView(-73.95756, 40.71772, zoom = 17) %>%
+            addMarkers(~Longitude, ~Latitude, popup = ~as.character(Complaint.Type),
+                       clusterOptions = markerClusterOptions()) %>%
+            addTiles()
+          ##########
+          # leaflet(data = mapdata) %>%
+          #   setView(-73.95756, 40.71772, zoom = 17) %>%
+          #   addMarkers(lng= ~Longitude, lat= ~Latitude, popup= ~as.character(Complaint.Type)) %>%
+          #   addTiles()# Add default OpenStreetMap map tiles
+        })
+        
+        observe({
+          leafletProxy("map", data = mapdata()) %>%
+            # clearMarkers() %>%
+            # addMarkers(lng= ~Longitude, lat= ~Latitude, popup= ~Complaint.Type)
+            ##############
+            clearMarkerClusters() %>%
+            addMarkers(~Longitude, ~Latitude, popup = ~as.character(Complaint.Type),
+                       clusterOptions = markerClusterOptions())
+            ##############
+            
+        })
 
         #select(filter(df2, Borough=="BROOKLYN"), Complaint.Type)
         

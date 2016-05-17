@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(plotly)
 source("helpers.R")
+library(DT)
 
 shinyUI(dashboardPage(
     dashboardHeader(title = "Food and health demographics in the USA", titleWidth = 400), 
@@ -156,7 +157,7 @@ shinyUI(dashboardPage(
                                              min = rlow(data$PCT_HSPA09), 
                                              max = rhi(data$PCT_HSPA09), value = 
                                                  valme(data$PCT_HSPA09),
-                                             round = TRUE),
+                                             step =  0.1),
                                  sliderInput("POVRT", label = p("Poverty rate, 2010"),
                                              min = rlow(data$POVRATE10), 
                                              max = rhi(data$POVRATE10), value = 

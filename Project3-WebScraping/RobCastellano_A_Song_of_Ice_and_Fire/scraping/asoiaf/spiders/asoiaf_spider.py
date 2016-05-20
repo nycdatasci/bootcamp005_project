@@ -15,7 +15,7 @@ class AsoiafSpider(Spider):
         self.driver = webdriver.Chrome()
 
     def parse(self, response):
-        #Read in urls. #urls.txt is all of the urls of all the chapters. I made this list in ipython notebook urls.ipynb
+        #Read in urls. #urls.txt is all of the urls of all the chapters. I made the list of urls in urls.py
         with open('urls.txt', 'r') as f:
             urls = [line.strip('\n') for line in f]
         for url in urls:

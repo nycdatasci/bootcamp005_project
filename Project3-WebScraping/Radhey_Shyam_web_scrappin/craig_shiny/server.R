@@ -31,8 +31,17 @@ shinyServer(function(input, output) {
     #print(input$show_vars)
     #data_input()$Borrower_Gender
     w=ggplot(data=temp)+geom_bar(aes(x=reorder(week_day,week_day,function(x)length(x))),fill="#FF9999", colour="black") + ggtitle("Weekday of Posting Craiglist Ad")+ labs(y="Count",x="") + scale_fill_discrete(name ="")
-    w
-  })  
+    w 
+  }) 
+  
+  output$price <- renderPlot({
+    
+    g5=ggplot(data=temp,aes(price,fill="#FF9999"))+ geom_histogram(binwidth =500)+coord_cartesian(xlim = c(0,20000))
+    g5 
+  }) 
+  
+  
+  
   output$time_posting <- renderPlot({
     
     h2=ggplot(data=temp)+geom_bar(aes(x=time_24,fill="#FF9999"))+
@@ -41,7 +50,7 @@ shinyServer(function(input, output) {
   }) 
   
   output$week_time_violin <- renderPlot({
-    t2 = ggplot(data = temp, aes(x =reorder(week_day,week_day,function(x)length(x)), y = time_24,fill=week_day)) + geom_violin()+xlab("")+ylab("count")+ scale_fill_discrete(name ="")
+    t2 = ggplot(data = temp, aes(x =reorder(week_day,week_day,function(x)length(x)), y = time_24,fill=week_day)) + geom_violin()+xlab("")+ylab("Time")+ scale_fill_discrete(name ="")
     t2
    
   }) 

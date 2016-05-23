@@ -1,100 +1,70 @@
-library(maptools)
-library(ggplot2)
-library(ggmap)
-library(rgeos)
-library(dplyr)
-library(stringi)
-library(sp)
-library(ggvis)
-library(googleVis)
-
 shinyServer(function(input, output){
-  #bluevis <- reactive({})
-  
-  #two different time periods 
-  
-  #redvis <- reactive({})
-  # make it into an image?????
-  #show bigger map
-  #different shades for each glacier??
-  #dropdown by region instead
-  #let's look at the data again.
-  #Norway, Iceland, Canada, Artic Circle 
-  
-  vis <- reactive({
-
-    glacP <- readShapePoly(fn = "glims_download_28564/glims_polygons.shp")
-    glacP <- gBuffer(glacP, byid=TRUE, width=0)
-    glac.NE  <- glacP[glacP$geog_area == "Northeast Greenland",]
-    
-   #glac.choice <- as.data.frame(glac.NE$geog_area[1])
-    glac.choice <- as.data.frame(c("Northeast Greenland", "Alaska"))
-    
-    maap <- ggplot2::fortify(glac.NE, region = "glac_name")
-    maap$id = "NE GREENLAND"
-    NE.Gr <- id.data %>% filter(., YEAR == 2008:2014) %>% select(., NAME.x, YEAR, ANNUAL_BALANCE, 
-             GEN_LOCATION, SPEC_LOCATION, LATITUDE, LONGITUDE,GEO.REGION_CODE)
-    MapDf <- merge(maap, NE.Gr, by.x="id", by.y="GEN_LOCATION") #done
-    
-    MapDf %>% ggvis(~long, ~lat) %>% group_by(group, id) %>% layer_paths(strokeOpacity:=0.5, 
-             stroke:="#7f7f7f") %>% hide_legend("fill") %>% hide_axis("x") %>% hide_axis("y") %>%  set_options(width=400, 
-                                                                                                               height=600, keep_aspect=TRUE)
-    #MapDfnew <- group_by(MapDf, YEAR) %>% summarise_each(funs(mean), ANNUAL_BALANCE)%>% mutate(MapDf, 
-                                                #  CUMULATIVE_BAL = cumsum(ANNUAL_BALANCE))
-    
-   # MapDf$colour <- ifelse(MapDf$CUMULATIVE_BAL <= 0, 'red', 'blue')
-    MapDf$colour <- ifelse(MapDf$id == 'NE GREENLAND', 'blue')
-    
-    #group_by color
-    #red<-MapDf %>% group_by(., colour) %>% filter(., colour == 'red')
-    #problem: it could be red, blue, red, blue. not sequential
-    #cumulative is sequential. but not feasible 
-    #manually do it. if it's a certain year color it differently
-    
-                       # ifelse(MapDf$id == 'NE GREENLAND', 'blue') # need to scale it by year tho, input?
-    #if statement is only considering location, not year. 
-    
-    #blue one
-    #red one
-    #if MapDf$colour is red, fill red
-    #if MapDf$colur is blue, fill blue
-    
-    #RedGlacier
-    #BlueGlacier
-    
-    #*** MapDf has polygon fields, necessary for coloring in?
-    Glacier<-MapDf %>% group_by(group, id)%>% #Year?
-      ggvis(~long, ~lat) %>%
-      layer_paths(fill:= ~factor(colour))
-    
-    #i don't think this is dynamic. 
-    
-    #for one single year show the mass balance of multiple glaciers. manually?
-    # force it by glacier name then. with the drop down to link it. include a legend for the color and mass balance representation.
-    # i had initially wanted to show mass balance change for each year. but i guess the time series does that, for each glacier selected. 
+ 
+  basemap_data <- reactive({
+    return (glacP[glacP$geog_area == input$selected,])
   })
   
-  vis %>% bind_shiny("plot1")
-  ######
-  #bluevis %>% bind_shiny("plot.blue")
+  ## world map
+ output$plotworld <- renderLeaflet({
+    leaflet(gen.data) %>%
+       addTiles('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',attribution='Map tiles by
+                 <a href="http://stamen.com">Stamen Design</a>,<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash;
+                 Map data &copy; <a href="http://www.openstreetmap.org
+                 /copyright">OpenStreetMap</a>') %>% 
+        addCircles(~LONGITUDE, ~LATITUDE, popup=paste("Name:", gen.data$NAME,"<br>",
+                                                      "Lat:", gen.data$LATITUDE, "<br>",
+                                                      "Long:", gen.data$LONGITUDE,"<br>"), weight = 3, 
+                   radius=400,color="#00ecff", stroke = TRUE, fillOpacity = 0.8)
   
-  #redvis %>% bind_shiny("plot.red")
+  })
+
+  ## glacier map
+  output$plot1 <- renderLeaflet({
+    leaflet() %>%
+      addTiles() %>%
+      #setView(-73.944911, 40.732839, zoom = 11) %>%
+      addPolygons(data = basemap_data(),
+                  stroke = FALSE, weight = 2,
+                  fillOpacity = 0.1, smoothFactor = 0.5,
+                  color = cbPalette[input$slider[1]-2007])
+    #,color = cbPalette[input$slider[1]-2007])
+  })
   
-   output$LineChart <- renderGvis({
-      gvisLineChart(data=FREYA, xvar ="YEAR", yvar=c("ANNUAL_BALANCE", "CUMULATIVE_BAL"),
-                    options=list(title="Freya Glacier",
-                                 titleTextStyle="{color:'blue',fontName:'Courier',fontSize:16}")) 
-   })
-   
-   sliderValues <- reactive({ #an expression whose result will change over time.
+linechart_data <- reactive({
+    return (filter(NE.Gr.new, GEN_LOCATION %in% input$selectedts)%>% group_by(., YEAR) %>% summarise(., mean.annual
+            = mean(ANNUAL_BALANCE))%>% mutate(., mean.cumulative = cumsum(mean.annual))
+            )
+})
+  
+# need to pretty it up
+# maybe add a map here too or region? 
+
+output$LineChart <- renderGvis({
+ gvisLineChart(data=linechart_data(), xvar ="YEAR", yvar=c("mean.annual", "mean.cumulative"), 
+ options=list(title="Glacier", 
+ titleTextStyle="{color:'blue',fontName:'Courier',fontSize:16}",
+ vAxes="[{title:'Mass Balance',
+ titleTextStyle: {color: 'blue'},
+ textStyle:{color: 'blue'},
+ textPosition: 'out'}, 
+ {title:'Millions',
+ format:'#,###',
+ titleTextStyle: {color: 'red'},  
+ textStyle:{color: 'red'},
+ textPosition: 'out'}]",
+ hAxes="[{title:'Year', format: '####',
+ textPosition: 'out'}]",
+ legend="bottom",
+ width=750, height=700
+ ))
+})
+
+#Slider
+sliderValues <- reactive({ #an expression whose result will change over time.
+    print (input$slider)
     data.frame(
-      Value = as.character(c(input$slider))
+    Value = as.character(c(input$slider)) #, Balance = as.character(c(input$slider))
     )
    })
-   
-   output$values <- renderTable({
-     sliderValues() #captures the ui.R input$slider field year selected
-   })
-   #renderPlot
-   #renderGvis googleVis Chart
+    
 })

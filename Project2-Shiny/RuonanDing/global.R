@@ -11,4 +11,4 @@ category.table <- category.table[-1]
 
 category <- as.character(category.table[,1])
 nutrition <- colnames(country.table)[-1]
-nutrition2 <-colnames(topcountry.food.facts)[5:12]
+nutrition2 <-colnames(topcountry.food.facts)[4:12]

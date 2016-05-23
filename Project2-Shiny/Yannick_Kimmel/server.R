@@ -3,7 +3,8 @@ library(shiny)
 library(maps)
 library(mapproj)
 library(shinydashboard)
-
+library(plotly)
+library(DT)
 source("helpers.R")
 
 
@@ -85,19 +86,22 @@ shinyServer(
                    yaxis = list(title = input$var2))
         })
         
-        output$tabdb <- renderGvis({
-            gvisTable(tabledb,
-                      options=list(page='enable'))
-        })
+        output$tabdb <- DT::renderDataTable(tabledb, options = list(
+            scrollX = TRUE))
+    
+        output$coefs <- DT::renderDataTable(coef, options = list(
+            pageLength = 15))
+        
+        output$rendvifs <- renderDataTable(printvifs)    
         
         output$predtable <- renderUI({
-            g <- predfunc(GROC = input$GROC, Conv = input$Conv, FF = input$FF, LACCESS = 
+            g <- predfunc(GROC = input$GROC, Conv = input$Conv, Full = input$Full, FF = input$FF, LACCESS = 
                          input$LACCESS, MEDHHIN = input$MEDHHIN, RECFAC = input$RECFAC,
                      PCT18 = input$PCT18, FOODINS = input$FOODINS, FARMRT = input$FARMRT, 
                      VEGFARM = input$VEGFARM, DIABETE = input$DIABETE, HSACT = input$HSACT,
                      POVRT = input$POVRT, PCT65 = input$PCT65)
-            str1 = paste("Predicted Obesity rate", round(g[1], 1), "%")
-            str2 = paste("Confident within", round(g[2], 1), "%", "to", round(g[3], 1), "%")
+            str1 = paste("Predicted obesity rate", round(g[1], 1), "%")
+            str2 = paste("95% confident that prediction is within", round(g[2], 1), "%", "to", round(g[3], 1), "%")
             HTML(paste(str1, str2, sep = '<br/>'))
             })
     }

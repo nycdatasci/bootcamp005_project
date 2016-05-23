@@ -11,14 +11,17 @@ library(wordcloud)
 library(leaflet)
 
 
-setwd("/Users/AlexandKelly/rkelly")
+#setwd("/Users/AlexandKelly/rkelly")
 #x=read.xlsx2("311.xlsx", 1)
-x=read.csv("311new.csv")
+x=read.csv("311randomsample2.csv")
 
-noise2=select(x, Created.Date, Closed.Date, Complaint.Type,
-              Descriptor, Location.Type, Incident.Zip, City, Borough,
-              X.Coordinate..State.Plane., Y.Coordinate..State.Plane.,
-              Latitude, Longitude, Unique.Key)
+df2=x
+
+df2$MONTH=factor(df2$MONTH, levels=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+#noise2=select(x, Created.Date, Closed.Date, Complaint.Type,
+#              Descriptor, Location.Type, Incident.Zip, City, Borough,
+#              X.Coordinate..State.Plane., Y.Coordinate..State.Plane.,
+#              Latitude, Longitude, Unique.Key)
 
 #z=read.xlsx2("neighborhoods_byzip_edit.xlsx", 1)
 #z=mutate(z, Incident.Zip=ZIP.Codes)
@@ -26,7 +29,7 @@ noise2=select(x, Created.Date, Closed.Date, Complaint.Type,
 
 #df=noise
 
-df=noise2
+#df=noise2
 
 #df=mutate(df, start.date=as.Date(as.numeric(as.character(
 #        df$Created.Date)), origin="1900-01-01"),
@@ -38,22 +41,22 @@ df=noise2
 #        end.day=day(end.date))
 
 
-df=mutate(df, start.date=as.Date(Created.Date, "%m/%d/%Y", origin="01/01/1900"),
-          end.date=as.Date(Closed.Date, "%m/%d/%Y", origin="01/01/1900"),
-          ANNUAL=year(start.date),
-          end.yr=year(end.date),
-          start.mo=month(start.date),
-          end.mo=month(end.date),
-          MONTH=month(start.date, label=TRUE, abbr=TRUE),
-          end.MMM=month(end.date, label=TRUE, abbr=TRUE),
-          DAY=day(start.date),
-          end.day=day(end.date)
-          )
+#df=mutate(df, start.date=as.Date(Created.Date, "%m/%d/%Y", origin="01/01/1900"),
+#          end.date=as.Date(Closed.Date, "%m/%d/%Y", origin="01/01/1900"),
+#          ANNUAL=year(start.date),
+#          end.yr=year(end.date),
+#          start.mo=month(start.date),
+#          end.mo=month(end.date),
+#          MONTH=month(start.date, label=TRUE, abbr=TRUE),
+#          end.MMM=month(end.date, label=TRUE, abbr=TRUE),
+#          DAY=day(start.date),
+#          end.day=day(end.date)
+#          )
 
 
 
 
-df2=group_by(df, Borough, Complaint.Type, MONTH, DAY, ANNUAL, Longitude, Latitude)
+#df2=group_by(df, Borough, Complaint.Type, MONTH, DAY, ANNUAL, Longitude, Latitude)
 
 #ggplot(data = df2, aes(x = Borough)) + geom_bar()
 
@@ -86,3 +89,6 @@ df2=group_by(df, Borough, Complaint.Type, MONTH, DAY, ANNUAL, Longitude, Latitud
 #png("wordcloud_packages.png", width=1280,height=800)
 #wordcloud(ap.d$word,ap.d$freq, scale=c(8,.2),min.freq=3,
 #          max.words=Inf, random.order=FALSE, rot.per=.15, colors=pal2)
+
+pre_selected = "BROOKLYN"
+

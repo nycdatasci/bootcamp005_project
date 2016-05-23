@@ -3,20 +3,15 @@
 #### Ho Fai Wong - May 8, 2016      ####
 ########################################
 
+## global.r ##
 library(VIM)
 library(dplyr)
 library(plotly)
 library(shiny)
-library(shinydashboard)
 library(googleVis)
-library(leaflet)
 library(shinythemes)
-library(htmltools)
-
-## global.R ##
-setwd("~/Desktop/Project 2/world-university-ranking")
-source('helpers.r')
-
+#setwd("~/Desktop/Project 2/world-university-ranking")
+source('./helpers.R')
 
 #################
 ####Data load####
@@ -67,7 +62,7 @@ cwur = cwur.src %>%
   mutate(., new_name = ifelse(is.na(new_name), university_name, new_name)) %>%
   filter(., year == 2015)
 #Missingness check: no NAs for 2015
-#cwur[,c(5:12)] = sapply(cwur[,c(5:12)], ranktoscore) #Convert CWUR ranks to scores
+cwur[,c(5:12)] = sapply(cwur[,c(5:12)], ranktoscore) #Convert CWUR ranks to scores
 
 
 ##########################

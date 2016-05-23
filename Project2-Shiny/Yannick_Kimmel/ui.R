@@ -1,17 +1,21 @@
 library(shiny)
 library(shinydashboard)
+library(plotly)
+source("helpers.R")
+library(DT)
 
 shinyUI(dashboardPage(
-    dashboardHeader(title = "Health demographics in the USA", titleWidth = 340), 
+    dashboardHeader(title = "Food and health demographics in the USA", titleWidth = 400), 
     dashboardSidebar(
-        sidebarUserPanel("Yannick Kimmel", image = "http://2igww43ul7xe3nor5h2ah1yq.wpengine.netdna-cdn.com/wp-content/uploads/2016/04/Yannick-300x300.jpg"),
+        sidebarUserPanel("Yannick Kimmel", image = "Yannick.jpg"),
         
         sidebarMenu(
             menuItem("Map", tabName = "mappanel", icon = icon("map")),
             menuItem("Trends", tabName = "trends", icon = icon("line-chart")),
             menuItem("Predictions", tabName = "predict", icon = icon("chevron-right")),
             menuItem("Data", tabName = "data", icon = icon("database"))
-        )
+        ),
+        helpText("  Information from the USDA's Food Environment Atlas on counties in the USA.")
     ),
      dashboardBody(
          tabItems(
@@ -19,8 +23,7 @@ shinyUI(dashboardPage(
                      fluidRow(
                          column(width = 12, 
                          box(
-                             # helpText("Create demographic maps with
-                             #          information from the USDA's Food Environment Atlas."),
+                             
                              selectInput("var", # choose the residents
                                          label = "Choose a variable to display",
                                          choices = c("Percent Adult Obese 2009", 
@@ -91,49 +94,105 @@ shinyUI(dashboardPage(
              
              tabItem(tabName = "predict",
                      fluidRow(
-                         h1("Let's make a prediction:"),
-                         h2(htmlOutput("predtable")),
+                         
+                         h2("Let's predict using multiple linear regression*:"),
+                         h3(htmlOutput("predtable")),
                          column(width = 12, 
-                             box(numericInput("GROC", label = h5("Grocery stores/1000 people"), 
-                                              value = 0.24),
-                                 numericInput("Conv", label = h5("Conveniences stores/1000 people"), 
-                                              value = 0.60),
-                                 numericInput("FF", label = h5("fast-food stores/1000 people"), 
-                                              value = 0.58),
-                                 numericInput("LACCESS", label = h5("Population, low access to store 
-                                                                    (%), 2010"), 
-                                              value = 23),
-                                 numericInput("MEDHHIN", label = h5("Median household income, 2010"), 
-                                              value = 4200),
-                                 numericInput("PCT18", label = h5("% Population under age 18, 2010"), 
-                                              value = 24)
+                             box(
+                                 sliderInput("GROC", label = p("Grocery stores/1000 people, 2012"),
+                                             min = rlow(data$GROCPTH12), 
+                                             max = rhi(data$GROCPTH12), value = 
+                                                 valme(data$GROCPTH12)), 
+                                 sliderInput("Conv", label = p("Conveniences stores/1000 people, 2012"),
+                                             min = rlow(data$CONVSPTH12), 
+                                             max = rhi(data$CONVSPTH12), value = 
+                                                 valme(data$CONVSPTH12)), 
+                                 sliderInput("FF", label = p("Fast-food stores/1000 people, 2012"),
+                                             min = rlow(data$FFRPTH12), 
+                                             max = rhi(data$FFRPTH12), value = 
+                                                 valme(data$FFRPTH12)), 
+                                 sliderInput("Full", label = p("Full-service restaurants/1,000 pop, 2012"),
+                                             min = rlow(data$FSRPTH12), 
+                                             max = rhi(data$FSRPTH12), value = 
+                                                 valme(data$FSRPTH12)), 
+                                 sliderInput("LACCESS", label = p("Population, low access to store 
+                                                                    (%), 2010"),
+                                             min = rlow(data$PCT_LACCESS_POP10), 
+                                             max = rhi(data$PCT_LACCESS_POP10), value = 
+                                                 valme(data$PCT_LACCESS_POP10)), 
+                                 sliderInput("MEDHHIN", label = p("Median household income, 2010"),
+                                             min = rlow(data$MEDHHINC10), 
+                                             max = rhi(data$MEDHHINC10), value = 
+                                                 valme(data$MEDHHINC10)), 
+                                 sliderInput("PCT18", label = p("% Population under age 18, 2010"),
+                                             min = rlow(data$PCT_18YOUNGER10), 
+                                             max = rhi(data$PCT_18YOUNGER10), value = 
+                                                 valme(data$PCT_18YOUNGER10)), 
+                                 sliderInput("RECFAC", label = p("Recreation & fitness facilities/
+                                                                  1,000 pop, 2012"),
+                                             min = rlow(data$RECFACPTH12), 
+                                             max = rhi(data$RECFACPTH12), value = 
+                                                 valme(data$RECFACPTH12))
                                  ),
 
                              box(
-                                 numericInput("FOODINS", label = h5("Household food insecurity (%, 
-                                                                    three-year average), 2010-12*"), 
-                                              value = 15),
-                                 numericInput("FARMRT", label = h5("Farmers' markets/1,000 pop, 2013"), 
-                                              value = 0.58),
-                                 numericInput("VEGFARM", label = h5("Vegetable farms, 2007"), 
-                                              value = 21),
-                                 numericInput("DIABETE", label = h5("Adult diabetes rate, 2010"), 
-                                              value = 11),
-                                 numericInput("HSACT", label = h5("High schoolers physically active (%), 2009*"), 
-                                              value = 24),
-                                 numericInput("POVRT", label = h5("Poverty rate, 2010"), 
-                                              value = 17),
-                                 numericInput("PCT65", label = h5("% Population 65 years or older, 2010"), 
-                                              value = 16),
-                                 numericInput("RECFAC", label = h5("Recreation & fitness facilities/1,000 pop, 2012"), 
-                                              value = 0.067)
+                                 sliderInput("FOODINS", label = p("Household food insecurity (%, 
+                                                                   three-year average), 2010-12*"), 
+                                             min = rlow(data$FOODINSEC_10_12), 
+                                             max = rhi(data$FOODINSEC_10_12), value = 
+                                                 valme(data$FOODINSEC_10_12)), 
+                                 sliderInput("FARMRT",label = p("Farmers' markets/1,000 pop, 2013"),
+                                             min = rlow(data$FMRKTPTH13), 
+                                             max = rhi(data$FMRKTPTH13), value = 
+                                                 valme(data$FMRKTPTH13)),
+                                 sliderInput("VEGFARM", label = p("Vegetable farms, 2007"),
+                                             min = rlow(data$VEG_FARMS07), 
+                                             max = rhi(data$VEG_FARMS07), value = 
+                                                 valme(data$VEG_FARMS07)),
+                                 sliderInput("DIABETE", label = p("Adult diabetes rate, 2010"), 
+                                             min = rlow(data$PCT_DIABETES_ADULTS10), 
+                                             max = rhi(data$PCT_DIABETES_ADULTS10), value = 
+                                                 valme(data$PCT_DIABETES_ADULTS10)),
+                                 sliderInput("HSACT", label = p("High schoolers physically active (%), 2009"),
+                                             min = rlow(data$PCT_HSPA09), 
+                                             max = rhi(data$PCT_HSPA09), value = 
+                                                 valme(data$PCT_HSPA09),
+                                             step =  0.1),
+                                 sliderInput("POVRT", label = p("Poverty rate, 2010"),
+                                             min = rlow(data$POVRATE10), 
+                                             max = rhi(data$POVRATE10), value = 
+                                                 valme(data$POVRATE10)),
+                                 sliderInput("PCT65", label = p("% Population 65 years or older, 2010"),
+                                             min = rlow(data$PCT_65OLDER10), 
+                                             max = rhi(data$PCT_65OLDER10), value = 
+                                                 valme(data$PCT_65OLDER10))
                              )
-                         )
+                         ),
+                         h2("Model fitting:"),
+                         p("Summary: As a preliminary prediction analysis, multiple linear regression was used
+                                  on 17 variables of interest to predict obesity rates. Stepwise regression 
+                                  showed that at least 10 variables are significant. Basic diagnostics indicate
+                                  model assumptions were not violated. 76% of the data was complete cases, while 
+                                  the rest had at least one NA. Only the complete cases were used in prediction."),
+                         h3("Coefficient table"),
+                         DT::dataTableOutput("coefs"),
+                         p(sigcodes),
+                         p(sumreg),
+                         h2("Appendix: Diagnostics"),
+                         dataTableOutput("rendvifs"),
+                         img(src = "Resvsfitted.jpeg"),
+                         img(src = "qqpot.jpeg"),
+                         img(src = "scaleloc.jpeg"),
+                         img(src = "leverage.jpeg"),
+                         img(src = "avplot1.jpeg"),
+                         img(src = "avplot2.jpeg")
+                         
+                         
                      )
              ),
              
              tabItem(tabName = "data",
-                     htmlOutput("tabdb"))
+                     DT::dataTableOutput("tabdb"))
          )
      )
 ))

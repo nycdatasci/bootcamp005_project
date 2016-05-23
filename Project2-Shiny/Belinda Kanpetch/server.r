@@ -33,7 +33,8 @@ server <- function(input, output, session) {
                   stroke = TRUE, weight = 2,
                   fillOpacity = 0.1, smoothFactor = 0.5,
                   color = 'gray',
-                  group = 'Community_Districts') %>%
+                  group = 'Community_Districts',
+                  popup = ~as.character(boro_cd)) %>%
       addLayersControl(
         overlayGroup = 'Community_Districts')
   })

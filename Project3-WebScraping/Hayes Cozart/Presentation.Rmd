@@ -50,7 +50,7 @@ filter(boardgames, year > 1950)%>%
 ggplot(data = ., aes(x= year)) + 
   geom_density(aes(color = Game.Rank))+
   ggtitle("Density of Boardgames by Year") +
-  ylab(label = "Density" )+ xlab(label = "Minimum time to play" )+
+  ylab(label = "Density" )+ xlab(label = "Year" )+
   scale_fill_brewer(palette = "Set1")
 ```
 

@@ -1,0 +1,177 @@
+---
+title: "Python Scraping: Popular Board Games"
+author: "Hayes Cozart"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Introduction
+
+- What website did I scrape?
+
+- What was the data I scraped?
+
+- Why boardgames?
+
+## Scraping
+![](C:/Users/Hayes/Desktop/BDS 005/Projects/Project 3/Page1.png) 
+
+
+
+## Scraping
+![](C:/Users/Hayes/Desktop/BDS 005/Projects/Project 3/page2.png)
+
+
+
+```{r, include=FALSE}
+#loading data
+setwd("C:/Users/Hayes/Desktop/BDS 005/Projects/Project 3")
+library(ggplot2)
+library(dplyr)
+boardgames = read.csv('boardgames.csv')
+
+str(boardgames)
+View(boardgames)
+
+boardgames$age = factor(boardgames$age, levels = c("[]", "[3+]", "[4+]","[5+]","[6+]","[7+]","[8+]","[9+]","[10+]","[11+]","[12+]","[13+]","[14+]","[15+]","[16+]","[17+]","[18+]","[25+]"))
+
+
+
+
+```
+
+## Year Game was Published
+```{r, echo = FALSE}
+filter(boardgames, year > 1950)%>%
+ggplot(data = ., aes(x= year)) + 
+  geom_density(aes(color = Game.Rank))+
+  ggtitle("Density of Boardgames by Year") +
+  ylab(label = "Density" )+ xlab(label = "Year" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+
+```{r, echo = FALSE}
+#
+```
+
+## Suggested Age
+```{r, echo = FALSE}
+ggplot(data = boardgames, aes(x= age)) + 
+  geom_bar(aes(fill = Game.Rank), position ="stack")+
+  ggtitle("Number of Boardgames by Suggested Age") +
+  ylab(label = "Count" )+ xlab(label = "Age" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+## Suggested Age
+```{r, echo = FALSE}
+ggplot(data = boardgames, aes(x= age)) + 
+  geom_bar(aes(fill = Game.Rank), position ="fill")+
+  ggtitle("Proportion of Boardgames by Suggested Age") +
+  ylab(label = "Proportion" )+ xlab(label = "Age" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+
+
+```{r, echo = FALSE}
+#
+```
+
+##Difficulty
+```{r, echo = FALSE}
+ggplot(data = boardgames, aes(x= dificulty)) + 
+  geom_density(aes(color = Game.Rank))+
+  ggtitle("Density of Boardgames by Difficulty") +
+  ylab(label = "Density" )+ xlab(label = "Difficulty Ranked 1-5" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+
+```{r, echo = FALSE}
+#
+```
+
+
+##Time it takes to Play
+```{r, echo = FALSE}
+filter(boardgames, timemin < 480)%>%
+  ggplot(data = . , aes(x= timemin)) + 
+  geom_density(aes(color = Game.Rank))+
+  ggtitle("Density of Boardgames by Time (Min)") +
+  ylab(label = "Density" )+ xlab(label = "Time (Min)" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+
+##Mechanics
+```{r, echo = FALSE}
+ggplot(data = boardgames, aes(x= factor(Number.of.mechanisms))) + 
+  geom_bar(aes(fill = Game.Rank), position ="stack")+
+  ggtitle("Number of Boardgames by Number of Mechanics") +
+  ylab(label = "Count" )+ xlab(label = "Number of Game Mechanics" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+##Mechanics
+```{r, echo = FALSE}
+ggplot(data = boardgames, aes(x= factor(Number.of.mechanisms))) + 
+  geom_bar(aes(fill = Game.Rank), position ="fill")+
+  ggtitle("Proportion of Boardgames by Number of Mechanics") +
+  ylab(label = "Proportion" )+ xlab(label = "Number of Game Mechanics" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+```{r, echo = FALSE}
+#
+```
+
+##Themes of the Game
+```{r, echo = FALSE}
+ggplot(data = boardgames, aes(x= factor(Number.of.categories))) + 
+  geom_bar(aes(fill = Game.Rank), position ="fill")+
+  ggtitle("Number of Boardgames by Number of Themes") +
+  ylab(label = "Proportion" )+ xlab(label = "Number of Themes" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+
+```{r, echo = FALSE}
+#
+```
+
+##Cost of the Game
+```{r, echo = FALSE}
+filter(boardgames, price < 100)%>%
+  ggplot(data = . , aes(x= price)) + 
+  geom_density(aes(color = Game.Rank))+
+  ggtitle("Density of Boardgames by Price ($)") +
+  ylab(label = "Density" )+ xlab(label = "Price ($)" )+
+  scale_fill_brewer(palette = "Set1")
+```
+
+
+```{r, echo = FALSE}
+#
+```
+
+## Conclusions
+
+- Board games have been growing more popular in recent years.
+
+- Difficulty of a game does seem to be associated with popularity.
+
+- The more mechanics a game has the more popular it is.
+
+## Future Work
+
+- Python visualizations
+
+- Make a shiny app
+
+- Machine learning

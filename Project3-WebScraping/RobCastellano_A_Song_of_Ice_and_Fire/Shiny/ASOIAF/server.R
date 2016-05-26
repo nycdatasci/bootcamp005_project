@@ -48,9 +48,9 @@ shinyServer(function(input, output) {
       for (pov in povs_selected())
       {
         g = g +
-          geom_line(data = filter(asoiaf, POV == pov), stat = "identity",
+          geom_line(data = dplyr::filter(asoiaf, POV == pov), stat = "identity",
                     color = povcolors[which(levels(asoiaf$POV) == pov)]) +
-          geom_point(data = filter(asoiaf, POV == pov),
+          geom_point(data = dplyr::filter(asoiaf, POV == pov),
                      color = povcolors[which(levels(asoiaf$POV) == pov)], size = 1)
       }
       ggplotly(tooltip = c("label","y", "label2"))   #Include ChapterName, Score, Book in tooltip

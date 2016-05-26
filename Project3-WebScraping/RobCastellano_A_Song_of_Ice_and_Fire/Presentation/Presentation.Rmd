@@ -119,7 +119,7 @@ I gathered the following information for each chapter:
 #Chapter Shiny app
 
 ##All chapters
-[Shiny app for chapters](http://192.168.1.212:3168/)
+[Shiny app for chapters](https://rtcastellano.shinyapps.io/ASOIAF/)
 
 Have fun and explore all the chapters! See where your favorite chapters and characters rank.
 

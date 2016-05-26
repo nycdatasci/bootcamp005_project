@@ -37,6 +37,8 @@ ggplot(asoiaf, aes(x = Score)) + geom_histogram(aes(#y =..density..,
   theme_minimal() + guides(fill = F) + scale_x_continuous(limits = c(5.5, 10)) + 
   ggtitle("Distribution of Scores\n (344 Chapters Total)") + xlab("Score") + ylab("Number of Chapters") + scale_fill_brewer(palette = "Set1")
 
+summary(asoiaf)
+
 ###################################################
 ############### BOOK RATINGS #######################
 ####################################################

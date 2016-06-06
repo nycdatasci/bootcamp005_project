@@ -21,6 +21,7 @@ sidebarLayout(
   # 
  mainPanel(
     tabsetPanel( 
+  tabPanel('Price Histogram', plotOutput("price")),
   tabPanel('Weekdays Bar', plotOutput("week")),
   tabPanel('Ad Posting time', plotOutput("time_posting")),
   tabPanel("Violin Plot",plotOutput("week_time_violin")),

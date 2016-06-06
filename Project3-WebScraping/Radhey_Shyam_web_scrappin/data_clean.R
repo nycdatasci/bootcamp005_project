@@ -9,16 +9,16 @@ craig_short_full=read.table("~/classnotes/mongodb/Debugging/mongodb_demo/craig_s
 
 craig_short_new[1]=lapply(craig_short_new[1], function(x) as.numeric(gsub("[,$]", "",x)))
 library(ggplot2)
-g=ggplot()+ geom_density(data=craig_cars,aes(x=price),fill=price)
+g=ggplot()+ geom_density(data=temp,aes(x=price),fill=price)
 
 g
 
 
-g1=ggplot()+ geom_freqpoly(data=craig_cars,aes(x=price),fill=price)
+g1=ggplot()+ geom_freqpoly(data=temp,aes(x=price))
 
 g1
 
-g2=ggplot(data=craig_cars,aes(price))+ geom_histogram()
+g2=ggplot(data=temp,aes(price))+ geom_histogram()
 
 g2
 
@@ -47,12 +47,12 @@ g4=ggplot(data=craig_cars_300,aes(price))+ geom_freqpoly() + coord_cartesian(xli
 
 g4
 
-g5=ggplot(data=craig_cars_300,aes(price))+ geom_histogram(binwidth =500)+coord_cartesian(xlim = c(0,30000))
+g5=ggplot(data=temp,aes(price,fill="#FF9999"))+ geom_histogram(binwidth =500)+coord_cartesian(xlim = c(0,25000))
 g5
 
 
-g6=ggplot(data=craig_cars_300,aes(price))+ geom_freqpoly()+coord_cartesian(xlim = c(0,25000))
-g6+ggtitle("Geom Frequency Poly")
+g6=ggplot(data=temp,aes(price))+ geom_freqpoly()+coord_cartesian(xlim = c(0,10000))
+g6+ggtitle("Count Vs. Price Frequency")
 
 g7=ggplot(data=craig_cars_300,aes(price))+ geom_density()+coord_cartesian(xlim = c(0,25000))
 g7+ggtitle("Geom_Density")

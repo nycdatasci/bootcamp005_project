@@ -1,6 +1,7 @@
 library(shiny)
 library(ggplot2)
 library(plotly)
+library(dplyr)
 library(shinythemes)
 
 load("LoadedData.RData")      #This is just all the data from all_chapters.csv and a color palette.

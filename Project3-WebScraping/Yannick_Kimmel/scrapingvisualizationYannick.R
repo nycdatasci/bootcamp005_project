@@ -4,6 +4,10 @@ library(tm)
 library(SnowballC)
 library(wordcloud)
 library(plotly)
+
+recipespd <- read.delim("recipespd.txt")
+ingredientspd <- read.delim("ingredientspd.txt")
+
 calsperyear = group_by(recipespd, year) %>% summarise(., median_cal_count = median(cal_count, na.rm= TRUE))
 plot(calsperyear)
 
@@ -64,17 +68,17 @@ trendsbaking = full_join(years, butter, by = c('year' = 'year')) %>%
     left_join(., flour, by = c('year' = 'year')) %>% left_join(., sugar, by = c('year' = 'year'))
 
 baking = cbind(years, reshape2::melt(trendsbaking[,-1]))
-plot_ly(data = baking, x = year, y = value, mode = "markers",
+plot_ly(data = baking, x = year, y = value, mode = "lines",
         color = variable, colors = "Set1")
-plot_ly(data = oliveoil, x = year, y = olive_oil, mode = "markers",
+plot_ly(data = oliveoil, x = year, y = olive_oil, mode = "lines",
        colors = "Set1")
 
 colnames(calsperyear) = c('year', 'median_cal_count')
-plot_ly(data = calsperyear, x = year, y = median_cal_count, mode = "markers",
+plot_ly(data = calsperyear, x = year, y = median_cal_count, mode = "lines", #size = 1,
         colors = "Set1")
 plot_ly(data = recipespd, x = year, y = review_count, mode = "markers",
         colors = "Set1")
-plot_ly(data = cookie, x = year, y = n, mode = "markers",
+plot_ly(data = cookie, x = year, y = n, mode = "lines",
         colors = "Set1")
 plot(recipespd$year, recipespd$review_count)
 

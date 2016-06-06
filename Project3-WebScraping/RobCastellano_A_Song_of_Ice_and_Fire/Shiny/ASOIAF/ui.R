@@ -14,7 +14,8 @@ shinyUI(fluidPage(theme = shinytheme("journal"),
                        selectize = TRUE)
     ),
     column(3,
-           HTML("<br>Data courtesy of <a href=\"http://towerofthehand.com/books/guide.html\" target = \"_blank\">Tower of the Hand</a>")
+           HTML("<br> Created by <a href=\"https://github.com/rtcastellano\" target = \"_blank\">R. Castellano</a>
+                <br>Data courtesy of <a href=\"http://towerofthehand.com/books/guide.html\" target = \"_blank\">Tower of the Hand</a>")
     )
   )
 ))

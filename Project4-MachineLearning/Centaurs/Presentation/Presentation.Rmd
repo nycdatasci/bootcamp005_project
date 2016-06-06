@@ -1,0 +1,212 @@
+---
+title: "Higgs Boson dataset: From Description to Ensemble"
+author: "Robert Castellano, Yannick Kimmel, Wanda Wang, Ho Fai Wong"
+output: 
+  beamer_presentation:
+    theme: "Berkeley"
+---
+\begin{center}
+\includegraphics[scale = .13]{Images/Higgs.jpg}
+\end{center}
+
+
+#Exploratory data analysis
+##Sparse dataset
+\begin{center}
+\includegraphics[scale = .4]{Images/missingnessandjets.jpg}
+\end{center}
+
+> - Jet number can be treated as a factor for missingness.
+
+##Principal component analysis
+\begin{center}
+\includegraphics[scale = .33]{Images/PC1PC2.jpeg}
+
+\includegraphics[scale = .33]{Images/PCAanalysis.png}
+\end{center}
+
+> - PCA shows that derived mass and label have a very strong relationship.
+
+##Mass as a predictor of Higgs Boson presence
+\begin{center}
+\includegraphics[scale = .35]{Images/sciencemass.png}
+\includegraphics[scale = .35]{Images/density.jpeg}
+\end{center}
+
+> - Derived mass of Higgs Boson is different from other Bosons and subatomic particles.
+> - Simulated dataset increases signal, and must be offset using weights.
+
+##Correlation matrix
+\begin{center}
+\includegraphics[scale = .5]{Images/corrplot.png}
+\end{center}
+
+> - There are several variables with strong covariance among the 33 variables. 
+
+##Initial Feature Engineering 
+\begin{center}
+\includegraphics[scale = .2]{Images/log_transformed.jpg}
+\includegraphics[scale = .2]{Images/pre_log_transformed.jpg}
+\end{center}
+
+> -  14 Features with long-tailed distributions were log transformed to reduce the positive skew towards smaller values, generating a more uniform distribution.. E.g. DER_mass_jet_jet: The invariant mass of the two jets.
+
+##Logistic Regression - Variable Importance
+\begin{center}
+\includegraphics[scale = .17]{Images/Sat_Model-VarImp.jpg}
+\includegraphics[scale = .17]{Images/Stepwise-VarImp.jpg}
+\end{center}
+
+> -  Saturated Model vs. Stepwise BIC Model
+
+##Logistic Regression - Analysis
+\begin{center}
+\includegraphics[scale = .1]{Images/residual_plot-logistic.jpg}
+
+\includegraphics[scale = .1]{Images/AUC-logistic.jpg}
+\end{center}
+
+> -  Saturated Model: R.Squared: 0.20227; Stepwise BIC model: R.Squared: 0.20223.
+> -  Chi-Squared P-value: 3.77 e-16 (Saturated) and 3.90 e-16 (Stepwise).
+> -  AUC plots are also not very different from one another.
+
+##Choice of AUC as model fit metric 
+\begin{center}
+\includegraphics[scale = .4]{Images/RF_AUC_plot.jpeg}
+\end{center}
+
+> -  Maximizes the true positive rate while also minimizes the false positive rate. 
+
+> -  Produces a smooth and continuous function unlike AMS.
+
+#Models
+##Our models
+
+> - Random forest
+> - Gbm
+> - Xgboost
+
+##Random forest model
+
+\begin{itemize}
+\item Tuning parameters
+\begin{itemize}
+  \item mtry: Number of splits per tree
+\end{itemize}
+\pause
+\item Performed 5-fold CV to tune parameters.
+\begin{itemize}
+  \item 20\% of training data for mtry gride of 1, 2, 3, 6, 9
+  \item 80\% of training data for mtry gride of 4, 5, 6, 7, 8
+  \item mtry = 5
+\end{itemize}
+\pause
+\item AUC on training data = .9071
+\item Kaggle rank = 1311
+\item AMS = 2.57949
+\end{itemize}
+
+##Random forest variable importance
+
+\includegraphics[scale = .6]{Images/rfvarimp.jpeg}
+
+##Gbm model
+
+\begin{itemize}
+\item Gradient boosting model
+\pause
+\item Tuning parameters
+\begin{itemize}
+  \item shrinkage: Learning rate
+  \item interaction\_depth: Depth of variable interactions
+  \item n.trees: Number of trees
+  \item n.minobsinnode: Minimum number of observations in a terminal node
+\end{itemize}
+\pause
+\item Performed 5-fold CV to tune parameters.
+\begin{itemize}
+  \item shrinkage = .1
+  \item interaction\_depth = 3
+  \item n.trees = 150
+  \item n.minobsinnode = 10
+\end{itemize}
+\pause
+\item AUC on training data = .9071
+\item Kaggle rank = 1311
+\item AMS = 2.57949
+\end{itemize}
+
+##Random forest variable importance
+
+\includegraphics[scale = .6]{Images/rfvarimp.jpeg}
+
+##About xgboost
+
+> - Fast gradient boosting algorithm implementing in C++ by Tianqi Chen
+
+> - Parallel computing
+
+> - More tuning parameters
+
+> - Not completely greedy in tree creation
+
+> - Generally faster and performs better than gbm.
+
+##Xgboost model
+
+\begin{itemize}
+\item Parameters we tuned:
+\begin{itemize}
+  \item nrounds: Number of trees
+  \item max\_depth
+  \item colsample\_bytree: Percent of parameters used at each split.
+  tree
+  \item eta: Learning rate
+\end{itemize}
+\pause
+\item Performed 5-fold CV to tune parameters.
+\begin{itemize}
+  \item nrounds = 200
+  \item max\_depth = 5
+  \item colsample\_bytree = .85
+  \item eta = .2
+\end{itemize}
+\pause
+\item AUC on training data = .9254
+\item Kaggle rank = 1340
+\item AMS = 2.49958
+\end{itemize}
+
+
+##Xgboost variable importance
+
+\includegraphics[scale = .6]{Images/xgboost_var_importance.png}
+
+## Ensemble
+
+> - Combined three models by majority vote
+> - Kaggle rank = 1309
+> - AMS = 2.58510
+
+#Room for improvement
+
+##Feature engineering
+
+\begin{itemize}
+\item We did not include any additional variables
+\begin{itemize}
+\item Basic physics. e.g. Cartesian coordinates of momentum
+\pause
+\item Advanced physcics: e.g. CAKE variable
+\pause
+\item Better understand the physics of additional models
+\end{itemize}
+\pause
+\item Log transforms
+\end{itemize}
+
+##Models
+
+> - More models
+> - More sophisticated emsemble
+> - Run different random seeds for the same model

@@ -1,7 +1,7 @@
 library(kknn)
 library(class)
 library(data.table)
-setwd("~/GitHub-kszela24/facebook/Szela")
+setwd("~/GitHub-kszela24/bootcamp005_project/Project5-Capstone/Faceback/Szela")
 
 range01 <- function(x){(x-min(x))/(max(x)-min(x))}
 
@@ -49,3 +49,34 @@ for (j in 0:6) {
     dir.create(pred_file)
   }
 }
+
+prediction_total = data.frame()
+
+for (i in 0:47) {
+  print(i)
+  for (j in 0:6) {
+    print(j)
+    for (p in -1:1) {
+      c = 0
+      if (i + p < 0) {
+        c = 47
+      } else if (i + p > 47) {
+        c = 0
+      } else {
+        c = i + p
+      }
+      
+      #Need to get rowId's only once.
+      if (p == -1) {
+        
+      }
+      
+      for (q in 0:6) {
+        
+      }
+    }
+  }
+}
+
+pred_file = paste0("./test_predictions/test_day_", 0, "/test_hour_", 0, "/predictions_from_train_day_", 0, "_train_hour_", 0, ".csv")
+preds = read.csv(pred_file)

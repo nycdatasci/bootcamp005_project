@@ -1,0 +1,4 @@
+#Not allowing csv's to get uploaded
+*.csv
+*.RData
+*.Rhistory

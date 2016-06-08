@@ -45,8 +45,8 @@ output:
 
 ##Initial Feature Engineering 
 \begin{center}
-\includegraphics[scale = .2]{Images/log_transformed.jpg}
 \includegraphics[scale = .2]{Images/pre_log_transformed.jpg}
+\includegraphics[scale = .2]{Images/log_transformed.jpg}
 \end{center}
 
 > -  14 Features with long-tailed distributions were log transformed to reduce the positive skew towards smaller values, generating a more uniform distribution.. E.g. DER_mass_jet_jet: The invariant mass of the two jets.
@@ -59,17 +59,6 @@ output:
 
 > -  Saturated Model vs. Stepwise BIC Model
 
-##Logistic Regression - Analysis
-\begin{center}
-\includegraphics[scale = .1]{Images/residual_plot-logistic.jpg}
-
-\includegraphics[scale = .1]{Images/AUC-logistic.jpg}
-\end{center}
-
-> -  Saturated Model: R.Squared: 0.20227; Stepwise BIC model: R.Squared: 0.20223.
-> -  Chi-Squared P-value: 3.77 e-16 (Saturated) and 3.90 e-16 (Stepwise).
-> -  AUC plots are also not very different from one another.
-
 ##Choice of AUC as model fit metric 
 \begin{center}
 \includegraphics[scale = .4]{Images/RF_AUC_plot.jpeg}
@@ -78,6 +67,16 @@ output:
 > -  Maximizes the true positive rate while also minimizes the false positive rate. 
 
 > -  Produces a smooth and continuous function unlike AMS.
+
+##Logistic Regression - Analysis
+\begin{center}
+%\includegraphics[scale = .1]{Images/residual_plot-logistic.jpg}
+\includegraphics[scale = .17]{Images/AUC-logistic.jpg}
+\end{center}
+
+> -  Saturated Model: R.Squared: 0.20227; Stepwise BIC model: R.Squared: 0.20223.
+> -  Chi-Squared P-value: 3.77 e-16 (Saturated) and 3.90 e-16 (Stepwise).
+> -  AUC plots are also not very different from one another.
 
 #Models
 ##Our models
@@ -108,7 +107,7 @@ output:
 
 ##Random forest variable importance
 
-\includegraphics[scale = .6]{Images/rfvarimp.jpeg}
+\includegraphics[scale = .6]{Images/rfvarimportancecolor.jpeg}
 
 ##Gbm model
 
@@ -131,14 +130,14 @@ output:
   \item n.minobsinnode = 10
 \end{itemize}
 \pause
-\item AUC on training data = .9071
-\item Kaggle rank = 1311
-\item AMS = 2.57949
+\item AUC on training data = .855
+\item Kaggle rank = 1394
+\item AMS = 2.30069
 \end{itemize}
 
-##Random forest variable importance
+##Gbm variable importance
 
-\includegraphics[scale = .6]{Images/rfvarimp.jpeg}
+\includegraphics[scale = .6]{Images/gbm_importance.png}
 
 ##About xgboost
 
@@ -197,9 +196,9 @@ output:
 \begin{itemize}
 \item Basic physics. e.g. Cartesian coordinates of momentum
 \pause
-\item Advanced physcics: e.g. CAKE variable
+\item Advanced physics: e.g. CAKE variable
 \pause
-\item Better understand the physics of additional models
+\item Better understand the physics of additional variables
 \end{itemize}
 \pause
 \item Log transforms

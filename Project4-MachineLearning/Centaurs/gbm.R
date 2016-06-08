@@ -87,6 +87,19 @@ plot(auc_train, print.thres=TRUE)
 threshold <- 0.002
       #=> Verify threshold
 
+#########Variable importance
+var.imp = varImp(m_gbm)
+
+ggplot(var.imp$importance, aes(reorder(x = labels(var.imp$importance)[[1]], Overall))) + 
+  geom_bar(aes(y = Overall, fill = labels(var.imp$importance)[[1]]), stat = 'identity') + 
+  coord_flip()  + ylab("Variable importance") + xlab("Features") + 
+  ggtitle("Variable importance for gbm") + guides(fill = F)
+       
+       , aes(reorder(x = Feature, Gain), y = Gain)) + 
+  geom_bar(aes(fill = 1), stat = "identity") + coord_flip() +
+  
+
+
 ###### Apply fitted model to val data (i.e. 20% of dfTrain)
 gbmValPred <- predict(m_gbm, newdata=train[val.index,], type="prob")
 auc_val = roc(labels[val.index], gbmValPred[,2])

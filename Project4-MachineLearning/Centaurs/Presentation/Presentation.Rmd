@@ -75,7 +75,7 @@ output:
 \end{center}
 
 > -  Saturated Model: R.Squared: 0.20227; Stepwise BIC model: R.Squared: 0.20223.
-> -  Chi-Squared P-value: 3.77 e-16 (Saturated) and 3.90 e-16 (Stepwise).
+> - In comparing the deviance of the stepwise model to the deviance of the saturated model, the p-value for the overall test of deviance is > 0.65 (high)
 > -  AUC plots are also not very different from one another.
 
 #Models

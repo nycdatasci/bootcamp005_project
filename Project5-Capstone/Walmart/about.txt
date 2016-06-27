@@ -1,0 +1,25 @@
+ Objective:
+- Project the sales for each department in each store
+- Predict which departments are affected and the extent of the impact of holiday sales
+
+Data:
+- 45 Walmart stores in different regions
+- 4 holidays:
+	- Super Bowl: 12-Feb-10, 11-Feb-11, 10-Feb-12, 8-Feb-13
+	- Labor Day: 10-Sep-10, 9-Sep-11, 7-Sep-12, 6-Sep-13
+	- Thanksgiving: 26-Nov-10, 25-Nov-11, 23-Nov-12, 29-Nov-13
+	- Christmas: 31-Dec-10, 30-Dec-11, 28-Dec-12, 27-Dec-13
+- stores.csv
+	- 45x3
+	- store, type (A,B,C), size
+- train.csv
+	- 421570x5
+	- store, dept, date (week), weekly_sales, isholiday
+	- 2010-02-05 to 2012-11-01
+- test.csv
+	- 115064x4
+	- store, dept, date (week), isholiday
+	* predict the sales for each triplet of store, department, and date
+- features.csv
+	- 8190x12
+	- store, date, temperature, fuel_price, markdown(1-5), cpi, unemployment, isholiday

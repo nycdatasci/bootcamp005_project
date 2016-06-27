@@ -1,4 +1,6 @@
-#Not allowing csv's to get uploaded
+#Not allowing csv's or R data to get uploaded
 *.csv
 *.RData
 *.Rhistory
+*.zip
+*.rds

@@ -1,7 +1,7 @@
 library(kknn)
 library(class)
 library(data.table)
-setwd("~/GitHub-kszela24/bootcamp005_project/Project5-Capstone/Faceback/Szela")
+setwd("~/GitHub-kszela24/Faceback/Szela")
 
 range01 <- function(x){(x-min(x))/(max(x)-min(x))}
 

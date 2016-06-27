@@ -1,1 +1,2 @@
 - http://matplotlib.org/ #matplotlib documentation 
+- https://www.kaggle.com/tlehman/facebook-v-predicting-check-ins/voronoi-diagrams-of-place-locations 

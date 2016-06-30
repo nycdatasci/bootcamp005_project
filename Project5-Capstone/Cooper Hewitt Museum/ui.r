@@ -13,13 +13,23 @@ shinyUI(navbarPage(
            fluidRow(
              column(4,
                     selectizeInput('input_decade', 'Select a decade',
-                                   unique(as.character(objects_info$decade)),
-                                   multiple = TRUE)
+                                   sort(unique(as.character(objects_info$decade)), decreasing=TRUE),
+                                   multiple = FALSE,
+                                   selected = NULL,
+                                   options = list(
+                                     placeholder = 'Please select an option below',
+                                     onInitialize = I('function() { this.setValue(""); }')
+                                   ))
              ),
              column(4,
                     selectizeInput('input_country', 'Select a country',
-                                   unique(as.character(objects_info$woe.country_name)),
-                                   multiple = TRUE)
+                                   sort(unique(as.character(objects_info$woe.country_name)), decreasing=FALSE),
+                                   multiple = FALSE,
+                                   selected = NULL,
+                                   options = list(
+                                     placeholder = 'Please select an option below',
+                                     onInitialize = I('function() { this.setValue(""); }')
+                                   ))
              ),
              column(4,
                     actionButton("recommend", label = "get recommendations"))

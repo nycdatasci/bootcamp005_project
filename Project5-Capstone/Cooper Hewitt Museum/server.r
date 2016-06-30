@@ -7,22 +7,11 @@
 # library(ggplot2)
 # library(DT) # library for datatables
 # library(shinythemes)
-# 
-# # loading files below to run app
-# load('itembased_model.rda')
-# objects_info = readRDS('objects_info.rds')
-# vect_names = readRDS('vect_names.rds')
-# vCF = read.csv('visits.csv', header = T)
-
-# vect_names <- dimnames(visitsCF)
-# vect_names <- as.character(vect_names[[2]]) #list of all unique objects scanned
-# objects_info <- objects_info[match(as.character(objects_info$id), vect_names, nomatch = 0), ]
-
 
 library(recommenderlab)
 
 server <- function(input, output, session) {
- 
+  
   #################################
   ###### RECOMMENDATION TAB  ######
   #################################
@@ -34,23 +23,45 @@ server <- function(input, output, session) {
     print(input$input_country)
     
     # filtering dataframe
-    if (!is.null(input$input_decade) & (!is.null(input$input_country))) {
-      fil_both = filter(objects_info, decade %in% input$input_decade & decade != " ") &
-        (woe.country_name %in% input$input_country & woe.country_name != " " & woe.country_name != "") %>%
-        sample_n(size = 5, replace = F)
+    if (input$input_decade == "" & input$input_country == "") {
+      # print ('1st if')
+      ret_nulls = sample_n(objects_info, 5, replace = F)
+      return(ret_nulls)
+      
+    } else if ((input$input_decade != "") & (input$input_country != "")) {
+      # print ('2nd if')
+      print (input$input_decade)
+      print (input$input_country)
+
+      fil_both = filter(objects_info, 
+                        decade %in% input$input_decade & decade != " ", 
+                        (woe.country_name %in% input$input_country & woe.country_name != " " & woe.country_name != ""))
+
+      # print("After fil_both")      
+      if (nrow(fil_both) > 5) {
+        print("In if")
+        fil_both = fil_both %>% sample_n(size = 5, replace = F)        
+      }
+      
       return(fil_both)
-    } else if (!is.null(input$input_decade)) {
+      
+    } else if (input$input_decade != "") {
+      print ('3rd if')
       fil_decade = filter(objects_info, decade %in% input$input_decade & decade != " ") %>%
         sample_n(size = 5, replace = F)
       return(fil_decade)
-    } else if (!is.null(input$input_country)) {
+      
+    } else if (input$input_country != "") {
+      # print ('4th if')
       fil_country = filter(objects_info,
                            woe.country_name %in% input$input_country &
                              woe.country_name != " " &
                              woe.country_name != "") %>%
         sample_n(size = 5, replace = F)
       return(fil_country)
+      
     } else {
+      # print ('5th if')
       ret_nulls = sample_n(objects_info, 5, replace = F)
       return(ret_nulls)
     }
@@ -73,7 +84,7 @@ server <- function(input, output, session) {
   output$picture5 <- renderText({
     c('<img src="',as.character(recom_data()$primary_image.1[5]),'" width = "150" >')
   })
-
+  
   ## creating recommendations ##
   obj_recom <- eventReactive(input$recommend,  {
     # collecting object_id from filtered and sampled data above
@@ -117,15 +128,15 @@ server <- function(input, output, session) {
         }
       }
     }
-
+    
     print('like_1s')
     print(like_1s)
     print('length(like_1s)')
     print(length(like_1s))
-
+    
     # initializeing an empty matrix
     user_likes = matrix(0, nrow = 1, ncol = ncol(visitsCF))
-
+    
     # putting value of 1 in cols that user liked
     for (i in 1:length(like_1s)) {
       user_likes[1, like_1s[i]] = 1
@@ -153,7 +164,7 @@ server <- function(input, output, session) {
                                id == as.numeric(vect_names[as.numeric(user_recs[3])]) |
                                id == as.numeric(vect_names[as.numeric(user_recs[4])]) |
                                id == as.numeric(vect_names[as.numeric(user_recs[5])])
-                             )
+    )
     print('length recommendation$id')
     print(length(recommendations$id))
     print(recommendations)
@@ -178,6 +189,6 @@ server <- function(input, output, session) {
     c('<img src="',as.character(obj_recom()$primary_image.1[5]),'" width = "150" >')
   })
   
-
+  
 }
 

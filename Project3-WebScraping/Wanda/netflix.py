@@ -104,7 +104,7 @@ if __name__ == '__main__':
 	username = browser.find_element_by_name("email")
 	password = browser.find_element_by_name("password")
 	username.send_keys("drscholls303@gmail.com")
-	password.send_keys("capunta.6")
+	password.send_keys("x")
 	browser.find_element_by_xpath('//*[@id="appMountPoint"]/div/div[2]/div/form[1]/button').click() 
 	time.sleep(5)
 	browser.find_element_by_xpath('//*[@id="appMountPoint"]/div/div/div[3]/div/div/ul/li[1]/a').click() #user profile
